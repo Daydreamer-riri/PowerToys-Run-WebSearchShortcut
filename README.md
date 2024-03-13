@@ -1,0 +1,1 @@
+# PowerToys-Run-WebSearchShortcut
