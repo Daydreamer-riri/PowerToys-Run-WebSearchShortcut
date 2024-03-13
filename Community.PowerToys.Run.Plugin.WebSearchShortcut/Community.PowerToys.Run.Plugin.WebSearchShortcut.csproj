@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Platforms>x64;ARM64</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(Platform)' == 'x64'">
+    <Reference Include="Libs\x64\PowerToys.Common.UI.dll" />
+    <Reference Include="Libs\x64\PowerToys.ManagedCommon.dll" />
+    <Reference Include="Libs\x64\PowerToys.Settings.UI.Lib.dll" />
+    <Reference Include="Libs\x64\Wox.Infrastructure.dll" />
+    <Reference Include="Libs\x64\Wox.Plugin.dll" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Platform)' == 'ARM64'">
+    <Reference Include="Libs\ARM64\PowerToys.Common.UI.dll" />
+    <Reference Include="Libs\ARM64\PowerToys.ManagedCommon.dll" />
+    <Reference Include="Libs\ARM64\PowerToys.Settings.UI.Lib.dll" />
+    <Reference Include="Libs\ARM64\Wox.Infrastructure.dll" />
+    <Reference Include="Libs\ARM64\Wox.Plugin.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Images\EdgeFavorite.dark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\EdgeFavorite.light.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Url.dark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Url.light.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Folder.dark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Folder.light.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="plugin.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
