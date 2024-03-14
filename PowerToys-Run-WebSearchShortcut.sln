@@ -7,16 +7,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Community.PowerToys.Run.Plu
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+		Debug|ARM64 = Debug|ARM64
+		Release|ARM64 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Debug|Any CPU.Build.0 = Debug|x64
-		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Release|Any CPU.ActiveCfg = Release|x64
-		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Release|Any CPU.Build.0 = Release|x64
+		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Debug|x64.ActiveCfg = Debug|x64
+		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Debug|x64.Build.0 = Debug|x64
+		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Release|x64.ActiveCfg = Release|x64
+		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Release|x64.Build.0 = Release|x64
+		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Debug|ARM64.Build.0 = Debug|ARM64
+		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Release|ARM64.ActiveCfg = Release|ARM64
+		{81DB7DD2-1784-42CC-A2B5-94B27CE8D11C}.Release|ARM64.Build.0 = Release|ARM64
 	EndGlobalSection
 EndGlobal
