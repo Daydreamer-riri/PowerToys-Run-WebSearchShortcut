@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PLUGIN_NAME: WebSearchShortcut
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [x64, ARM64]
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read version
+        run: |
+          [xml]$xml = Get-Content -Path Directory.Build.Props
+          echo "PLUGIN_VERSION=$($xml.Project.PropertyGroup.Version)" >> $env:GITHUB_ENV
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build
+        run: dotnet build PowerToys-Run-WebSearchShortcut.sln --configuration Release /p:Platform=${{matrix.platform}} /p:EnableWindowsTargeting=true
+
+      - name: Prepare artifact
+        run: |
+          Remove-Item -Path Community.PowerToys.Run.Plugin.WebSearchShortcut\bin\* -Recurse -Include *.xml, *.pdb, PowerToys.*, Wox.*
+          Rename-Item -Path Community.PowerToys.Run.Plugin.WebSearchShortcut\bin\${{matrix.platform}}\Release -NewName $env:PLUGIN_NAME
+          Compress-Archive -Path Community.PowerToys.Run.Plugin.WebSearchShortcut\bin\${{matrix.platform}}\$env:PLUGIN_NAME -DestinationPath "${{env.PLUGIN_NAME}}-${{env.PLUGIN_VERSION}}-${{matrix.platform}}.zip"
