@@ -129,7 +129,17 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       if (!File.Exists(path))
       {
-        File.WriteAllText(path, "{}");
+        var initData = new Dictionary<string, Item>
+        {
+          { "google", new Item { KeyWord = "google", Name = "Google", Url = "https://www.google.com/search?q={q}" } },
+          { "bing", new Item { KeyWord = "bing", Name = "Bing", Url = "https://www.bing.com/search?q={q}" } },
+          { "duckduckgo", new Item { KeyWord = "duckduckgo", Name = "DuckDuckGo", Url = "https://duckduckgo.com/?q={q}" } },
+          { "youtube", new Item { KeyWord = "youtube", Name = "YouTube", Url = "https://www.youtube.com/results?search_query={q}" } },
+          { "github", new Item { KeyWord = "github", Name = "GitHub", Url = "" } },
+        };
+
+        var json = JsonSerializer.Serialize(initData, _serializerOptions);
+        File.WriteAllText(path, json);
       }
 
       try

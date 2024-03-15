@@ -81,6 +81,24 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       var args = query.Search;
 
+      if (args.Trim() == "!reload")
+      {
+        return
+        [
+          new()
+          {
+            Title = "Reload data",
+            SubTitle = "Reloads the data from the file",
+            IcoPath = IconPath,
+            Action = _ =>
+            {
+              ReloadData();
+              return true;
+            },
+          },
+        ];
+      }
+
       if (string.IsNullOrEmpty(args))
       {
         return WebSearchShortcutStorage.GetRecords().Select(GetResultForGetRecord).ToList();
