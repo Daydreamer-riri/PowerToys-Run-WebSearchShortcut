@@ -9,6 +9,10 @@ foreach ($platform in "ARM64", "x64")
     {
         Remove-Item -Path "$PSScriptRoot\Community.PowerToys.Run.Plugin.WebSearchShortcut\bin\*" -Recurse
     }
+    if (Test-Path -Path "$PSScriptRoot\WebSearchShortcut-$version-$platform.zip")
+    {
+        Remove-Item -Path "$PSScriptRoot\WebSearchShortcut-$version-$platform.zip"
+    }
 
     dotnet build $PSScriptRoot\PowerToys-Run-WebSearchShortcut.sln -c Release /p:Platform=$platform
 

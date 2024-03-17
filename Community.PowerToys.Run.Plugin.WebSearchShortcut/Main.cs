@@ -104,8 +104,33 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         return WebSearchShortcutStorage.GetRecords().Select(GetResultForGetRecord).ToList();
       }
 
-      return WebSearchShortcutStorage.GetRecords(args).Select(GetResultForGetRecord).ToList() ?? [];
-      
+      var tokens = args.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+      if (tokens.Length == 1)
+      {
+        return WebSearchShortcutStorage.GetRecords(args).Select(GetResultForGetRecord).ToList() ?? [];
+      }
+
+      var item = WebSearchShortcutStorage.GetRecords(tokens[0]).ToList()[0];
+      if (item is null)
+      {
+        return [];
+      }
+      return [
+        new Result
+          {
+            QueryTextDisplay = args,
+            IcoPath = IconPath,
+            Title = $"{item.Name}: {tokens[1]}",
+            SubTitle = $"Search for {item.Name} with {tokens[1]}",
+            // Action = _ =>
+            // {
+            //   Context!.API.ChangeQuery(item.Url);
+            //   return false;
+            // },
+            Score = 1000,
+            ContextData = item,
+          }
+      ];
 
       Result GetResultForGetRecord(Item record) => new()
       {
@@ -114,6 +139,14 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         Title = record.Name,
         SubTitle = record.Url,
         // ToolTipData = new ToolTipData("Get", $"Key: {record.Key}\nValue: {record.Value}\nCreated: {record.Created}\nUpdated: {record.Updated}"),
+        Action = _ =>
+        {
+          var newQuery = string.IsNullOrWhiteSpace(query.ActionKeyword)
+            ? $"{record.Name} "
+            : $"{query.ActionKeyword} {record.Name} ";
+          Context!.API.ChangeQuery(newQuery, true);
+          return false;
+        },
         ContextData = record,
       };
     }
