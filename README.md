@@ -1,8 +1,6 @@
 # PowerToys-Run-WebSearchShortcut
 
-This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powertoys/run) plugin for performing web searches.
-
-This plugin enables users to perform web searches using specific keywords. 
+This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powertoys/run) plugin for quickly select a specific search engine to perform searches.
 
 ## Preview
 
