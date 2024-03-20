@@ -4,6 +4,12 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 This plugin enables users to perform web searches using specific keywords. 
 
+## Preview
+
+![search-1](./ScreenShots/search-1.png)
+
+![search-2](./ScreenShots/search-2.png)
+
 ## Requirements
 
 - PowerToys minimum version 0.79.0
@@ -28,15 +34,6 @@ This plugin enables users to perform web searches using specific keywords.
 - Run `reload`:
 
 ![reload](./ScreenShots/reload.png)
-
-
-## ScreenShots
-
-### Search
-
-![search-1](./ScreenShots/search-1.png)
-
-![search-2](./ScreenShots/search-2.png)
 
 ## License
 
