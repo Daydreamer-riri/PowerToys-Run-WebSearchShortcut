@@ -99,8 +99,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         [
           new()
           {
-            Title = "Reload data",
-            SubTitle = "Reloads the data from the file",
+            Title = "Reload",
+            SubTitle = "Reload data from config file",
             IcoPath = IconPath["Reload"],
             Action = _ =>
             {
