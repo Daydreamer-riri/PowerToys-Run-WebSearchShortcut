@@ -31,22 +31,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Images\EdgeFavorite.dark.png">
+    <None Update="Images\Search.dark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\EdgeFavorite.light.png">
+    <None Update="Images\Search.light.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\Url.dark.png">
+    <None Update="Images\Config.dark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\Url.light.png">
+    <None Update="Images\Config.light.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\Folder.dark.png">
+    <None Update="Images\Reload.dark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\Folder.light.png">
+    <None Update="Images\Reload.light.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="plugin.json">

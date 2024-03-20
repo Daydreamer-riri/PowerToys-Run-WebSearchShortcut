@@ -9,6 +9,6 @@
   "Language": "csharp",
   "Website": "https://aka.ms/powertoys",
   "ExecuteFileName": "Community.PowerToys.Run.Plugin.WebSearchShortcut.dll",
-  "IcoPathDark": "Images\\EdgeFavorite.dark.png",
-  "IcoPathLight": "Images\\EdgeFavorite.light.png"
+  "IcoPathDark": "Images\\Search.dark.png",
+  "IcoPathLight": "Images\\Search.light.png"
 }

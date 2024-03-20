@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Windows;
+using System.Net;
+using System.Reflection;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Community.PowerToys.Run.Plugin.WebSearchShortcut.Models;
 using ManagedCommon;
 using Microsoft.PowerToys.Settings.UI.Library;
+using Wox.Infrastructure;
 using Wox.Infrastructure.Storage;
 using Wox.Plugin;
 using Wox.Plugin.Logger;
+using BrowserInfo = Wox.Plugin.Common.DefaultBrowserInfo;
 
 namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 {
@@ -40,6 +43,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// </summary>
     public static string PluginID => "B5E595872B8068104D5AD6BBE39A6664";
 
+    public static string PluginName => "WebSearchShortcut";
+
     /// <summary>
     /// Name of the plugin.
     /// </summary>
@@ -57,7 +62,14 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     private PluginInitContext? Context { get; set; }
 
-    private string? IconPath { get; set; }
+    public static string PluginDirectory => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+
+    public static Dictionary<string, string> IconPath => new()
+        {
+            { "Search", @"Images\Search.light.png" },
+            { "Config", @"Images\Config.light.png" },
+            { "Reload", @"Images\Reload.light.png" }
+        };
 
     private bool Disposed { get; set; }
 
@@ -89,13 +101,35 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           {
             Title = "Reload data",
             SubTitle = "Reloads the data from the file",
-            IcoPath = IconPath,
+            IcoPath = IconPath["Reload"],
             Action = _ =>
             {
               ReloadData();
               return true;
             },
           },
+        ];
+      }
+
+      if (args.Trim() == "!config")
+      {
+        return
+        [
+          new()
+          {
+            Title = "Open Config File",
+            SubTitle = "Open the config file in the default editor",
+            IcoPath = IconPath["Config"],
+            Action = _ =>
+            {
+              if (!Helper.OpenInShell(WebSearchShortcutStorage.GetPath()))
+              {
+                Log.Error($"Plugin: {PluginName}\nCannot open {WebSearchShortcutStorage.GetPath()}", typeof(Main));
+                return false;
+              }
+              return true;
+            },
+          }
         ];
       }
 
@@ -115,39 +149,48 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       {
         return [];
       }
+
+      string searchQuery = WebUtility.UrlEncode(tokens[1]);
+      string arguments = item.Url.Replace("%s", searchQuery);
       return [
         new Result
           {
             QueryTextDisplay = args,
-            IcoPath = IconPath,
+            IcoPath = item.IconPath ?? IconPath["Search"],
             Title = $"{item.Name}: {tokens[1]}",
-            SubTitle = $"Search for {item.Name} with {tokens[1]}",
-            // Action = _ =>
-            // {
-            //   Context!.API.ChangeQuery(item.Url);
-            //   return false;
-            // },
+            SubTitle = $"Search for {tokens[1]} using {item.Name}",
+            ProgramArguments = arguments,
+            Action = _ =>
+            {
+              if(!Helper.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, arguments))
+              {
+                Log.Error($"Plugin: {PluginName}\nCannot open {BrowserInfo.Path} with arguments {BrowserInfo.ArgumentsPattern} {arguments}", typeof(Item));
+                return false;
+              }
+              return true;
+            },
             Score = 1000,
+            ToolTipData = new ToolTipData("Open", $"{arguments}"),
             ContextData = item,
           }
       ];
 
-      Result GetResultForGetRecord(Item record) => new()
+      Result GetResultForGetRecord(Item item) => new()
       {
         QueryTextDisplay = args,
-        IcoPath = IconPath,
-        Title = record.Name,
-        SubTitle = record.Url,
+        IcoPath = item.IconPath ?? IconPath["Search"],
+        Title = item.Name,
+        SubTitle = $"Search using {item.Name}",
         // ToolTipData = new ToolTipData("Get", $"Key: {record.Key}\nValue: {record.Value}\nCreated: {record.Created}\nUpdated: {record.Updated}"),
         Action = _ =>
         {
           var newQuery = string.IsNullOrWhiteSpace(query.ActionKeyword)
-            ? $"{record.Name} "
-            : $"{query.ActionKeyword} {record.Name} ";
+            ? $"{item.Name} "
+            : $"{query.ActionKeyword} {item.Name} ";
           Context!.API.ChangeQuery(newQuery, true);
           return false;
         },
-        ContextData = record,
+        ContextData = item,
       };
     }
 
@@ -161,62 +204,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       Context = context ?? throw new ArgumentNullException(nameof(context));
       Context.API.ThemeChanged += OnThemeChanged;
-      UpdateIconPath(Context.API.GetCurrentTheme());
+            UpdateIconPath(Context.API.GetCurrentTheme());
     }
-
-    // /// <summary>
-    // /// Return a list context menu entries for a given <see cref="Result"/> (shown at the right side of the result).
-    // /// </summary>
-    // /// <param name="selectedResult">The <see cref="Result"/> for the list with context menu entries.</param>
-    // /// <returns>A list context menu entries.</returns>
-    // public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
-    // {
-    //   Log.Info("LoadContextMenus", GetType());
-
-    //   if (selectedResult?.ContextData is (int words, TimeSpan transcription))
-    //   {
-    //     return
-    //     [
-    //         new ContextMenuResult
-    //                 {
-    //                     PluginName = Name,
-    //                     Title = "Copy (Enter)",
-    //                     FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
-    //                     Glyph = "\xE8C8", // Copy
-    //                     AcceleratorKey = Key.Enter,
-    //                     Action = _ => CopyToClipboard(words.ToString()),
-    //                 },
-    //                 new ContextMenuResult
-    //                 {
-    //                     PluginName = Name,
-    //                     Title = "Copy time (Ctrl+Enter)",
-    //                     FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
-    //                     Glyph = "\xE916", // Stopwatch
-    //                     AcceleratorKey = Key.Enter,
-    //                     AcceleratorModifiers = ModifierKeys.Control,
-    //                     Action = _ => CopyToClipboard(transcription.ToString()),
-    //                 },
-    //             ];
-    //   }
-
-    //   if (selectedResult?.ContextData is int characters)
-    //   {
-    //     return
-    //     [
-    //         new ContextMenuResult
-    //                 {
-    //                     PluginName = Name,
-    //                     Title = "Copy (Enter)",
-    //                     FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
-    //                     Glyph = "\xE8C8", // Copy
-    //                     AcceleratorKey = Key.Enter,
-    //                     Action = _ => CopyToClipboard(characters.ToString()),
-    //                 },
-    //             ];
-    //   }
-
-    //   return [];
-    // }
 
     /// <summary>
     /// Creates setting panel.
@@ -232,8 +221,6 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     public void UpdateSettings(PowerLauncherPluginSettings settings)
     {
       Log.Info("UpdateSettings", GetType());
-
-      // CountSpaces = settings.AdditionalOptions.SingleOrDefault(x => x.Key == nameof(CountSpaces))?.Value ?? false;
     }
 
     public void ReloadData()
@@ -269,18 +256,16 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       Disposed = true;
     }
 
-    private void UpdateIconPath(Theme theme) => IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite ? Context?.CurrentPluginMetadata.IcoPathLight : Context?.CurrentPluginMetadata.IcoPathDark;
+    private static void UpdateIconPath(Theme theme)
+    {
+      bool isLightTheme = theme == Theme.Light || theme == Theme.HighContrastWhite;
+      foreach (string key in IconPath.Keys)
+      {
+        IconPath[key] = IconPath[key].Replace(isLightTheme ? "dark" : "light",
+                                              isLightTheme ? "light" : "dark");
+      }
+    }
 
     private void OnThemeChanged(Theme currentTheme, Theme newTheme) => UpdateIconPath(newTheme);
-
-    private static bool CopyToClipboard(string? value)
-    {
-      if (value != null)
-      {
-        Clipboard.SetText(value);
-      }
-
-      return true;
-    }
   }
 }

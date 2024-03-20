@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Community.PowerToys.Run.Plugin.WebSearchShortcut.Models;
 using Wox.Plugin.Logger;
 
@@ -34,20 +35,6 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// <returns>The record.</returns>
     Item? GetRecord(string key);
 
-    // /// <summary>
-    // /// Sets the value.
-    // /// </summary>
-    // /// <param name="key">The key.</param>
-    // /// <param name="value">The value.</param>
-    // void SetRecord(string key, string value);
-
-    /// <summary>
-    /// Removes the record.
-    /// </summary>
-    /// <param name="key">The key.</param>
-    /// <returns>The status.</returns>
-    bool RemoveRecord(string key);
-
     /// <summary>
     /// Loads file.
     /// </summary>
@@ -57,8 +44,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// Saves file.
     /// </summary>
     void Save();
-
-    string Json { get; set; }
+    string GetPath();
   }
 
   /// <inheritdoc/>
@@ -97,31 +83,15 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     /// <inheritdoc/>
     public IReadOnlyCollection<Item> GetRecords(string query) => Data.Values.Where(x =>
-        x.KeyWord.Contains(query, StringComparison.InvariantCultureIgnoreCase) ||
-        x.Name.Contains(query, StringComparison.InvariantCultureIgnoreCase))
+        x.Name?.Contains(query, StringComparison.InvariantCultureIgnoreCase) ?? false)
         .ToList().AsReadOnly();
 
     /// <inheritdoc/>
     public Item? GetRecord(string key) => Data.GetValueOrDefault(key);
 
-    // / <inheritdoc/>
-    // public void SetRecord(string key, string value)
-    // {
-    //   if (Data.TryGetValue(key, out Item? record))
-    //   {
-    //     record.Value = value;
-    //     record.Updated = DateTime.UtcNow;
-    //   }
-    //   else
-    //   {
-    //     Data[key] = new Item { Key = key, Value = value, Created = DateTime.UtcNow };
-    //   }
-    // }
-
     /// <inheritdoc/>
     public bool RemoveRecord(string key) => Data.Remove(key);
 
-    public string Json { get; set; } = "uninit";
     /// <inheritdoc/>
     public void Load()
     {
@@ -131,11 +101,9 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       {
         var initData = new Dictionary<string, Item>
         {
-          { "google", new Item { KeyWord = "google", Name = "Google", Url = "https://www.google.com/search?q={q}" } },
-          { "bing", new Item { KeyWord = "bing", Name = "Bing", Url = "https://www.bing.com/search?q={q}" } },
-          { "duckduckgo", new Item { KeyWord = "duckduckgo", Name = "DuckDuckGo", Url = "https://duckduckgo.com/?q={q}" } },
-          { "youtube", new Item { KeyWord = "youtube", Name = "YouTube", Url = "https://www.youtube.com/results?search_query={q}" } },
-          { "github", new Item { KeyWord = "github", Name = "GitHub", Url = "" } },
+          { "Google", new Item { Url = "https://www.google.com/search?q=%s" } },
+          { "Bing", new Item { Url = "https://www.bing.com/search?q=%s" } },
+          { "GitHub", new Item { Url = "https://www.github.com/search?q=%s" } },
         };
 
         var json = JsonSerializer.Serialize(initData, _serializerOptions);
@@ -146,11 +114,34 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       {
         var json = File.ReadAllText(path);
         Data = JsonSerializer.Deserialize<Dictionary<string, Item>>(json, _serializerOptions) ?? [];
-        Json = json;
+        foreach (var (key, item) in Data)
+        {
+          item.Name = key;
+        }
+        DownLoadIcon();
       }
       catch (Exception ex)
       {
         Log.Exception("Load failed: " + path, ex, GetType());
+      }
+    }
+
+    private async void DownLoadIcon()
+    {
+      List<Task<bool>> tasks = Data.Values.Select(x => x.DownLoadIcon()).ToList();
+      await Task.WhenAll(tasks);
+      string iconDirectory = Path.Combine(Main.PluginDirectory, "Images", "Icons");
+      if (Directory.Exists(iconDirectory))
+      {
+        string[] files = Directory.GetFiles(iconDirectory);
+        foreach (string file in files)
+        {
+          string name = Path.GetFileNameWithoutExtension(file);
+          if (!Data.ContainsKey(name))
+          {
+            File.Delete(file);
+          }
+        }
       }
     }
 
@@ -170,6 +161,6 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       }
     }
 
-    private string GetPath() => Path.Combine(Settings.StorageDirectoryPath, Settings.StorageFileName);
+    public string GetPath() => Path.Combine(Settings.StorageDirectoryPath, Settings.StorageFileName);
   }
 }
