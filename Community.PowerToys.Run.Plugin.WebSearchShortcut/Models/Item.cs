@@ -27,11 +27,6 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
 
     public string? IconPath { get; set; }
 
-    /// <summary>
-    /// When the record was updated.
-    /// </summary>
-    public DateTime? Updated { get; set; }
-
     public async Task<bool> DownLoadIcon()
     {
       string iconDirectory = Path.Combine(Main.PluginDirectory, "Images", "Icons");
