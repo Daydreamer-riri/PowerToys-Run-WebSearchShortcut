@@ -7,7 +7,7 @@
   "Author": "Daydreamer-riri",
   "Version": "1.0.0",
   "Language": "csharp",
-  "Website": "https://aka.ms/powertoys",
+  "Website": "https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut",
   "ExecuteFileName": "Community.PowerToys.Run.Plugin.WebSearchShortcut.dll",
   "IcoPathDark": "Images\\Search.dark.png",
   "IcoPathLight": "Images\\Search.light.png"
