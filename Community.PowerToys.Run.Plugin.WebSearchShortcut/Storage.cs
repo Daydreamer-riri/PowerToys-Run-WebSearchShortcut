@@ -83,11 +83,15 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     /// <inheritdoc/>
     public IReadOnlyCollection<Item> GetRecords(string query) => Data.Values.Where(x =>
-        x.Name?.Contains(query, StringComparison.InvariantCultureIgnoreCase) ?? false)
-        .ToList().AsReadOnly();
+        (x.Keyword?.Contains(query, StringComparison.InvariantCultureIgnoreCase) ?? false)
+        || (x.Name?.Contains(query, StringComparison.InvariantCultureIgnoreCase) ?? false)
+      ).ToList().AsReadOnly();
 
     /// <inheritdoc/>
-    public Item? GetRecord(string key) => Data.GetValueOrDefault(key);
+    public Item? GetRecord(string key)
+    {
+      return Data.Values.First(x => x.Name == key || x.Keyword == key);
+    }
 
     /// <inheritdoc/>
     public bool RemoveRecord(string key) => Data.Remove(key);

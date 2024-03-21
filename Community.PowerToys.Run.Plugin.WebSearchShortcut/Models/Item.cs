@@ -16,6 +16,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
     /// </summary>
     public string? Name { get; set; }
 
+    public string? Keyword { get; set; }
+
     public string Url { get; set; } = string.Empty;
 
     public string Domain {
@@ -23,7 +25,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
       {
         return new Uri(Url.Split('?')[0]).GetLeftPart(UriPartial.Authority);
       }
-   }
+    }
 
     public string? IconPath { get; set; }
 

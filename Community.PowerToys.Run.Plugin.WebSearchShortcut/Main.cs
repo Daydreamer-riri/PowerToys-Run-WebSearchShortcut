@@ -145,7 +145,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         return WebSearchShortcutStorage.GetRecords(args).Select(GetResultForSelect).ToList() ?? [];
       }
 
-      var item = WebSearchShortcutStorage.GetRecords(tokens[0]).ToList()[0];
+      var item = WebSearchShortcutStorage.GetRecord(tokens[0]);
       if (item is null)
       {
         return [];
