@@ -18,6 +18,13 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
 
     public string Url { get; set; } = string.Empty;
 
+    public string Domain {
+      get
+      {
+        return new Uri(Url.Split('?')[0]).GetLeftPart(UriPartial.Authority);
+      }
+   }
+
     public string? IconPath { get; set; }
 
     /// <summary>
@@ -39,7 +46,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
         return false;
       }
 
-      byte[] icon = await DownloadFaviconAsync(Url.Split('?')[0]);
+      byte[] icon = await DownloadFaviconAsync();
       if (icon.Length == 0)
       {
         return false;
@@ -58,11 +65,11 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
       return true;
     }
 
-    private async Task<byte[]> DownloadFaviconAsync(string url)
+    private async Task<byte[]> DownloadFaviconAsync()
     {
       try
       {
-        string faviconUrl = new Uri(url).GetLeftPart(UriPartial.Authority) + "/favicon.ico";
+        string faviconUrl = Domain + "/favicon.ico";
         using HttpClient client = new();
         HttpResponseMessage response = await client.GetAsync(faviconUrl);
         if (response.IsSuccessStatusCode)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Community.PowerToys.Run.Plugin.WebSearchShortcut.Models;
 using ManagedCommon;
 using Microsoft.PowerToys.Settings.UI.Library;
@@ -19,7 +20,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
   /// <summary>
   /// Main class of this plugin that implement all used interfaces.
   /// </summary>
-  public class Main : IPlugin, ISettingProvider, IDisposable
+  public class Main : IPlugin, IContextMenu, ISettingProvider, IDisposable
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="Main"/> class.
@@ -135,13 +136,13 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       if (string.IsNullOrEmpty(args))
       {
-        return WebSearchShortcutStorage.GetRecords().Select(GetResultForGetRecord).ToList();
+        return WebSearchShortcutStorage.GetRecords().Select(GetResultForSelect).ToList();
       }
 
       var tokens = args.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
       if (tokens.Length == 1)
       {
-        return WebSearchShortcutStorage.GetRecords(args).Select(GetResultForGetRecord).ToList() ?? [];
+        return WebSearchShortcutStorage.GetRecords(args).Select(GetResultForSelect).ToList() ?? [];
       }
 
       var item = WebSearchShortcutStorage.GetRecords(tokens[0]).ToList()[0];
@@ -160,28 +161,19 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
             Title = $"{item.Name}: {tokens[1]}",
             SubTitle = $"Search for {tokens[1]} using {item.Name}",
             ProgramArguments = arguments,
-            Action = _ =>
-            {
-              if(!Helper.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, arguments))
-              {
-                Log.Error($"Plugin: {PluginName}\nCannot open {BrowserInfo.Path} with arguments {BrowserInfo.ArgumentsPattern} {arguments}", typeof(Item));
-                return false;
-              }
-              return true;
-            },
+            Action = _ => OpenInBrowser(arguments),
             Score = 1000,
             ToolTipData = new ToolTipData("Open", $"{arguments}"),
             ContextData = item,
           }
       ];
 
-      Result GetResultForGetRecord(Item item) => new()
+      Result GetResultForSelect(Item item) => new()
       {
         QueryTextDisplay = args,
         IcoPath = item.IconPath ?? IconPath["Search"],
         Title = item.Name,
         SubTitle = $"Search using {item.Name}",
-        // ToolTipData = new ToolTipData("Get", $"Key: {record.Key}\nValue: {record.Value}\nCreated: {record.Created}\nUpdated: {record.Updated}"),
         Action = _ =>
         {
           var newQuery = string.IsNullOrWhiteSpace(query.ActionKeyword)
@@ -192,6 +184,29 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         },
         ContextData = item,
       };
+    }
+
+    public List<ContextMenuResult> LoadContextMenus(Result result)
+    {
+      if (result?.ContextData is null)
+      {
+        return [];
+      }
+
+      var item = (Item)result.ContextData;
+      var domain = item.Domain;
+      return [
+        new()
+        {
+          PluginName = PluginName,
+          Title = $"Open {item.Name} (Ctrl + Enter)",
+          Glyph = "\xe8a7",
+          FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
+          Action = _ => OpenInBrowser(domain),
+          AcceleratorKey = Key.Enter,
+          AcceleratorModifiers = ModifierKeys.Control,
+        },
+      ];
     }
 
     /// <summary>
@@ -267,5 +282,15 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     }
 
     private void OnThemeChanged(Theme currentTheme, Theme newTheme) => UpdateIconPath(newTheme);
+
+    private static bool OpenInBrowser(string url)
+    {
+      if (!Helper.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, url))
+      {
+        Log.Error($"Plugin: {PluginName}\nCannot open {BrowserInfo.Path} with arguments {BrowserInfo.ArgumentsPattern} {url}", typeof(Item));
+        return false;
+      }
+      return true;
+    }
   }
 }
