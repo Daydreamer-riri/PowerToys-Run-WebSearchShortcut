@@ -90,7 +90,10 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// <inheritdoc/>
     public Item? GetRecord(string key)
     {
-      return Data.Values.First(x => x.Name == key || x.Keyword == key);
+      return Data.Values.First(x => x.Name!.Equals(
+        key, StringComparison.InvariantCultureIgnoreCase) 
+        || x.Keyword!.Equals(key, StringComparison.InvariantCultureIgnoreCase)
+        );
     }
 
     /// <inheritdoc/>
