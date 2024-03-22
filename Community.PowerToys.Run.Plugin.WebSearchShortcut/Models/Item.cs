@@ -68,6 +68,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
       {
         string faviconUrl = Domain + "/favicon.ico";
         using HttpClient client = new();
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; AcmeInc/1.0)");
         HttpResponseMessage response = await client.GetAsync(faviconUrl);
         if (response.IsSuccessStatusCode)
         {
