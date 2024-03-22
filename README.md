@@ -8,6 +8,9 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 ![search-2](./ScreenShots/search-2.png)
 
+![Keyword](./ScreenShots/keyword.png)
+> If you have configured the 'Keyword' field, you can use the abbreviation keyword to specify the search engine.
+
 ## Requirements
 
 - PowerToys minimum version 0.79.0
