@@ -130,6 +130,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
               }
               return true;
             },
+            ContextData = WebSearchShortcutStorage.GetPath(),
           }
         ];
       }
@@ -188,6 +189,21 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     public List<ContextMenuResult> LoadContextMenus(Result result)
     {
+      if (result?.ContextData is string)
+      {
+        return [
+          new()
+          {
+            PluginName = PluginName,
+            Title = "Open in Explorer (Ctrl + Enter)",
+            Glyph = "\xe838",
+            FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
+            Action = _ => Helper.OpenInShell(Settings.StorageDirectoryPath),
+            AcceleratorKey = Key.Enter,
+            AcceleratorModifiers = ModifierKeys.Control,
+          }
+        ];
+      }
       if (result?.ContextData is null)
       {
         return [];
