@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Wox.Plugin.Logger;
 
@@ -9,7 +10,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
   /// <summary>
   /// Key/value record.
   /// </summary>
-  public class Item
+  public partial class Item
   {
     /// <summary>
     /// The value.
@@ -74,6 +75,23 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
         {
           return await response.Content.ReadAsByteArrayAsync();
         }
+        HttpResponseMessage domainResponse = await client.GetAsync(Domain);
+        var html = await domainResponse.Content.ReadAsStringAsync();
+        Regex regex = IconRegex();
+        Match match = regex.Match(html);
+        if (match.Success)
+        {
+          var iconUrl = match.Groups[1].Value;
+          if (iconUrl.StartsWith("//"))
+          {
+            iconUrl = "http:" + iconUrl;
+          }
+          response = await client.GetAsync(iconUrl);
+          if (response.IsSuccessStatusCode)
+          {
+            return await response.Content.ReadAsByteArrayAsync();
+          }
+        }
       }
       catch (Exception ex)
       {
@@ -81,5 +99,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
       }
       return [];
     }
+
+    [GeneratedRegex("<link.*?rel=\"(?:shortcut )?icon\".*?href=\"([^\"]+)\"", RegexOptions.IgnoreCase)]
+    private static partial Regex IconRegex();
   }
 }
