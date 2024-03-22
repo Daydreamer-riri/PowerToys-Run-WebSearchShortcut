@@ -159,7 +159,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           {
             QueryTextDisplay = args,
             IcoPath = item.IconPath ?? IconPath["Search"],
-            Title = $"{item.Name}: {tokens[1]}",
+            Title = $"{item.Name} ⏐  {tokens[1]}",
             SubTitle = $"Search for {tokens[1]} using {item.Name}",
             ProgramArguments = arguments,
             Action = _ => OpenInBrowser(arguments),
