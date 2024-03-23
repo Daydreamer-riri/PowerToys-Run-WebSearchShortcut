@@ -36,6 +36,11 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 ![reload](./ScreenShots/reload.png)
 
+## Roadmap
+
+[x] Keyword field
+[ ] Search suggestions 
+
 ## License
 
 [MIT](./LICENSE) License © 2023 [Riri](https://github.com/Daydreamer-riri)
