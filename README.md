@@ -38,8 +38,8 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 ## Roadmap
 
-[x] Keyword field
-[ ] Search suggestions 
+- [x] Keyword field
+- [ ] Search suggestions 
 
 ## License
 
