@@ -94,7 +94,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       var args = query.Search;
 
-      if (args.Trim() == "!reload")
+      if (args.Trim().Equals("!reload", StringComparison.OrdinalIgnoreCase))
       {
         return
         [
@@ -112,7 +112,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         ];
       }
 
-      if (args.Trim() == "!config")
+      if (args.Trim().Equals("!config", StringComparison.OrdinalIgnoreCase))
       {
         return
         [
