@@ -111,7 +111,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         {
           { "Google", new Item { Url = "https://www.google.com/search?q=%s" } },
           { "Bing", new Item { Url = "https://www.bing.com/search?q=%s" } },
-          { "GitHub", new Item { Url = "https://www.github.com/search?q=%s" } },
+          { "GitHub", new Item { Url = "https://www.github.com/search?q=%s", Keyword = "gh" } },
         };
 
         var json = JsonSerializer.Serialize(initData, _serializerOptions);
