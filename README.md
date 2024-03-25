@@ -4,9 +4,7 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 ## Preview
 
-![search-1](./ScreenShots/search-1.png)
-
-![search-2](./ScreenShots/search-2.png)
+![search-preview](./ScreenShots/preview.gif)
 
 ![Keyword](./ScreenShots/keyword.png)
 > If you have configured the 'Keyword' field, you can use the abbreviation keyword to specify the search engine.
