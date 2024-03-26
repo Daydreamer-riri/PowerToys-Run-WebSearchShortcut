@@ -21,6 +21,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
 
     public string Url { get; set; } = string.Empty;
 
+    public string? SuggestionProvider { get; set; }
+
     public string Domain {
       get
       {

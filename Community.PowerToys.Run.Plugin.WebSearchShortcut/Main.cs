@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Community.PowerToys.Run.Plugin.WebSearchShortcut.Models;
+using Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion;
 using ManagedCommon;
 using Microsoft.PowerToys.Settings.UI.Library;
 using Wox.Infrastructure;
@@ -20,7 +21,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
   /// <summary>
   /// Main class of this plugin that implement all used interfaces.
   /// </summary>
-  public class Main : IPlugin, IContextMenu, ISettingProvider, IDisposable
+  public class Main : IPlugin, IDelayedExecutionPlugin, IContextMenu, ISettingProvider, IDisposable
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="Main"/> class.
@@ -69,7 +70,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         {
             { "Search", @"Images\Search.light.png" },
             { "Config", @"Images\Config.light.png" },
-            { "Reload", @"Images\Reload.light.png" }
+            { "Reload", @"Images\Reload.light.png" },
+            { "Suggestion", @"Images\Suggestion.light.png" },
         };
 
     private bool Disposed { get; set; }
@@ -79,6 +81,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     private WebSearchShortcutSettings Settings { get; }
 
     private IWebSearchShortcutStorage WebSearchShortcutStorage { get; }
+
+    private Suggestions suggestion = new();
 
     /// <summary>
     /// Return a filtered list, based on the given query.
@@ -100,6 +104,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         [
           new()
           {
+            QueryTextDisplay = args,
             Title = "Reload",
             SubTitle = "Reload data from config file",
             IcoPath = IconPath["Reload"],
@@ -118,6 +123,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         [
           new()
           {
+            QueryTextDisplay = args,
             Title = "Open Config File",
             SubTitle = "Open the config file in the default editor",
             IcoPath = IconPath["Config"],
@@ -152,22 +158,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         return [];
       }
 
-      string searchQuery = WebUtility.UrlEncode(tokens[1]);
-      string arguments = item.Url.Replace("%s", searchQuery);
-      return [
-        new Result
-          {
-            QueryTextDisplay = args,
-            IcoPath = item.IconPath ?? IconPath["Search"],
-            Title = $"{item.Name} ⏐  {tokens[1]}",
-            SubTitle = $"Search for {tokens[1]} using {item.Name}",
-            ProgramArguments = arguments,
-            Action = _ => OpenInBrowser(arguments),
-            Score = 1000,
-            ToolTipData = new ToolTipData("Open", $"{arguments}"),
-            ContextData = item,
-          }
-      ];
+      return [GetResultForSearch(item, tokens[1], query), .. SuggestionsCache];
 
       Result GetResultForSelect(Item item) => new()
       {
@@ -184,6 +175,76 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           return false;
         },
         ContextData = item,
+      };
+    }
+
+    public List<Result> Query(Query query, bool delayedExecution)
+    {
+      if (query?.Search is null || !delayedExecution)
+      {
+        return ResetSuggestionsCache();
+      }
+      var tokens = query.Search.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+      if (tokens.Length == 1)
+      {
+        return ResetSuggestionsCache();
+      }
+      var item = WebSearchShortcutStorage.GetRecord(tokens[0]);
+      if (item is null || string.IsNullOrEmpty(item.SuggestionProvider))
+      {
+        return ResetSuggestionsCache();
+      }
+      var suggestions = suggestion.QuerySuggestionsAsync(item.SuggestionProvider, tokens[1]).Result;
+      if (suggestions.Count == 0)
+      {
+        return ResetSuggestionsCache();
+      }
+      var res = suggestions.Select(s => GetResultForSuggestion(item, s, query)).ToList();
+      SuggestionsCache = [..res];
+
+      res.Insert(0, GetResultForSearch(item, tokens[1], query));
+
+      return res;
+
+      List<Result> ResetSuggestionsCache()
+      {
+        SuggestionsCache = [];
+        return [];
+      }
+    }
+
+    private List<Result> SuggestionsCache { get; set; } = [];
+
+    private static Result GetResultForSearch(Item item, string search, Query query)
+    {
+      string searchQuery = WebUtility.UrlEncode(search);
+      string arguments = item.Url.Replace("%s", searchQuery);
+      return new Result
+      {
+        QueryTextDisplay = query.Search,
+        IcoPath = item.IconPath ?? IconPath["Search"],
+        Title = $"{item.Name} ⏐  {search}",
+        SubTitle = $"Search for {search} using {item.Name}",
+        ProgramArguments = arguments,
+        Action = _ => OpenInBrowser(arguments),
+        Score = 1000,
+        ToolTipData = new ToolTipData("Open", $"{arguments}"),
+        ContextData = item,
+      };
+    }
+
+    private static Result GetResultForSuggestion(Item item, string suggest, Query query)
+    {
+      var search = query.Search.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
+      return new Result
+      {
+        QueryTextDisplay = query.Search.Replace(search, suggest),
+        IcoPath = IconPath["Suggestion"],
+        Title = suggest,
+        SubTitle = $"Search for {suggest} using {item.Name}",
+        Action = _ => OpenInBrowser(item.Url.Replace("%s", WebUtility.UrlEncode(suggest))),
+        ContextData = item,
+        Score = 99,
       };
     }
 

@@ -109,8 +109,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       {
         var initData = new Dictionary<string, Item>
         {
-          { "Google", new Item { Url = "https://www.google.com/search?q=%s" } },
-          { "Bing", new Item { Url = "https://www.bing.com/search?q=%s" } },
+          { "Google", new Item { Url = "https://www.google.com/search?q=%s", SuggestionProvider = "Google" } },
+          { "Bing", new Item { Url = "https://www.bing.com/search?q=%s", SuggestionProvider = "Bing" } },
           { "GitHub", new Item { Url = "https://www.github.com/search?q=%s", Keyword = "gh" } },
         };
 
