@@ -36,7 +36,7 @@ Currently only `Google` and `Bing`'s suggestion apis are supported.
 >   "StackOverflow": {
 >     "Url": "https://stackoverflow.com/search?q=%s",
 >     "SuggestionProvider": "Google"
->  }
+>   }
 > }
 > ```
 
