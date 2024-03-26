@@ -66,7 +66,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     public static string PluginDirectory => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
-    public static Dictionary<string, string> IconPath => new()
+    public static Dictionary<string, string> IconPath { get; set; } = new()
         {
             { "Search", @"Images\Search.light.png" },
             { "Config", @"Images\Config.light.png" },
@@ -296,7 +296,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       Context = context ?? throw new ArgumentNullException(nameof(context));
       Context.API.ThemeChanged += OnThemeChanged;
-            UpdateIconPath(Context.API.GetCurrentTheme());
+      UpdateIconPath(Context.API.GetCurrentTheme());
     }
 
     /// <summary>
