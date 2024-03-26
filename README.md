@@ -13,6 +13,33 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 - PowerToys minimum version 0.79.0
 
+## Configuration field
+
+### Url
+
+The URL template for performing the search. Use `%s` as a placeholder for the search query.
+
+### Keyword
+
+Used to quickly select the target search engine.
+
+### SuggestionProvider
+
+Used to set the search suggestion.
+
+Currently only `Google` and `Bing`'s suggestion apis are supported.
+
+> You can also set a Provider to another search engine.
+> eg:
+> ```json
+> {
+>   "StackOverflow": {
+>     "Url": "https://stackoverflow.com/search?q=%s",
+>     "SuggestionProvider": "Google"
+>  }
+> }
+> ```
+
 ## Installation
 
 - Download the [latest release](https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/releases/) by selecting the architecture that matches your machine: `x64` (more common) or `ARM64`
@@ -26,9 +53,34 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 ![config](./ScreenShots/config.png)
 
-- Inside the config file, you can add your desired search engines. The key is the display name of the search engine, and the `url` property is the URL template for performing the search. Use `%s` as a placeholder for the search query.
-
-![config-file](./ScreenShots/config-file.png)
+- Inside the config file, you can add your desired search engines. The key is the display name of the search engine, and the `url` property is the URL template for performing the search.
+eg:
+```json
+{
+  "Google": {
+    "Url": "https://www.google.com/search?q=%s",
+    "SuggestionProvider": "Google"
+  },
+  "Bing": {
+    "Url": "https://www.bing.com/search?q=%s",
+    "SuggestionProvider": "Bing"
+  },
+  "GitHub": {
+    "Url": "https://www.github.com/search?q=%s"
+  },
+  "GitHubStars": {
+    "Url": "https://github.com/stars?q=%s",
+    "Keyword": "gs"
+  },
+  "StackOverflow": {
+    "Url": "https://stackoverflow.com/search?q=%s",
+    "Keyword": "st"
+  },
+  "npm": {
+    "Url": "https://www.npmjs.com/search?q=%s"
+  }
+}
+```
 
 - Run `reload`:
 
@@ -37,7 +89,7 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 ## Roadmap
 
 - [x] Keyword field
-- [ ] Search suggestions 
+- [x] Search suggestions 
 
 ## License
 
