@@ -55,7 +55,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// <summary>
     /// Description of the plugin.
     /// </summary>
-    public string Description => "Count words and characters in text";
+    public string Description => "A simple plugin for select a specific search engine to perform searches.";
 
     /// <summary>
     /// Additional options for the plugin.
