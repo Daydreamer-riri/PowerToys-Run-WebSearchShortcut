@@ -8,9 +8,9 @@ using Wox.Plugin.Logger;
 
 namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
 {
-  public class Google : IWebSearchShortcutSuggestionsProvider
+  public class Npm : IWebSearchShortcutSuggestionsProvider
   {
-    static public string Name => "Google";
+    static public string Name => "Npm";
 
     private HttpClient Http { get; } = new HttpClient();
 
@@ -18,33 +18,36 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
     {
       try
       {
-        const string api = "https://www.google.com/complete/search?output=chrome&q=";
+        const string api = "https://www.npmjs.com/search/suggestions?q=";
 
         await using var resultStream = await Http.GetStreamAsync(api + Uri.EscapeDataString(query)).ConfigureAwait(false);
 
         using var json = await JsonDocument.ParseAsync(resultStream);
 
-        var results = json.RootElement.EnumerateArray().ElementAt(1);
+        var results = json.RootElement.EnumerateArray();
 
-        List<string> titles = results
-          .EnumerateArray()
-          .Select(o => o.GetString())
+        List<SuggestionsItem> items = results
+          .Select(o => {
+            var title = o.GetProperty("name").GetString();
+            var description = o.GetProperty("description").GetString();
+            return title == null ? null : new SuggestionsItem(title, description);
+          })
           .Where(s => s != null)
           .Select(s => s!)
           .ToList();
 
-        return titles.Select(t => new SuggestionsItem(t)).ToList();
+        return items;
       }
       catch (Exception e)
       {
-        Log.Error($"{e.Message}", typeof(Google));
+        Log.Error($"{e.Message}", typeof(Npm));
         return [];
       }
     }
 
     public override string ToString()
     {
-      return "Google";
+      return "Npm";
     }
   }
 }

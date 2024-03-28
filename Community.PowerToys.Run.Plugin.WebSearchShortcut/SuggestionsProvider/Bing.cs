@@ -14,7 +14,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
 
     private HttpClient Http { get; } = new HttpClient();
 
-    public async Task<List<string>> QuerySuggestionsAsync(string query)
+    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
     {
       try
       {
@@ -26,17 +26,18 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
         var root = json.RootElement.GetProperty("AS");
 
         if (root.GetProperty("FullResults").GetInt32() == 0)
-          return new List<string>();
+          return [];
 
-        return root.GetProperty("Results")
+        List<string> titles = root.GetProperty("Results")
             .EnumerateArray()
             .SelectMany(r => r.GetProperty("Suggests")
-                .EnumerateArray()
-                .Select(s => s.GetProperty("Txt").GetString()))
+            .EnumerateArray()
+            .Select(s => s.GetProperty("Txt").GetString()))
             .Where(s => s != null)
             .Select(s => s!)
             .ToList();
 
+        return titles.Select(t => new SuggestionsItem(t)).ToList();
       }
       catch (Exception e) when (e is HttpRequestException or { InnerException: TimeoutException })
       {

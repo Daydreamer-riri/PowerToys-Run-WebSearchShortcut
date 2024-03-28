@@ -233,16 +233,16 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       };
     }
 
-    private static Result GetResultForSuggestion(Item item, string suggest, Query query)
+    private static Result GetResultForSuggestion(Item item, SuggestionsItem suggest, Query query)
     {
       var search = query.Search.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
       return new Result
       {
-        QueryTextDisplay = query.Search.Replace(search, suggest),
+        QueryTextDisplay = query.Search.Replace(search, suggest.Title),
         IcoPath = IconPath["Suggestion"],
-        Title = suggest,
-        SubTitle = $"Search for {suggest} using {item.Name}",
-        Action = _ => OpenInBrowser(item.Url.Replace("%s", WebUtility.UrlEncode(suggest))),
+        Title = suggest.Title,
+        SubTitle = suggest.Description ?? $"Search for {suggest} using {item.Name}",
+        Action = _ => OpenInBrowser(item.Url.Replace("%s", WebUtility.UrlEncode(suggest.Title))),
         ContextData = item,
         Score = 99,
       };
