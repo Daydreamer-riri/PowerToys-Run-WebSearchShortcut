@@ -27,7 +27,7 @@ Used to quickly select the target search engine.
 
 Used to set the search suggestion.
 
-Currently only `Google` and `Bing`'s suggestion apis are supported.
+Currently only `Google`, `Bing` and `Npm`'s suggestion apis are supported.
 
 > You can also set a Provider to another search engine.
 > eg:
@@ -39,6 +39,10 @@ Currently only `Google` and `Bing`'s suggestion apis are supported.
 >   }
 > }
 > ```
+
+### IsDefault
+
+If this option is true, the corresponding search engine does not need to input the trigger word.
 
 ## Installation
 
@@ -89,7 +93,7 @@ eg:
 ## Roadmap
 
 - [x] Keyword field
-- [x] Search suggestions 
+- [x] Search suggestions
 
 ## Credits
 
