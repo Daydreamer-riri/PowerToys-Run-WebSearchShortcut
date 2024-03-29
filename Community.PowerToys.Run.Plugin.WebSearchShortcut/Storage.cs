@@ -85,7 +85,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     /// <inheritdoc/>
     public IReadOnlyCollection<Item> GetRecords(string query) => Data.Values
-    .Where(x => x.IsDefault != true)
+    // .Where(x => x.IsDefault != true)
     .Where(x =>
         (x.Keyword?.Contains(query, StringComparison.InvariantCultureIgnoreCase) ?? false)
         || (x.Name?.Contains(query, StringComparison.InvariantCultureIgnoreCase) ?? false)
@@ -96,7 +96,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     {
       key = key.Trim();
       return Data.Values
-      .Where(x => x.IsDefault != true)
+      // .Where(x => x.IsDefault != true)
       .FirstOrDefault(x =>
         (x.Name?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
         || (x.Keyword?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)

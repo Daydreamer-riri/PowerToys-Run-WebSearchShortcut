@@ -192,7 +192,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       {
         ResetSuggestionsCache();
       }
-      else if (item != null && !string.IsNullOrEmpty(item.SuggestionProvider) && item.IsDefault != true)
+      else if (item != null && !string.IsNullOrEmpty(item.SuggestionProvider))
       {
         results = ProcessItem(item, tokens, query, results);
       }
@@ -267,6 +267,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         IcoPath = item.IconPath ?? IconPath["Search"],
         Title = item.Name,
         SubTitle = $"Search using {item.Name}",
+        Score = 100,
         Action = _ =>
         {
           var newQuery = string.IsNullOrWhiteSpace(query.ActionKeyword)
@@ -292,7 +293,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         ProgramArguments = arguments,
         Action = _ => OpenInBrowser(arguments),
         Score = isDefault ? 1001 : 1000,
-        ToolTipData = new ToolTipData("Open", $"{arguments}"),
+        ToolTipData = new ToolTipData("Open (Enter)", $"{arguments}"),
         ContextData = item,
       };
     }
