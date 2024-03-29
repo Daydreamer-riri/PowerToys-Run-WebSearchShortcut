@@ -8,7 +8,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
     Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query);
   }
 
-  public class SuggestionsItem(string title, string? description = null)
+  public class SuggestionsItem(string title, string description)
     {
         public string Title { get; } = title;
         public string? Description { get; } = description;

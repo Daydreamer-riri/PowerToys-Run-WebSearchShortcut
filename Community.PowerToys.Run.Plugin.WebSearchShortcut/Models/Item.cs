@@ -23,6 +23,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
 
     public string? SuggestionProvider { get; set; }
 
+    public bool? IsDefault { get; set; }
+
     public string Domain {
       get
       {

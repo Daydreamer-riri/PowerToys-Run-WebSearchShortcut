@@ -30,7 +30,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
           .Select(o => {
             var title = o.GetProperty("name").GetString();
             var description = o.GetProperty("description").GetString();
-            return title == null ? null : new SuggestionsItem(title, description);
+            return title == null ? null : new SuggestionsItem(title, description ?? "");
           })
           .Where(s => s != null)
           .Select(s => s!)

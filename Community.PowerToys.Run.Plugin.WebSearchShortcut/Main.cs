@@ -141,26 +141,127 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         ];
       }
 
+      List<Result> results = [];
+
       if (string.IsNullOrEmpty(args))
       {
-        return WebSearchShortcutStorage.GetRecords().Select(GetResultForSelect).ToList();
+        results.AddRange(WebSearchShortcutStorage.GetRecords().Select(x => GetResultForSelect(x, args, query)));
+        return results;
       }
 
       var tokens = args.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
       if (tokens.Length == 1)
       {
-        return WebSearchShortcutStorage.GetRecords(args).Select(GetResultForSelect).ToList() ?? [];
+        results.AddRange(WebSearchShortcutStorage.GetRecords(args).Select(x => GetResultForSelect(x, args, query)));
       }
 
       var item = WebSearchShortcutStorage.GetRecord(tokens[0]);
-      if (item is null)
+      if (tokens.Length == 2 && item != null)
       {
+        results.Add(GetResultForSearch(item, tokens[1], query));
+        results.AddRange(SuggestionsCache);
+      }
+
+      if (WebSearchShortcutStorage.DefaultItem != null && item == null)
+      {
+        results.Add(GetResultForSearch(WebSearchShortcutStorage.DefaultItem, args, query, true));
+        results.AddRange(SuggestionsCache);
+      }
+      return results;
+    }
+
+    public List<Result> Query(Query query, bool delayedExecution)
+    {
+      if (query?.Search is null || !delayedExecution)
+      {
+        return ResetSuggestionsCache();
+      }
+
+      List<Result> results = [];
+      var tokens = query.Search.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+      var item = WebSearchShortcutStorage.GetRecord(tokens[0]);
+      var defaultItem = WebSearchShortcutStorage.DefaultItem;
+
+      if (tokens.Length == 1 && defaultItem == null)
+      {
+        ResetSuggestionsCache();
+      }
+      else if (tokens.Length == 1 && item != null)
+      {
+        ResetSuggestionsCache();
+      }
+      else if (item != null && !string.IsNullOrEmpty(item.SuggestionProvider) && item.IsDefault != true)
+      {
+        results = ProcessItem(item, tokens, query, results);
+      }
+      else if (item == null && defaultItem != null && !string.IsNullOrEmpty(defaultItem.SuggestionProvider))
+      {
+        results = ProcessDefaultItem(defaultItem, tokens, query, results);
+      }
+      else
+      {
+        return ResetSuggestionsCache();
+      }
+
+      return results;
+
+      List<Result> ResetSuggestionsCache()
+      {
+        SuggestionsCache = [];
         return [];
       }
 
-      return [GetResultForSearch(item, tokens[1], query), .. SuggestionsCache];
+      List<Result> ProcessItem(Item item, string[] tokens, Query query, List<Result> results)
+      {
+        if (string.IsNullOrEmpty(item.SuggestionProvider))
+        {
+          return results;
+        }
+        var suggestions = suggestion.QuerySuggestionsAsync(item.SuggestionProvider, tokens[1]).Result;
+        if (suggestions.Count == 0)
+        {
+          return ResetSuggestionsCache();
+        }
+        var suggestionsRes = suggestions.Select(s => GetResultForSuggestion(item, s, query)).ToList();
+        results.AddRange(suggestionsRes);
+        SuggestionsCache = [.. results];
+        results.Add(GetResultForSearch(item, tokens[1], query));
 
-      Result GetResultForSelect(Item item) => new()
+        return results;
+      }
+
+      List<Result> ProcessDefaultItem(Item defaultItem, string[] tokens, Query query, List<Result> results)
+      {
+        if (string.IsNullOrEmpty(defaultItem.SuggestionProvider))
+        {
+          return results;
+        }
+        var suggestions = suggestion.QuerySuggestionsAsync(defaultItem.SuggestionProvider, query.Search).Result;
+        if (suggestions.Count == 0)
+        {
+          return ResetSuggestionsCache();
+        }
+
+        var suggestionsRes = suggestions.Select(s => GetResultForSuggestion(defaultItem, s, query, true)).ToList();
+        results.AddRange(suggestionsRes);
+        SuggestionsCache = [.. results];
+        if (tokens.Length == 1)
+        {
+          results.AddRange(WebSearchShortcutStorage.GetRecords(tokens[0]).Select(x => GetResultForSelect(x, tokens[0], query)));
+        }
+        results.Add(GetResultForSearch(defaultItem, query.Search, query, true));
+
+        return results;
+      }
+    }
+
+    private List<Result> SuggestionsCache { get; set; } = [];
+
+    private Result GetResultForSelect(Item item, string args, Query query)
+    {
+      return new Result
       {
         QueryTextDisplay = args,
         IcoPath = item.IconPath ?? IconPath["Search"],
@@ -178,44 +279,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       };
     }
 
-    public List<Result> Query(Query query, bool delayedExecution)
-    {
-      if (query?.Search is null || !delayedExecution)
-      {
-        return ResetSuggestionsCache();
-      }
-      var tokens = query.Search.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-      if (tokens.Length == 1)
-      {
-        return ResetSuggestionsCache();
-      }
-      var item = WebSearchShortcutStorage.GetRecord(tokens[0]);
-      if (item is null || string.IsNullOrEmpty(item.SuggestionProvider))
-      {
-        return ResetSuggestionsCache();
-      }
-      var suggestions = suggestion.QuerySuggestionsAsync(item.SuggestionProvider, tokens[1]).Result;
-      if (suggestions.Count == 0)
-      {
-        return ResetSuggestionsCache();
-      }
-      var res = suggestions.Select(s => GetResultForSuggestion(item, s, query)).ToList();
-      SuggestionsCache = [..res];
-
-      res.Insert(0, GetResultForSearch(item, tokens[1], query));
-
-      return res;
-
-      List<Result> ResetSuggestionsCache()
-      {
-        SuggestionsCache = [];
-        return [];
-      }
-    }
-
-    private List<Result> SuggestionsCache { get; set; } = [];
-
-    private static Result GetResultForSearch(Item item, string search, Query query)
+    private static Result GetResultForSearch(Item item, string search, Query query, bool isDefault = false)
     {
       string searchQuery = WebUtility.UrlEncode(search);
       string arguments = item.Url.Replace("%s", searchQuery);
@@ -223,25 +287,25 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       {
         QueryTextDisplay = query.Search,
         IcoPath = item.IconPath ?? IconPath["Search"],
-        Title = $"{item.Name} ⏐  {search}",
+        Title = isDefault && query.Search.Trim().Length == 0 ? item.Name : $"{item.Name} ⏐  {search}",
         SubTitle = $"Search for {search} using {item.Name}",
         ProgramArguments = arguments,
         Action = _ => OpenInBrowser(arguments),
-        Score = 1000,
+        Score = isDefault ? 1001 : 1000,
         ToolTipData = new ToolTipData("Open", $"{arguments}"),
         ContextData = item,
       };
     }
 
-    private static Result GetResultForSuggestion(Item item, SuggestionsItem suggest, Query query)
+    private static Result GetResultForSuggestion(Item item, SuggestionsItem suggest, Query query, bool isDefault = false)
     {
-      var search = query.Search.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
+      var search = isDefault ? query.Search : query.Search.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[1];
       return new Result
       {
         QueryTextDisplay = query.Search.Replace(search, suggest.Title),
         IcoPath = IconPath["Suggestion"],
         Title = suggest.Title,
-        SubTitle = suggest.Description ?? $"Search for {suggest} using {item.Name}",
+        SubTitle = suggest.Description,
         Action = _ => OpenInBrowser(item.Url.Replace("%s", WebUtility.UrlEncode(suggest.Title))),
         ContextData = item,
         Score = 99,

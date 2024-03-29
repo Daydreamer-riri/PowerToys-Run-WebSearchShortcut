@@ -21,6 +21,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// <returns>The records.</returns>
     IReadOnlyCollection<Item> GetRecords();
 
+    public Item? DefaultItem { get; }
+
     /// <summary>
     /// Gets matching records.
     /// </summary>
@@ -82,7 +84,9 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     public IReadOnlyCollection<Item> GetRecords() => Data.Values.ToList().AsReadOnly();
 
     /// <inheritdoc/>
-    public IReadOnlyCollection<Item> GetRecords(string query) => Data.Values.Where(x =>
+    public IReadOnlyCollection<Item> GetRecords(string query) => Data.Values
+    .Where(x => x.IsDefault != true)
+    .Where(x =>
         (x.Keyword?.Contains(query, StringComparison.InvariantCultureIgnoreCase) ?? false)
         || (x.Name?.Contains(query, StringComparison.InvariantCultureIgnoreCase) ?? false)
       ).ToList().AsReadOnly();
@@ -91,11 +95,15 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     public Item? GetRecord(string key)
     {
       key = key.Trim();
-      return Data.Values.First(x => 
+      return Data.Values
+      .Where(x => x.IsDefault != true)
+      .FirstOrDefault(x =>
         (x.Name?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
         || (x.Keyword?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
         );
     }
+
+    public Item? DefaultItem => Data.Values.FirstOrDefault(x => x?.IsDefault == true, null);
 
     /// <inheritdoc/>
     public bool RemoveRecord(string key) => Data.Remove(key);

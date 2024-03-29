@@ -33,7 +33,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
           .Select(s => s!)
           .ToList();
 
-        return titles.Select(t => new SuggestionsItem(t)).ToList();
+        return titles.Select(t => new SuggestionsItem(t, $"Search for {t} using {Name}")).ToList();
       }
       catch (Exception e)
       {
