@@ -145,7 +145,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       if (string.IsNullOrEmpty(args))
       {
-        results.AddRange(WebSearchShortcutStorage.GetRecords().Select(x => GetResultForSelect(x, args, query)));
+        results.AddRange(WebSearchShortcutStorage.GetRecords().Select(x => GetResultForSelectOrOpen(x, args, query)));
         return results;
       }
 
@@ -153,7 +153,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       if (tokens.Length == 1)
       {
-        results.AddRange(WebSearchShortcutStorage.GetRecords(args).Select(x => GetResultForSelect(x, args, query)));
+        results.AddRange(WebSearchShortcutStorage.GetRecords(args).Select(x => GetResultForSelectOrOpen(x, args, query)));
       }
 
       var item = WebSearchShortcutStorage.GetRecord(tokens[0]);
@@ -249,7 +249,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         SuggestionsCache = [.. results];
         if (tokens.Length == 1)
         {
-          results.AddRange(WebSearchShortcutStorage.GetRecords(tokens[0]).Select(x => GetResultForSelect(x, tokens[0], query)));
+          results.AddRange(WebSearchShortcutStorage.GetRecords(tokens[0]).Select(x => GetResultForSelectOrOpen(x, tokens[0], query)));
         }
         results.Add(GetResultForSearch(defaultItem, query.Search, query, true));
 
@@ -259,8 +259,26 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     private List<Result> SuggestionsCache { get; set; } = [];
 
-    private Result GetResultForSelect(Item item, string args, Query query)
+    private Result GetResultForSelectOrOpen(Item item, string args, Query query)
     {
+      string url = item.Url;
+
+      if (!url.Contains("%s"))
+      {
+        return new Result
+        {
+          ProgramArguments = url,
+          QueryTextDisplay = args,
+          IcoPath = item.IconPath ?? IconPath["Search"],
+          Title = item.Name,
+          SubTitle = $"Open {item.Name} with {BrowserInfo.Name}",
+          Score = 100,
+          Action = _ => OpenInBrowser(url),
+          ToolTipData = new ToolTipData("Open (Enter)", $"{url}"),
+          ContextData = item,
+        };
+      }
+
       return new Result
       {
         QueryTextDisplay = args,

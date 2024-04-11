@@ -100,6 +100,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       .FirstOrDefault(x =>
         (x.Name?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
         || (x.Keyword?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
+        || x.Url.Equals("%s")
         );
     }
 
