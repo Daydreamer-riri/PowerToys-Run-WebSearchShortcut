@@ -98,9 +98,9 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       return Data.Values
       // .Where(x => x.IsDefault != true)
       .FirstOrDefault(x =>
-        (x.Name?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
+        ((x.Name?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
         || (x.Keyword?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
-        );
+        ) && x.Url.Contains("%s"));
     }
 
     public Item? DefaultItem => Data.Values.FirstOrDefault(x => x?.IsDefault == true, null);
