@@ -71,13 +71,22 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
     {
       try
       {
-        string faviconUrl = Domain + "/favicon.ico";
         using HttpClient client = new();
         client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; AcmeInc/1.0)");
+
+        string faviconUrl = Domain + "/favicon.ico";
         HttpResponseMessage response = await client.GetAsync(faviconUrl);
-        if (response.IsSuccessStatusCode)
+        if (
+          response.IsSuccessStatusCode
+          && response.Content.Headers.ContentType?.MediaType != "text/html"
+          )
         {
           return await response.Content.ReadAsByteArrayAsync();
+        }
+        HttpResponseMessage googleResponse = await client.GetAsync($"https://www.google.com/s2/favicons?sz=64&domain={Domain}");
+        if (googleResponse.IsSuccessStatusCode)
+        {
+          return await googleResponse.Content.ReadAsByteArrayAsync();
         }
         HttpResponseMessage domainResponse = await client.GetAsync(Domain);
         var html = await domainResponse.Content.ReadAsStringAsync();
