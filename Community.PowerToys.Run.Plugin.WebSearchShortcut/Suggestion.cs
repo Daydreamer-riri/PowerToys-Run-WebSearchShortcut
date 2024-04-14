@@ -28,7 +28,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
     public Dictionary<string, IWebSearchShortcutSuggestionsProvider> SuggestionProviders { get; set; } = new(){
       { Google.Name, new Google() },
       { Bing.Name, new Bing() },
-      { Npm.Name, new Npm() }
+      { Npm.Name, new Npm() },
+      { CanIUse.Name, new CanIUse() }
     };
   }
 }
