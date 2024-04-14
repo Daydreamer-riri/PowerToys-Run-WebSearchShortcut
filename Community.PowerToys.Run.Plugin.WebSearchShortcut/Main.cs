@@ -178,6 +178,11 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         return ResetSuggestionsCache();
       }
 
+      if (query.Search.Trim().Equals("!reload", StringComparison.OrdinalIgnoreCase) || query.Search.Trim().Equals("!config", StringComparison.OrdinalIgnoreCase))
+      {
+        return ResetSuggestionsCache();
+      }
+
       List<Result> results = [];
       var tokens = query.Search.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
 
