@@ -15,19 +15,25 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 ## Configuration field
 
-### Url
+### `Url`
 
-The URL template for performing the search. Use `%s` as a placeholder for the search query.
+The URL template for performing the search. Use `%s` as a placeholder for the search query. If the Url does not contain `%s`, the Url will be opened directly when you press enter.
 
-### Keyword
+### `Keyword`
 
 Used to quickly select the target search engine.
 
-### SuggestionProvider
+### `SuggestionProvider`
 
 Used to set the search suggestion.
 
-Currently only `Google`, `Bing` and `Npm`'s suggestion apis are supported.
+**SuggestionProvider currently supported are:**
+- `Google`
+- `Bing`
+- `Npm`
+- `CanIUse`
+
+PR welcome!
 
 > You can also set a Provider to another search engine.
 > eg:
@@ -40,7 +46,7 @@ Currently only `Google`, `Bing` and `Npm`'s suggestion apis are supported.
 > }
 > ```
 
-### IsDefault
+### `IsDefault`
 
 If this option is true, the corresponding search engine does not need to input the trigger word.
 
