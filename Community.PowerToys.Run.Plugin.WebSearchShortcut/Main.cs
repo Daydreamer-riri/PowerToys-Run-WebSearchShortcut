@@ -178,6 +178,11 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         return ResetSuggestionsCache();
       }
 
+      if (string.IsNullOrEmpty(query.Search.Trim()))
+      {
+        return ResetSuggestionsCache();
+      }
+
       if (query.Search.Trim().Equals("!reload", StringComparison.OrdinalIgnoreCase) || query.Search.Trim().Equals("!config", StringComparison.OrdinalIgnoreCase))
       {
         return ResetSuggestionsCache();
