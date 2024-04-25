@@ -25,6 +25,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
 
     public bool? IsDefault { get; set; }
 
+    public string? IconUrl { get; set; }
+
     public string Domain {
       get
       {
@@ -74,7 +76,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
         using HttpClient client = new();
         client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; AcmeInc/1.0)");
 
-        string faviconUrl = Domain + "/favicon.ico";
+        string faviconUrl = !string.IsNullOrEmpty(IconUrl) ? IconUrl : Domain + "/favicon.ico";
         HttpResponseMessage response = await client.GetAsync(faviconUrl);
         if (
           response.IsSuccessStatusCode
