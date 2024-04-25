@@ -115,11 +115,11 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
       if (!File.Exists(path))
       {
-        var initData = new Dictionary<string, Item>
+        var initData = new Dictionary<string, InitConfigItem>
         {
-          { "Google", new Item { Url = "https://www.google.com/search?q=%s", SuggestionProvider = "Google" } },
-          { "Bing", new Item { Url = "https://www.bing.com/search?q=%s", SuggestionProvider = "Bing" } },
-          { "GitHub", new Item { Url = "https://www.github.com/search?q=%s", Keyword = "gh" } },
+          { "Google", new InitConfigItem { Url = "https://www.google.com/search?q=%s", SuggestionProvider = "Google" } },
+          { "Bing", new InitConfigItem { Url = "https://www.bing.com/search?q=%s", SuggestionProvider = "Bing" } },
+          { "GitHub", new InitConfigItem { Url = "https://www.github.com/search?q=%s", Keyword = "gh" } },
         };
 
         var json = JsonSerializer.Serialize(initData, _serializerOptions);
@@ -178,5 +178,12 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     }
 
     public string GetPath() => Path.Combine(Settings.StorageDirectoryPath, Settings.StorageFileName);
+  }
+
+  public class InitConfigItem
+  {
+    public required string Url { get; set; }
+    public string? SuggestionProvider { get; set; }
+    public string? Keyword { get; set; }
   }
 }
