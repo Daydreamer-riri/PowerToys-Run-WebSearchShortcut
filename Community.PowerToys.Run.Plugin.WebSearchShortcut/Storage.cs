@@ -48,6 +48,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// </summary>
     void Save();
     string GetPath();
+
+    string? LoadError { get; }
   }
 
   /// <inheritdoc/>
@@ -57,6 +59,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// Default file name.
     /// </summary>
     public const string DefaultFileName = "WebSearchShortcutStorage.json";
+
+    public string? LoadError { get; private set; }
 
     private static readonly JsonSerializerOptions _serializerOptions = new()
     {
@@ -136,9 +140,12 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           item.Name = key;
         }
         DownLoadIcon();
+
+        LoadError = null;
       }
       catch (Exception ex)
       {
+        LoadError = ex.Message;
         Log.Exception("Load failed: " + path, ex, GetType());
       }
     }

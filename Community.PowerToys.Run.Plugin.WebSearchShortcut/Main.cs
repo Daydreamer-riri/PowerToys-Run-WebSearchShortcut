@@ -72,6 +72,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
             { "Config", @"Images\Config.light.png" },
             { "Reload", @"Images\Reload.light.png" },
             { "Suggestion", @"Images\Suggestion.light.png" },
+            { "Warn", @"Images\Warn.light.png" }
         };
 
     private bool Disposed { get; set; }
@@ -141,6 +142,21 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         ];
       }
 
+
+      if (!string.IsNullOrEmpty(WebSearchShortcutStorage.LoadError))
+      {
+        return
+        [
+          new()
+          {
+            Title = "Config parse error (Please check the config file)",
+            SubTitle = $"Error: {WebSearchShortcutStorage.LoadError}",
+            IcoPath = IconPath["Warn"],
+            ToolTipData = new ToolTipData("Config error", $"{WebSearchShortcutStorage.LoadError}")
+          }
+        ];
+      }
+
       List<Result> results = [];
 
       if (string.IsNullOrEmpty(args))
@@ -173,7 +189,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     public List<Result> Query(Query query, bool delayedExecution)
     {
-      if (query?.Search is null || !delayedExecution)
+      if (query?.Search is null || !delayedExecution || !string.IsNullOrEmpty(WebSearchShortcutStorage.LoadError))
       {
         return ResetSuggestionsCache();
       }
