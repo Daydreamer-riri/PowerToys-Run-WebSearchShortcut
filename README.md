@@ -50,6 +50,10 @@ PR welcome!
 
 If this option is true, the corresponding search engine does not need to input the trigger word.
 
+### `IconUrl`
+
+You can customize the icon by setting this field. Under normal circumstances, you don't need to set this, as the plugin will automatically download the favicon of the website corresponding to the `Url` field. However, sometimes you might want to customize the icon, and this field comes in handy. **Note**: This field can only be set to a network URL and cannot be set to a local file.
+
 ## Installation
 
 - Download the [latest release](https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/releases/) by selecting the architecture that matches your machine: `x64` (more common) or `ARM64`
