@@ -34,8 +34,9 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// Gets the value.
     /// </summary>
     /// <param name="key">The key.</param>
+    /// <param name="includeNoPlaceholder"></param>
     /// <returns>The record.</returns>
-    Item? GetRecord(string key);
+    Item? GetRecord(string key, bool includeNoPlaceholder = false);
 
     /// <summary>
     /// Loads file.
@@ -92,7 +93,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       ).ToList().AsReadOnly();
 
     /// <inheritdoc/>
-    public Item? GetRecord(string key)
+    public Item? GetRecord(string key, bool includeNoPlaceholder = false)
     {
       key = key.Trim();
       return Data.Values
@@ -100,7 +101,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       .FirstOrDefault(x =>
         ((x.Name?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
         || (x.Keyword?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false)
-        ) && x.Url.Contains("%s"));
+        ) && (includeNoPlaceholder || x.Url.Contains("%s")));
     }
 
     public Item? DefaultItem => Data.Values.FirstOrDefault(x => x?.IsDefault == true, null);

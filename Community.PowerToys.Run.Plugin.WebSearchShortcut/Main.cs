@@ -163,7 +163,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         results.AddRange(SuggestionsCache);
       }
 
-      if (WebSearchShortcutStorage.DefaultItem != null && item == null)
+      if (WebSearchShortcutStorage.DefaultItem != null && WebSearchShortcutStorage.GetRecord(tokens[0], true) == null)
       {
         results.Add(GetResultForSearch(WebSearchShortcutStorage.DefaultItem, args, query, true));
         results.AddRange(SuggestionsCache);
@@ -206,7 +206,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       {
         results = ProcessItem(item, tokens, query, results);
       }
-      else if (item == null && defaultItem != null && !string.IsNullOrEmpty(defaultItem.SuggestionProvider))
+      else if (WebSearchShortcutStorage.GetRecord(tokens[0], true) == null && defaultItem != null && !string.IsNullOrEmpty(defaultItem.SuggestionProvider))
       {
         results = ProcessDefaultItem(defaultItem, tokens, query, results);
       }
