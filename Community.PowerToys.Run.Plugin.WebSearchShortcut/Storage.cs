@@ -138,6 +138,10 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         foreach (var (key, item) in Data)
         {
           item.Name = key;
+          if (item.Urls != null && item.Urls.Length > 0)
+          {
+            item.Url = string.Join(" ", item.Urls);
+          }
         }
         DownLoadIcon();
 

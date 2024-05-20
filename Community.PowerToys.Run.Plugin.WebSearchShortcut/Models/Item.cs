@@ -21,6 +21,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
 
     public string Url { get; set; } = string.Empty;
 
+    public string[]? Urls { get; set; }
+
     public string? SuggestionProvider { get; set; }
 
     public bool? IsDefault { get; set; }
@@ -30,7 +32,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
     public string Domain {
       get
       {
-        return new Uri(Url.Split('?')[0]).GetLeftPart(UriPartial.Authority);
+        return new Uri(Url.Split(' ')[0].Split('?')[0]).GetLeftPart(UriPartial.Authority);
       }
     }
 

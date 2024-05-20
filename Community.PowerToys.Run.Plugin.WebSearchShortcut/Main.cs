@@ -471,6 +471,20 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     private static bool OpenInBrowser(string url)
     {
+      var urls = url.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+      if (urls.Length > 1)
+      {
+        var success = true;
+        foreach (var u in urls)
+        {
+          var _success = OpenInBrowser(u);
+          if (!_success)
+          {
+            success = false;
+          }
+        }
+        return success;
+      }
       if (!Helper.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, url))
       {
         Log.Error($"Plugin: {PluginName}\nCannot open {BrowserInfo.Path} with arguments {BrowserInfo.ArgumentsPattern} {url}", typeof(Item));
