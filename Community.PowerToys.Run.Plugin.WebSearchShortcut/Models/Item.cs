@@ -29,6 +29,23 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
 
     public string? IconUrl { get; set; }
 
+    private string? IconFileName { get; set; }
+    public string GetIconFileName()
+    {
+      if (!string.IsNullOrEmpty(IconFileName))
+      {
+        return IconFileName;
+      }
+      var _FileName = Name ?? "";
+      char[] invalidChars = [':', '/', '\\', '?', '*', '<', '>', '|'];
+      foreach (var invalidChar in invalidChars)
+      {
+        _FileName = _FileName.Replace(invalidChar, '_');
+      }
+      IconFileName = _FileName;
+      return IconFileName;
+    }
+
     public string Domain {
       get
       {
@@ -45,10 +62,10 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
       {
         Directory.CreateDirectory(iconDirectory);
       }
-      string iconPath = Path.Combine(Main.PluginDirectory, "Images", "Icons", $"{Name}.png");
+      string iconPath = Path.Combine(Main.PluginDirectory, "Images", "Icons", $"{GetIconFileName()}.png");
       if (!string.IsNullOrEmpty(IconPath) && File.Exists(iconPath))
       {
-        IconPath = $@"Images\Icons\{Name}.png";
+        IconPath = $@"Images\Icons\{GetIconFileName()}.png";
         return false;
       }
 
@@ -61,7 +78,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
       try
       {
         await File.WriteAllBytesAsync(iconPath, icon);
-        IconPath = $@"Images\Icons\{Name}.png";
+        IconPath = $@"Images\Icons\{GetIconFileName()}.png";
       }
       catch (Exception ex)
       {

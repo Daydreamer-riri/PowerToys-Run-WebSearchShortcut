@@ -156,21 +156,13 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     private async void DownLoadIcon()
     {
-      List<Task<bool>> tasks = Data.Values.Select(x => x.DownLoadIcon()).ToList();
-      await Task.WhenAll(tasks);
       string iconDirectory = Path.Combine(Main.PluginDirectory, "Images", "Icons");
       if (Directory.Exists(iconDirectory))
       {
-        string[] files = Directory.GetFiles(iconDirectory);
-        foreach (string file in files)
-        {
-          string name = Path.GetFileNameWithoutExtension(file);
-          if (!Data.ContainsKey(name))
-          {
-            File.Delete(file);
-          }
-        }
+        Directory.Delete(iconDirectory, true);
       }
+      List<Task<bool>> tasks = Data.Values.Select(x => x.DownLoadIcon()).ToList();
+      await Task.WhenAll(tasks);
     }
 
     /// <inheritdoc/>
