@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
 using Wox.Plugin.Logger;
+using Community.PowerToys.Run.Plugin.WebSearchShortcut.Properties;
 
 namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
 {
@@ -33,7 +34,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
           .Select(s => s!)
           .ToList();
 
-        return titles.Select(t => new SuggestionsItem(t, $"Search for {t} using {Name}")).ToList();
+        return titles.Select(t => new SuggestionsItem(t, Resources.search_for.Replace("%search", t))).ToList();
       }
       catch (Exception e)
       {

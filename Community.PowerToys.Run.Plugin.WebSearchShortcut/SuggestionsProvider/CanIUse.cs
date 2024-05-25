@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
 using Wox.Plugin.Logger;
+using Community.PowerToys.Run.Plugin.WebSearchShortcut.Properties;
 
 namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
 {
@@ -29,7 +30,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
           .Select(o =>
           {
             var title = o.GetString();
-            return title == null ? null : new SuggestionsItem(title, $"Search for {title} on caniuse");
+            return title == null ? null : new SuggestionsItem(title, Resources.search_for.Replace("%search", title));
           })
           .Where(s => s != null)
           .Select(s => s!)

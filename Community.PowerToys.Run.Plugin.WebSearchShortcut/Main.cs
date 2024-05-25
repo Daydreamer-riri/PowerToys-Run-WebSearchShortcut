@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Community.PowerToys.Run.Plugin.WebSearchShortcut.Models;
+using Community.PowerToys.Run.Plugin.WebSearchShortcut.Properties;
 using Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion;
 using ManagedCommon;
 using Microsoft.PowerToys.Settings.UI.Library;
@@ -21,7 +22,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
   /// <summary>
   /// Main class of this plugin that implement all used interfaces.
   /// </summary>
-  public class Main : IPlugin, IDelayedExecutionPlugin, IContextMenu, ISettingProvider, IDisposable
+  public class Main : IPlugin, IDelayedExecutionPlugin, IContextMenu, ISettingProvider, IDisposable, IPluginI18n
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="Main"/> class.
@@ -45,17 +46,17 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
     /// </summary>
     public static string PluginID => "B5E595872B8068104D5AD6BBE39A6664";
 
-    public static string PluginName => "WebSearchShortcut";
+    public static string PluginName => Resources.plugin_name;
 
     /// <summary>
     /// Name of the plugin.
     /// </summary>
-    public string Name => "WebSearchShortcut";
+    public string Name => Resources.plugin_name;
 
     /// <summary>
     /// Description of the plugin.
     /// </summary>
-    public string Description => "A simple plugin for select a specific search engine to perform searches.";
+    public string Description => Resources.plugin_description;
 
     /// <summary>
     /// Additional options for the plugin.
@@ -106,8 +107,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           new()
           {
             QueryTextDisplay = args,
-            Title = "Reload",
-            SubTitle = "Reload data from config file",
+            Title = Resources.reload_title,
+            SubTitle = Resources.reload_sub_title,
             IcoPath = IconPath["Reload"],
             Action = _ =>
             {
@@ -125,8 +126,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           new()
           {
             QueryTextDisplay = args,
-            Title = "Open Config File",
-            SubTitle = "Open the config file in the default editor",
+            Title = Resources.config_title,
+            SubTitle = Resources.config_sub_title,
             IcoPath = IconPath["Config"],
             Action = _ =>
             {
@@ -149,7 +150,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         [
           new()
           {
-            Title = "Config parse error (Please check the config file)",
+            Title = Resources.error_title,
             SubTitle = $"Error: {WebSearchShortcutStorage.LoadError}",
             IcoPath = IconPath["Warn"],
             ToolTipData = new ToolTipData("Config error", $"{WebSearchShortcutStorage.LoadError}")
@@ -297,10 +298,10 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           QueryTextDisplay = args,
           IcoPath = item.IconPath ?? IconPath["Search"],
           Title = item.Name,
-          SubTitle = $"Open {item.Name} with {BrowserInfo.Name}",
+          SubTitle = $"{Resources.open} {item.Name}",
           Score = 100,
           Action = _ => OpenInBrowser(url),
-          ToolTipData = new ToolTipData("Open (Enter)", $"{url}"),
+          ToolTipData = new ToolTipData($"{Resources.open} {item.Name} (Enter)", $"{url}"),
           ContextData = item,
         };
       }
@@ -310,7 +311,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         QueryTextDisplay = args,
         IcoPath = item.IconPath ?? IconPath["Search"],
         Title = item.Name,
-        SubTitle = $"Search using {item.Name}",
+        SubTitle = Resources.select_subtitle.Replace("%name", item.Name),
         Score = 100,
         Action = _ =>
         {
@@ -333,11 +334,11 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         QueryTextDisplay = query.Search,
         IcoPath = item.IconPath ?? IconPath["Search"],
         Title = isDefault && query.Search.Trim().Length == 0 ? item.Name : $"{item.Name} ⏐  {search}",
-        SubTitle = $"Search for {search} using {item.Name}",
+        SubTitle = Resources.search_subtitle.Replace("%name", item.Name).Replace("%search", search),
         ProgramArguments = arguments,
         Action = _ => OpenInBrowser(arguments),
         Score = isDefault ? 1001 : 1000,
-        ToolTipData = new ToolTipData("Open (Enter)", $"{arguments}"),
+        // ToolTipData = new ToolTipData("Open (Enter)", $"{arguments}"),
         ContextData = item,
       };
     }
@@ -365,7 +366,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           new()
           {
             PluginName = PluginName,
-            Title = "Open in Explorer (Ctrl + Enter)",
+            Title = $"{Resources.open_in_explorer} (Ctrl + Enter)",
             Glyph = "\xe838",
             FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
             Action = _ => Helper.OpenInShell(Settings.StorageDirectoryPath),
@@ -385,7 +386,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         new()
         {
           PluginName = PluginName,
-          Title = $"Open {item.Name} (Ctrl + Enter)",
+          Title = $"{Resources.open} {item.Name} (Ctrl + Enter)",
           Glyph = "\xe8a7",
           FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
           Action = _ => OpenInBrowser(domain),
@@ -492,5 +493,9 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
       }
       return true;
     }
+
+    public string GetTranslatedPluginTitle() => Resources.plugin_name;
+
+    public string GetTranslatedPluginDescription() => Resources.plugin_description;
   }
 }

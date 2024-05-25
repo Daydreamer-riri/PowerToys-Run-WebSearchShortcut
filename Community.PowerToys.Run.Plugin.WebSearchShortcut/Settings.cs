@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Community.PowerToys.Run.Plugin.WebSearchShortcut.Properties;
 using Microsoft.PowerToys.Settings.UI.Library;
 
 namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
@@ -31,7 +32,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           new()
                 {
                     Key = nameof(StorageFileName),
-                    DisplayLabel = "Storage File Name",
+                    DisplayLabel = Resources.settings_storage_file_name,
                     DisplayDescription = StorageDirectoryPath,
                     PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
                     TextValue = StorageFileName,
