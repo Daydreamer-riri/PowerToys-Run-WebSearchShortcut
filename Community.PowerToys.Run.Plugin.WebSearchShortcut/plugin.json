@@ -5,7 +5,7 @@
   "IsGlobal": false,
   "Name": "Web Search Shortcut",
   "Author": "Daydreamer-riri",
-  "Version": "0.5.0",
+  "Version": "0.6.0",
   "Language": "csharp",
   "Website": "https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut",
   "ExecuteFileName": "Community.PowerToys.Run.Plugin.WebSearchShortcut.dll",
