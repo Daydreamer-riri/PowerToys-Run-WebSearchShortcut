@@ -19,6 +19,26 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 The URL template for performing the search. Use `%s` as a placeholder for the search query. If the Url does not contain `%s`, the Url will be opened directly when you press enter.
 
+Note: Support multiple URLs. You can separate multiple URLs with a space (` `).
+```json
+{
+  "GoogleAndBing":{
+    "Url": "https://www.google.hu/search?q=%s https://www.bing.com/search?form=\u0026q=%s"
+  }
+}
+```
+
+### Urls
+
+`Urls` is an alias for `Url`, supporting the setting of multiple urls in an array format. For example:
+```json
+{
+  "GoogleAndBing":{
+    "Urls": ["https://www.google.com/search?q=%s", "https://www.bing.com/search?q=%s"]
+  }
+}
+```
+
 ### `Keyword`
 
 Used to quickly select the target search engine.
