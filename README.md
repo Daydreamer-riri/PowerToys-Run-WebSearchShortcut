@@ -28,6 +28,7 @@ Used to quickly select the target search engine.
 Used to set the search suggestion.
 
 **SuggestionProvider currently supported are:**
+
 - `Google`
 - `Bing`
 - `Npm`
@@ -37,6 +38,7 @@ PR welcome!
 
 > You can also set a Provider to another search engine.
 > eg:
+>
 > ```json
 > {
 >   "StackOverflow": {
@@ -54,6 +56,14 @@ If this option is true, the corresponding search engine does not need to input t
 
 You can customize the icon by setting this field. Under normal circumstances, you don't need to set this, as the plugin will automatically download the favicon of the website corresponding to the `Url` field. However, sometimes you might want to customize the icon, and this field comes in handy. **Note**: This field can only be set to a network URL and cannot be set to a local file.
 
+### `ReplaceWhitespace`
+
+You can specify which character(s) to replace a space with when performing a search.
+
+For example, Wikipedia uses underscores (`_`), not plus signs (`+`) to separate words in the URL. "This is a test" → `https://en.wikipedia.org/wiki/This+is+a+test` (invalid ❌).
+
+By setting `ReplaceWhitespace = "_"` for a search engine, the plugin will replace all spaces with underscores when performing the search. "This is a test" → `https://en.wikipedia.org/wiki/This_is_a_test` (valid ✅).
+
 ## Installation
 
 - Download the [latest release](https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/releases/) by selecting the architecture that matches your machine: `x64` (more common) or `ARM64`
@@ -69,6 +79,7 @@ You can customize the icon by setting this field. Under normal circumstances, yo
 
 - Inside the config file, you can add your desired search engines. The key is the display name of the search engine, and the `url` property is the URL template for performing the search.
 eg:
+
 ```json
 {
   "Google": {
