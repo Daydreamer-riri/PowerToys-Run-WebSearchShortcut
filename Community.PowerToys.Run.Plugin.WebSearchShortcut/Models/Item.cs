@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -54,6 +55,13 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
     }
 
     public string? IconPath { get; set; }
+
+    public string? ReplaceWhitespace { get; set; }
+
+    public string EncodeUrl(string url) {
+      if (string.IsNullOrEmpty(ReplaceWhitespace) || ReplaceWhitespace == " ") return WebUtility.UrlEncode(url);
+      return WebUtility.UrlEncode(url.Replace(" ", ReplaceWhitespace));
+    }
 
     public async Task<bool> DownLoadIcon()
     {

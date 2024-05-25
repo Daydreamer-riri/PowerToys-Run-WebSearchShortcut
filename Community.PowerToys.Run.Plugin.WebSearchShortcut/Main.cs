@@ -326,7 +326,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
     private static Result GetResultForSearch(Item item, string search, Query query, bool isDefault = false)
     {
-      string searchQuery = WebUtility.UrlEncode(search);
+      string searchQuery = item.EncodeUrl(search);
       string arguments = item.Url.Replace("%s", searchQuery);
       return new Result
       {
@@ -351,7 +351,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         IcoPath = IconPath["Suggestion"],
         Title = suggest.Title,
         SubTitle = suggest.Description,
-        Action = _ => OpenInBrowser(item.Url.Replace("%s", WebUtility.UrlEncode(suggest.Title))),
+        Action = _ => OpenInBrowser(item.Url.Replace("%s", item.EncodeUrl(search))),
         ContextData = item,
         Score = 99,
       };
