@@ -59,7 +59,10 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
     public string? ReplaceWhitespace { get; set; }
 
     public string EncodeUrl(string url) {
-      if (string.IsNullOrEmpty(ReplaceWhitespace) || ReplaceWhitespace == " ") return WebUtility.UrlEncode(url);
+      if (string.IsNullOrWhiteSpace(ReplaceWhitespace) || ReplaceWhitespace == " ")
+      {
+        return WebUtility.UrlEncode(url);
+      }
       return WebUtility.UrlEncode(url.Replace(" ", ReplaceWhitespace));
     }
 
