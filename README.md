@@ -123,7 +123,16 @@ eg:
   },
   "npm": {
     "Url": "https://www.npmjs.com/search?q=%s"
+  },
+  "YouTube": {
+    "Url": "https://www.youtube.com/results?search_query=%s",
+    "Keyword": "yt"
+  },
+  "ChatGPT": {
+    "Url": "https://chat.openai.com/?q=%s",
+    "Keyword": "gpt"
   }
+
 }
 ```
 
