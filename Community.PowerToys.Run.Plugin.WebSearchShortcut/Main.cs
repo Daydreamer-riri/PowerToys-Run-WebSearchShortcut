@@ -352,7 +352,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         IcoPath = IconPath["Suggestion"],
         Title = suggest.Title,
         SubTitle = suggest.Description,
-        Action = _ => OpenInBrowser(item.Url.Replace("%s", item.EncodeUrl(search))),
+        Action = _ => OpenInBrowser(item.Url.Replace("%s", item.EncodeUrl(suggest.Title))),
         ContextData = item,
         Score = 99,
       };
