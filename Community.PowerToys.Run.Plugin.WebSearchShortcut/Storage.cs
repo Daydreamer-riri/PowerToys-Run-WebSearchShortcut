@@ -125,6 +125,9 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
           { "Google", new InitConfigItem { Url = "https://www.google.com/search?q=%s", SuggestionProvider = "Google" } },
           { "Bing", new InitConfigItem { Url = "https://www.bing.com/search?q=%s", SuggestionProvider = "Bing" } },
           { "GitHub", new InitConfigItem { Url = "https://www.github.com/search?q=%s", Keyword = "gh" } },
+          { "YouTube", new InitConfigItem{ Url = "https://www.youtube.com/results?search_query=%s", Keyword : "yt" } },
+          { "ChatGPT", new  InitConfigItem{ Url = "https://chat.openai.com/?q=%s", Keyword : "gpt" } }
+
         };
 
         var json = JsonSerializer.Serialize(initData, _serializerOptions);
