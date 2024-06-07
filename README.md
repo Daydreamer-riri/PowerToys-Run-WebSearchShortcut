@@ -174,16 +174,15 @@ PRs welcome!
 > }
 > ```
 
-## Roadmap
-
-- [x] Keyword field
-- [x] Search suggestions
-
 ## Credits
 
 - This project can only be completed under the guidance of [this article](https://conductofcode.io/post/creating-custom-powertoys-run-plugins/). Thanks to @hlaueriksson for his great work.
 
 - The search suggestion feature of this project is based on the relevant implementation of [FlowLauncher](https://github.com/Flow-Launcher/Flow.Launcher?tab=readme-ov-file#web-searches--urls), thanks @Flow-Launcher!
+
+## Thanks
+
+Thank you to @thatgaypigeon for writing the excellent documentation!
 
 ## License
 
