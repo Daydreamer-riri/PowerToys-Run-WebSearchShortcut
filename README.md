@@ -182,7 +182,7 @@ PRs welcome!
 
 ## Thanks
 
-Thank you to @thatgaypigeon for writing the excellent documentation!
+Thank you to [@thatgaypigeon](https://github.com/thatgaypigeon) for writing the excellent documentation!
 
 ## License
 
