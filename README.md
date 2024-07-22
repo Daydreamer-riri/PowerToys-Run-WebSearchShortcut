@@ -21,6 +21,10 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 - Extract the archive to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`
 - Open PowerToys
 
+> [!IMPORTANT]
+> Some users are currently experiencing application crashes when using the WebSearchShortcut after disabling the WebSearch (an integrated plugin of PowerToys Run).
+> It is recommended to keep WebSearch enabled until the issue is resolved. [#23](https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/issues/23)
+
 ## Configuration
 
 - Open the config file:
