@@ -1,5 +1,7 @@
 # PowerToys-Run-WebSearchShortcut
 
+![Mentioned in Awesome PowerToys Run Plugins](https://awesome.re/mentioned-badge.svg)](https://github.com/hlaueriksson/awesome-powertoys-run-plugins)
+
 This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powertoys/run) plugin for quickly selecting a specific search engine to perform searches via keyword prefixes.
 
 ## Preview
