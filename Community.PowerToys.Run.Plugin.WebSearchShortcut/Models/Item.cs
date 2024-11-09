@@ -30,6 +30,8 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
 
         public string? IconUrl { get; set; }
 
+        public string? BrowserPath { get; set; }
+
         private string? IconFileName { get; set; }
 
         public string GetIconFileName()
@@ -166,4 +168,3 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
         private static partial Regex IconRegex();
     }
 }
-

@@ -365,7 +365,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
                     Title = item.Name,
                     SubTitle = $"{Resources.open} {item.Name}",
                     Score = score,
-                    Action = _ => OpenInBrowser(url),
+                    Action = _ => OpenInBrowser(url, item.BrowserPath),
                     ToolTipData = new ToolTipData(
                         $"{Resources.open} {item.Name} (Enter)",
                         $"{url}"
@@ -414,7 +414,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
                     .search_subtitle.Replace("%name", item.Name)
                     .Replace("%search", $"\"{search}\""),
                 ProgramArguments = arguments,
-                Action = _ => OpenInBrowser(arguments),
+                Action = _ => OpenInBrowser(arguments, item.BrowserPath),
                 Score = isDefault ? 1001 : 1000,
                 // ToolTipData = new ToolTipData("Open (Enter)", $"{arguments}"),
                 ContextData = item,
@@ -437,7 +437,11 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
                 IcoPath = IconPath["Suggestion"],
                 Title = suggest.Title,
                 SubTitle = suggest.Description,
-                Action = _ => OpenInBrowser(item.Url.Replace("%s", item.EncodeUrl(suggest.Title))),
+                Action = _ =>
+                    OpenInBrowser(
+                        item.Url.Replace("%s", item.EncodeUrl(suggest.Title)),
+                        item.BrowserPath
+                    ),
                 ContextData = item,
                 Score = 99,
             };
@@ -476,7 +480,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
                     Title = $"{Resources.open} {item.Name} (Ctrl + Enter)",
                     Glyph = "\xe8a7",
                     FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
-                    Action = _ => OpenInBrowser(domain),
+                    Action = _ => OpenInBrowser(domain, item.BrowserPath),
                     AcceleratorKey = Key.Enter,
                     AcceleratorModifiers = ModifierKeys.Control,
                 },
@@ -559,13 +563,25 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
 
         private static bool OpenInBrowser(string url)
         {
+            return OpenInBrowser(url, BrowserInfo.Path);
+        }
+
+        private static bool OpenInBrowser(string url, string? browserPath)
+        {
+            var argumentsPattern = BrowserInfo.ArgumentsPattern;
+
+            if (String.IsNullOrWhiteSpace(browserPath))
+            {
+                browserPath = BrowserInfo.Path;
+            }
+
             var urls = url.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             if (urls.Length > 1)
             {
                 var success = true;
                 foreach (var u in urls)
                 {
-                    var _success = OpenInBrowser(u);
+                    var _success = OpenInBrowser(u, browserPath);
                     if (!_success)
                     {
                         success = false;
@@ -573,10 +589,10 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
                 }
                 return success;
             }
-            if (!Helper.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, url))
+            if (!Helper.OpenCommandInShell(browserPath, argumentsPattern, url))
             {
                 Log.Error(
-                    $"Plugin: {PluginName}\nCannot open {BrowserInfo.Path} with arguments {BrowserInfo.ArgumentsPattern} {url}",
+                    $"Plugin: {PluginName}\nCannot open {browserPath} with arguments {argumentsPattern} {url}",
                     typeof(Item)
                 );
                 return false;
