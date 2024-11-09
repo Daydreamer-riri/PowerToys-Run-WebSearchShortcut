@@ -1,53 +1,57 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Wox.Plugin.Logger;
 
 namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
 {
-  public class Npm : IWebSearchShortcutSuggestionsProvider
-  {
-    static public string Name => "Npm";
-
-    private HttpClient Http { get; } = new HttpClient();
-
-    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
+    public class Npm : IWebSearchShortcutSuggestionsProvider
     {
-      try
-      {
-        const string api = "https://www.npmjs.com/search/suggestions?q=";
+        public static string Name => "Npm";
 
-        await using var resultStream = await Http.GetStreamAsync(api + Uri.EscapeDataString(query)).ConfigureAwait(false);
+        private HttpClient Http { get; } = new HttpClient();
 
-        using var json = await JsonDocument.ParseAsync(resultStream);
+        public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
+        {
+            try
+            {
+                const string api = "https://www.npmjs.com/search/suggestions?q=";
 
-        var results = json.RootElement.EnumerateArray();
+                await using var resultStream = await Http.GetStreamAsync(
+                        api + Uri.EscapeDataString(query)
+                    )
+                    .ConfigureAwait(false);
 
-        List<SuggestionsItem> items = results
-          .Select(o => {
-            var title = o.GetProperty("name").GetString();
-            var description = o.GetProperty("description").GetString();
-            return title == null ? null : new SuggestionsItem(title, description ?? "");
-          })
-          .Where(s => s != null)
-          .Select(s => s!)
-          .ToList();
+                using var json = await JsonDocument.ParseAsync(resultStream);
 
-        return items;
-      }
-      catch (Exception e)
-      {
-        Log.Error($"{e.Message}", typeof(Npm));
-        return [];
-      }
+                var results = json.RootElement.EnumerateArray();
+
+                List<SuggestionsItem> items = results
+                    .Select(o =>
+                    {
+                        var title = o.GetProperty("name").GetString();
+                        var description = o.GetProperty("description").GetString();
+                        return title == null ? null : new SuggestionsItem(title, description ?? "");
+                    })
+                    .Where(s => s != null)
+                    .Select(s => s!)
+                    .ToList();
+
+                return items;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"{e.Message}", typeof(Npm));
+                return [];
+            }
+        }
+
+        public override string ToString()
+        {
+            return "Npm";
+        }
     }
-
-    public override string ToString()
-    {
-      return "Npm";
-    }
-  }
 }

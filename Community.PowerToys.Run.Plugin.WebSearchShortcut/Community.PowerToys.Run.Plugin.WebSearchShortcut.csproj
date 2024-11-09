@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Platforms>x64;ARM64</Platforms>
+    <PlatformTarget>$(Platform)</PlatformTarget>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
@@ -14,21 +15,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(Platform)' == 'x64'">
-    <Reference Include="Libs\x64\PowerToys.Common.UI.dll" />
-    <Reference Include="Libs\x64\PowerToys.ManagedCommon.dll" />
-    <Reference Include="Libs\x64\PowerToys.Settings.UI.Lib.dll" />
-    <Reference Include="Libs\x64\Wox.Infrastructure.dll" />
-    <Reference Include="Libs\x64\Wox.Plugin.dll" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Platform)' == 'ARM64'">
-    <Reference Include="Libs\ARM64\PowerToys.Common.UI.dll" />
-    <Reference Include="Libs\ARM64\PowerToys.ManagedCommon.dll" />
-    <Reference Include="Libs\ARM64\PowerToys.Settings.UI.Lib.dll" />
-    <Reference Include="Libs\ARM64\Wox.Infrastructure.dll" />
-    <Reference Include="Libs\ARM64\Wox.Plugin.dll" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -91,6 +77,10 @@
     <None Update="plugin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.86.0" />
   </ItemGroup>
 
 </Project>
