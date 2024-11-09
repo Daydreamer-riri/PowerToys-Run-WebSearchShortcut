@@ -412,7 +412,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
                         : $"{item.Name} ⏐  {search}",
                 SubTitle = Resources
                     .search_subtitle.Replace("%name", item.Name)
-                    .Replace("%search", search),
+                    .Replace("%search", $"\"{search}\""),
                 ProgramArguments = arguments,
                 Action = _ => OpenInBrowser(arguments),
                 Score = isDefault ? 1001 : 1000,

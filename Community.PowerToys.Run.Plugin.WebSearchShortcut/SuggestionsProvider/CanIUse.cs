@@ -40,7 +40,7 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
                             ? null
                             : new SuggestionsItem(
                                 title,
-                                Resources.search_for.Replace("%search", title)
+                                Resources.search_for.Replace("%search", $"\"{title}\"")
                             );
                     })
                     .Where(s => s != null)

@@ -77,6 +77,9 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Properties
             get { return ResourceManager.GetString("settings_storage_file_name", resourceCulture); }
         }
 
+        /// <summary>
+        ///   open
+        /// </summary>
         public static string open
         {
             get { return ResourceManager.GetString("open", resourceCulture); }
@@ -128,4 +131,3 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Properties
         }
     }
 }
-

@@ -38,7 +38,10 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Suggestion
                     .ToList();
 
                 return titles
-                    .Select(t => new SuggestionsItem(t, Resources.search_for.Replace("%search", t)))
+                    .Select(t => new SuggestionsItem(
+                        t,
+                        Resources.search_for.Replace("%search", $"\"{t}\"")
+                    ))
                     .ToList();
             }
             catch (Exception e)
