@@ -18,10 +18,18 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 ## Installation
 
+### Manual
+
 - Download the [latest release](https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/releases/) by selecting the architecture that matches your machine: `x64` (more common) or `ARM64`
 - Close PowerToys (including from the system tray)
 - Extract the archive to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`
 - Open PowerToys
+
+### Via [ptr](https://github.com/8LWXpg/ptr)
+
+```shell
+ptr add WebSearchShortcut Daydreamer-riri/PowerToys-Run-WebSearchShortcut
+```
 
 > [!IMPORTANT]
 > Some users are currently experiencing application crashes when using the WebSearchShortcut after disabling the WebSearch (an integrated plugin of PowerToys Run).
