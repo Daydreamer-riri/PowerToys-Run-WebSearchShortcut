@@ -45,7 +45,7 @@ jobs:
           Compress-Archive -Path Community.PowerToys.Run.Plugin.WebSearchShortcut\bin\${{matrix.platform}}\$env:PLUGIN_NAME -DestinationPath "${{env.PLUGIN_NAME}}-${{env.PLUGIN_VERSION}}-${{matrix.platform}}.zip"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{env.PLUGIN_NAME}}-${{env.PLUGIN_VERSION}}
           path: "**/*.zip"
