@@ -14,7 +14,7 @@ This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powert
 
 ## Requirements
 
-- PowerToys minimum version 0.86.0
+- PowerToys minimum version 0.88.0
 
 ## Installation
 
