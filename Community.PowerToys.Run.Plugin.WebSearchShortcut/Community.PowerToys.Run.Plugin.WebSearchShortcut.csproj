@@ -80,7 +80,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.86.0" />
+    <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.88.0" />
   </ItemGroup>
 
 </Project>
