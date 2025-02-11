@@ -68,6 +68,10 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut.Models
             {
                 return WebUtility.UrlEncode(url);
             }
+            if (ReplaceWhitespace == "%20")
+            {
+                return WebUtility.UrlEncode(url).Replace("+", "%20");
+            }
             return WebUtility.UrlEncode(url.Replace(" ", ReplaceWhitespace));
         }
 
