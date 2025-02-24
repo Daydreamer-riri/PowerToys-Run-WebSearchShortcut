@@ -510,8 +510,6 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         /// <param name="context">The <see cref="PluginInitContext"/> for this plugin.</param>
         public void Init(PluginInitContext context)
         {
-            Log.Info("Init", GetType());
-
             try
             {
                 Context = context ?? throw new ArgumentNullException(nameof(context));
