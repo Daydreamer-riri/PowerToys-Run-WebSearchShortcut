@@ -520,7 +520,6 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
             }
             catch (System.Exception e)
             {
-                Log.Exception("Init Failed: ", e, GetType());
                 InitError = e.Message;
             }
         }
