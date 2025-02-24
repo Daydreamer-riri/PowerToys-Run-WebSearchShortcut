@@ -158,6 +158,23 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
                 ];
             }
 
+            if (!string.IsNullOrEmpty(InitError))
+            {
+                return
+                [
+                    new()
+                    {
+                        Title = "INIT ERROR",
+                        SubTitle = $"Error: {InitError}",
+                        IcoPath = IconPath["Warn"],
+                        ToolTipData = new ToolTipData(
+                            "Init error",
+                            $"{InitError}"
+                        ),
+                    },
+                ];
+            }
+
             if (!string.IsNullOrEmpty(WebSearchShortcutStorage.LoadError))
             {
                 return
@@ -495,10 +512,19 @@ namespace Community.PowerToys.Run.Plugin.WebSearchShortcut
         {
             Log.Info("Init", GetType());
 
-            Context = context ?? throw new ArgumentNullException(nameof(context));
-            Context.API.ThemeChanged += OnThemeChanged;
-            UpdateIconPath(Context.API.GetCurrentTheme());
+            try
+            {
+                Context = context ?? throw new ArgumentNullException(nameof(context));
+                Context.API.ThemeChanged += OnThemeChanged;
+                UpdateIconPath(Context.API.GetCurrentTheme());
+            }
+            catch (System.Exception e)
+            {
+                Log.Exception("Init Failed: ", e, GetType());
+                InitError = e.Message;
+            }
         }
+        string InitError { get; set; } = string.Empty;
 
         /// <summary>
         /// Creates setting panel.
