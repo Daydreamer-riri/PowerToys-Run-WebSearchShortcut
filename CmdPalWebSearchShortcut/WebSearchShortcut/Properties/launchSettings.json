@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "WebSearchShortcut (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "WebSearchShortcut (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
