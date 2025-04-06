@@ -1,0 +1,100 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using Microsoft.CommandPalette.Extensions.Toolkit;
+using Windows.Foundation;
+
+namespace WebSearchShortcut;
+
+internal sealed partial class AddShortcutForm : FormContent
+{
+    internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand;
+
+    private readonly WebSearchShortcutItem? _item;
+
+    public AddShortcutForm(WebSearchShortcutItem? item)
+    {
+        _item = item;
+        var name = _item?.Name ?? string.Empty;
+        var url = _item?.Url ?? string.Empty;
+        TemplateJson = $$"""
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.5",
+    "body": [
+        {
+            "type": "Input.Text",
+            "style": "text",
+            "id": "name",
+            "label": "Name",
+            "value": {{JsonSerializer.Serialize(name)}},
+            "isRequired": true,
+            "errorMessage": "Name is required"
+        },
+        {
+            "type": "Input.Text",
+            "style": "text",
+            "id": "url",
+            "value": {{JsonSerializer.Serialize(url)}},
+            "label": "Url",
+            "isRequired": true,
+            "errorMessage": "Url is required"
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.Submit",
+            "title": "Save",
+            "data": {
+                "name": "name",
+                "url": "url"
+            }
+        }
+    ]
+}
+""";
+    }
+
+    public override CommandResult SubmitForm(string payload)
+    {
+        var formInput = JsonNode.Parse(payload);
+        if (formInput == null)
+        {
+            return CommandResult.GoHome();
+        }
+
+        // get the name and url out of the values
+        var formName = formInput["name"] ?? string.Empty;
+        var formUrl = formInput["url"] ?? string.Empty;
+        // var hasPlaceholder = formBookmark.ToString().Contains('{') && formBookmark.ToString().Contains('}');
+
+        // Determine the type of the bookmark
+        // string bookmarkType;
+
+        // if (formBookmark.ToString().StartsWith("http://", StringComparison.OrdinalIgnoreCase) || formBookmark.ToString().StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        // {
+        //     bookmarkType = "web";
+        // }
+        // else if (File.Exists(formBookmark.ToString()))
+        // {
+        //     bookmarkType = "file";
+        // }
+        // else if (Directory.Exists(formBookmark.ToString()))
+        // {
+        //     bookmarkType = "folder";
+        // }
+        // else
+        // {
+        //     // Default to web if we can't determine the type
+        //     bookmarkType = "web";
+        // }
+
+        var updated = _item ?? new WebSearchShortcutItem();
+        updated.Name = formName.ToString();
+        updated.Url = formUrl.ToString();
+        // updated.Type = bookmarkType;
+
+        AddedCommand?.Invoke(this, updated);
+        return CommandResult.GoHome();
+    }
+}
