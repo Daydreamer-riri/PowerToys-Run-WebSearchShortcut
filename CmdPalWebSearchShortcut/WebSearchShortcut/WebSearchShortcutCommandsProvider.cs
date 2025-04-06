@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
@@ -39,17 +40,34 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         if (_storage != null)
         {
             _storage.Data.Add(args);
+            UpdateIconUrl(args);
         }
 
         SaveAndUpdateCommands();
     }
 
-    private void Edit_AddedCommand(object sender, WebSearchShortcutItem args)
+    private async void UpdateIconUrl(WebSearchShortcutItem item)
     {
-        ExtensionHost.LogMessage($"Edited bookmark ({args.Name},{args.Url})");
-
-        SaveAndUpdateCommands();
+        if (_storage == null || !string.IsNullOrWhiteSpace(item.IconUrl))
+        {
+            return;
+        }
+        var url = await UrlCommand.IconFromUrlFallback(new Uri(item.Domain));
+        var target = item;
+        if (target != null)
+        {
+            target.IconUrl = url;
+            SaveAndUpdateCommands();
+            ExtensionHost.LogMessage($"Updating icon URL for bookmark ({item.Name},{item.Url}) to {url}");
+        }
     }
+
+    private void Edit_AddedCommand(object sender, WebSearchShortcutItem args)
+  {
+    ExtensionHost.LogMessage($"Edited bookmark ({args.Name},{args.Url})");
+
+    SaveAndUpdateCommands();
+  }
 
     private void LoadCommands()
     {

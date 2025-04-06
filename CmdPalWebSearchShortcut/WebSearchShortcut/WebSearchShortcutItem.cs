@@ -1,4 +1,7 @@
 
+using System;
+using System.Text.Json.Serialization;
+
 namespace WebSearchShortcut
 {
     public class WebSearchShortcutItem
@@ -18,6 +21,15 @@ namespace WebSearchShortcut
         public string? IconUrl { get; set; }
 
         public string? BrowserPath { get; set; }
+
+        [JsonIgnore]
+        public string Domain
+        {
+            get
+            {
+                return new Uri(Url.Split(' ')[0].Split('?')[0]).GetLeftPart(UriPartial.Authority);
+            }
+        }
 
         private string? IconFileName { get; set; }
 
