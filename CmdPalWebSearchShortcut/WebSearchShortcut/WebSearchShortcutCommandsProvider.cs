@@ -52,7 +52,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         {
             return;
         }
-        var url = await UrlCommand.IconFromUrlFallback(new Uri(item.Domain));
+        var url = await SearchPage.IconFromUrlFallback(new Uri(item.Domain));
         var target = item;
         if (target != null)
         {
@@ -109,13 +109,13 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private CommandItem ShortcutToCommandItem(WebSearchShortcutItem item)
   {
-    ICommand command = new UrlCommand(item);
+    ICommand command = new SearchPage(item);
     var listItem = new CommandItem(command) { Icon = command.Icon };
     List<CommandContextItem> contextMenu = [];
 
-    if (command is UrlCommand urlCommand)
+    if (command is SearchPage searchPage)
     {
-      listItem.Subtitle = urlCommand.Url;
+      listItem.Subtitle = searchPage.Url;
     }
 
     var edit = new AddShortcutPage(item) { Icon = EditIcon };
