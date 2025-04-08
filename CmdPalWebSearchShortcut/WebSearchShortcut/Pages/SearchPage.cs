@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Commands;
+using Windows.System;
 
 namespace WebSearchShortcut;
 
@@ -14,6 +16,7 @@ public partial class SearchPage : DynamicListPage
   public WebSearchShortcutItem Item { get; }
 
   private List<ListItem> allItems;
+  private List<ListItem> allSuggestItems;
 
   public SearchPage(WebSearchShortcutItem data)
   {
@@ -22,12 +25,15 @@ public partial class SearchPage : DynamicListPage
     Url = data.Url;
     Icon = !string.IsNullOrWhiteSpace(data.IconUrl) ? new IconInfo(data.IconUrl) : new IconInfo(IconFromUrl(Url));
     allItems = [new(new NoOpCommand())
-        {
-            // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png"),
-            Title = $"Search using {data.Name}",
-            // Subtitle = string.Format(CultureInfo.CurrentCulture, PluginOpen, BrowserInfo.Name ?? BrowserInfo.MSEdgeName),
-        }
-        ];
+      {
+        Title = $"Search using {data.Name}",
+        Icon = new IconInfo("\uE721")
+        // Subtitle = string.Format(CultureInfo.CurrentCulture, PluginOpen, BrowserInfo.Name ?? BrowserInfo.MSEdgeName),
+      }
+    ];
+
+    _lastSuggestionId = 0;
+    allSuggestItems = [];
   }
 
   public override IListItem[] GetItems()
@@ -43,21 +49,33 @@ public partial class SearchPage : DynamicListPage
     // empty query
     if (string.IsNullOrEmpty(query))
     {
+      allSuggestItems = [];
       results.Add(new ListItem(new NoOpCommand())
       {
         Title = $"Search {Name}",
-        // Subtitle = string.Format(CultureInfo.CurrentCulture, PluginInBrowserName, BrowserInfo.Name ?? BrowserInfo.MSEdgeName),
-        // Icon = new IconInfo(_iconPath),
+        TextToSuggest = query,
+        Icon = new IconInfo("\uE721")
       });
     }
     else
     {
       var searchTerm = query;
-      var result = new ListItem(new SearchWebCommand(searchTerm))
+      var result = new ListItem(new SearchWebCommand(searchTerm, Item))
       {
         Title = searchTerm,
         Subtitle = $"Search {Name} for '{searchTerm}'",
-        // Icon = new IconInfo(_iconPath),
+        MoreCommands = [new CommandContextItem(
+          title: $"Open {Name}",
+          name: $"Open {Name}",
+          action: () =>
+          {
+            var uri = GetUri(Item.Domain);
+            if (uri != null)
+            {
+              _ = Launcher.LaunchUriAsync(uri);
+            }
+          }
+        )]
       };
       results.Add(result);
     }
@@ -65,9 +83,44 @@ public partial class SearchPage : DynamicListPage
     return results;
   }
 
-  public override void UpdateSearchText(string oldSearch, string newSearch)
+  private int _lastSuggestionId;
+  public override async void UpdateSearchText(string oldSearch, string newSearch)
   {
-    allItems = [.. Query(newSearch)];
+    var ignoreId = ++_lastSuggestionId;
+    allItems = [.. Query(newSearch), .. allSuggestItems];
+    RaiseItemsChanged();
+    if (string.IsNullOrWhiteSpace(Item.SuggestionProvider) || string.IsNullOrEmpty(newSearch))
+    {
+      return;
+    }
+    var suggestions = await Suggestions.QuerySuggestionsAsync(Item.SuggestionProvider, newSearch);
+    if (ignoreId != _lastSuggestionId)
+    {
+      return;
+    }
+    List<ListItem> suggestItems = [.. suggestions
+      .Select(s => new ListItem(new SearchWebCommand(s.Title, Item))
+      {
+        Title = s.Title,
+        Subtitle = s.Description ?? "",
+        TextToSuggest = s.Title,
+        MoreCommands = [new CommandContextItem(
+          title: $"Open {s.Title}",
+          name: $"Open {s.Title}",
+          action: () =>
+          {
+            var uri = GetUri(Item.Domain);
+            if (uri != null)
+            {
+              _ = Launcher.LaunchUriAsync(uri);
+            }
+          }
+        )]
+      })];
+    List<ListItem> items = [.. Query(newSearch), .. suggestItems];
+    allSuggestItems = suggestItems;
+
+    allItems = items;
     RaiseItemsChanged();
   }
   // public override CommandResult Invoke()

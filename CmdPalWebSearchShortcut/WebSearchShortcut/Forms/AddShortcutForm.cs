@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions.Toolkit;
@@ -16,6 +17,8 @@ internal sealed partial class AddShortcutForm : FormContent
         _item = item;
         var name = _item?.Name ?? string.Empty;
         var url = _item?.Url ?? string.Empty;
+        var suggestionProvider = _item?.SuggestionProvider ?? string.Empty;
+
         TemplateJson = $$"""
 {
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -39,6 +42,25 @@ internal sealed partial class AddShortcutForm : FormContent
             "label": "Url",
             "isRequired": true,
             "errorMessage": "Url is required"
+        },
+        {
+            "type": "Input.ChoiceSet",
+            "id": "suggestionProvider",
+            "value": {{JsonSerializer.Serialize(suggestionProvider)}},
+            "label": "SuggestionProvider",
+            "isRequired": false,
+            "choices": [
+                {
+                    "title": "None",
+                    "value": ""
+                },
+                {{Suggestions.SuggestionProviders.Keys.Select(k => $$"""
+                {
+                    "title": {{JsonSerializer.Serialize(k)}},
+                    "value": {{JsonSerializer.Serialize(k)}}
+                }
+                """).Aggregate((a, b) => a + "," + b)}}
+            ]
         }
     ],
     "actions": [
@@ -47,7 +69,8 @@ internal sealed partial class AddShortcutForm : FormContent
             "title": "Save",
             "data": {
                 "name": "name",
-                "url": "url"
+                "url": "url",
+                "suggestionProvider": "suggestionProvider"
             }
         }
     ]
@@ -66,6 +89,7 @@ internal sealed partial class AddShortcutForm : FormContent
         // get the name and url out of the values
         var formName = formInput["name"] ?? string.Empty;
         var formUrl = formInput["url"] ?? string.Empty;
+        var formSuggestionProvider = formInput["suggestionProvider"] ?? string.Empty;
         // var hasPlaceholder = formBookmark.ToString().Contains('{') && formBookmark.ToString().Contains('}');
 
         // Determine the type of the bookmark
@@ -92,7 +116,7 @@ internal sealed partial class AddShortcutForm : FormContent
         var updated = _item ?? new WebSearchShortcutItem();
         updated.Name = formName.ToString();
         updated.Url = formUrl.ToString();
-        // updated.Type = bookmarkType;
+        updated.SuggestionProvider = formSuggestionProvider.ToString();
 
         AddedCommand?.Invoke(this, updated);
         return CommandResult.GoHome();

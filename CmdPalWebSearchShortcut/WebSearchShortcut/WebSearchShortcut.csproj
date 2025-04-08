@@ -59,7 +59,7 @@
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
   </PropertyGroup> -->
 
-  <PropertyGroup>
+  <!-- <PropertyGroup> -->
     <!-- <IsAotCompatible>true</IsAotCompatible> -->
     <!-- <CsWinRTAotOptimizerEnabled>true</CsWinRTAotOptimizerEnabled> -->
     <!-- <CsWinRTAotWarningLevel>2</CsWinRTAotWarningLevel> -->
@@ -67,6 +67,6 @@
     <!-- <WarningsNotAsErrors>IL2081</WarningsNotAsErrors> -->
 
     <!-- <PublishTrimmed>true</PublishTrimmed> -->
-    <PublishSingleFile>true</PublishSingleFile>
-  </PropertyGroup>
+    <!-- <PublishSingleFile>true</PublishSingleFile> -->
+  <!-- </PropertyGroup> -->
 </Project>

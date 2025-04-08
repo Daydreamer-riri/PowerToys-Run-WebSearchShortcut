@@ -27,7 +27,7 @@ internal sealed partial class AddShortcutPage : ContentPage
 
         _addShortcut = new AddShortcutForm(item);
         // Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
-        Title = isAdd ? "Add Shortcut1111" : "Edit Shortcut";
-        Name = isAdd ? "Add" : "Edit";
+        Title = isAdd ? "Add Shortcut" : "Edit Shortcut";
+        Name = isAdd ? "Add Shortcut" : "Edit Shortcut";
     }
 }

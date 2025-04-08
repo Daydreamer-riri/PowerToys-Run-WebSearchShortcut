@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
@@ -14,100 +16,96 @@ namespace WebSearchShortcut;
 
 public partial class WebSearchShortcutCommandsProvider : CommandProvider
 {
-    private readonly List<ICommandItem> _commands;
-    private readonly AddShortcutPage _addNewCommand = new(null);
+  private readonly List<ICommandItem> _commands;
+  private readonly AddShortcutPage _addNewCommand = new(null);
 
-    private Storage? _storage;
+  private Storage? _storage;
 
-    public static IconInfo DeleteIcon { get; private set; } = new("\uE74D"); // Delete
+  public static IconInfo DeleteIcon { get; private set; } = new("\uE74D"); // Delete
 
-    public static IconInfo EditIcon { get; private set; } = new("\uE70F"); // Edit
+  public static IconInfo EditIcon { get; private set; } = new("\uE70F"); // Edit
 
 
-    public WebSearchShortcutCommandsProvider()
-    {
-      DisplayName = "WebSearchShortcut";
-      Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+  public WebSearchShortcutCommandsProvider()
+  {
+    DisplayName = "WebSearchShortcut";
+    Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
     _commands = [
         // new CommandItem(new WebSearchShortcutPage()) { Title = DisplayName },
           ];
-      _addNewCommand.AddedCommand += AddNewCommand_AddedCommand;
-    }
+    _addNewCommand.AddedCommand += AddNewCommand_AddedCommand;
+  }
 
-    private void AddNewCommand_AddedCommand(object sender, WebSearchShortcutItem args)
+  private void AddNewCommand_AddedCommand(object sender, WebSearchShortcutItem args)
+  {
+    ExtensionHost.LogMessage($"Adding bookmark ({args.Name},{args.Url})");
+    if (_storage != null)
     {
-        ExtensionHost.LogMessage($"Adding bookmark ({args.Name},{args.Url})");
-        if (_storage != null)
-        {
-            _storage.Data.Add(args);
-            UpdateIconUrl(args);
-        }
-
-        SaveAndUpdateCommands();
+      _storage.Data.Add(args);
+      UpdateIconUrl(args);
     }
 
-    private async void UpdateIconUrl(WebSearchShortcutItem item)
+    SaveAndUpdateCommands();
+  }
+
+  private async void UpdateIconUrl(WebSearchShortcutItem item)
+  {
+    if (_storage == null || !string.IsNullOrWhiteSpace(item.IconUrl))
     {
-        if (_storage == null || !string.IsNullOrWhiteSpace(item.IconUrl))
-        {
-            return;
-        }
-        var url = await SearchPage.IconFromUrlFallback(new Uri(item.Domain));
-        var target = item;
-        if (target != null)
-        {
-            target.IconUrl = url;
-            SaveAndUpdateCommands();
-            ExtensionHost.LogMessage($"Updating icon URL for bookmark ({item.Name},{item.Url}) to {url}");
-        }
+      return;
     }
+    var url = await SearchPage.IconFromUrlFallback(new Uri(item.Domain));
+    var target = item;
+    if (target != null)
+    {
+      target.IconUrl = url;
+      SaveAndUpdateCommands();
+      ExtensionHost.LogMessage($"Updating icon URL for bookmark ({item.Name},{item.Url}) to {url}");
+    }
+  }
 
-    private void Edit_AddedCommand(object sender, WebSearchShortcutItem args)
+  private void Edit_AddedCommand(object sender, WebSearchShortcutItem args)
   {
     ExtensionHost.LogMessage($"Edited bookmark ({args.Name},{args.Url})");
 
     SaveAndUpdateCommands();
   }
 
-    private void LoadCommands()
+  private void LoadCommands()
+  {
+    List<CommandItem> collected = [];
+    collected.Add(new CommandItem(_addNewCommand));
+
+    if (_storage == null)
     {
-        List<CommandItem> collected = [];
-        collected.Add(new CommandItem(_addNewCommand));
-    collected.Add(new CommandItem(
-        "update",
-        "Update",
-        "",
-        () =>
-        {
-          ExtensionHost.LogMessage("Updating bookmarks...");
-          // LoadBookmarksFromFile();
-          LoadCommands();
-          RaiseItemsChanged(0);
-        }
-      ));
-
-        if (_storage == null)
-        {
-            LoadShortcutFromFile();
-        }
-
-        if (_storage != null)
-        {
-            collected.AddRange(_storage.Data.Select(ShortcutToCommandItem));
-        }
-
-        _commands.Clear();
-        _commands.AddRange(collected);
+      LoadShortcutFromFile();
     }
 
-    private void LoadShortcutFromFile()
+    if (_storage != null)
     {
-        // var jsonPath = BookmarksCommandProvider.StateJsonPath();
-        // _storage = Storage.ReadFromFile(jsonPath);
-        _storage = Storage.ReadFromFile("");
+      collected.AddRange(_storage.Data.Select(ShortcutToCommandItem));
     }
 
-    private CommandItem ShortcutToCommandItem(WebSearchShortcutItem item)
+    _commands.Clear();
+    _commands.AddRange(collected);
+  }
+
+  private void LoadShortcutFromFile()
+  {
+    try
+    {
+
+      var jsonFile = StateJsonPath();
+      _storage = Storage.ReadFromFile(jsonFile);
+    }
+    catch (Exception ex)
+    {
+      // debug log error
+      Debug.WriteLine($"Error loading commands: {ex.Message}");
+    }
+  }
+
+  private CommandItem ShortcutToCommandItem(WebSearchShortcutItem item)
   {
     ICommand command = new SearchPage(item);
     var listItem = new CommandItem(command) { Icon = command.Icon };
@@ -115,7 +113,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     if (command is SearchPage searchPage)
     {
-      listItem.Subtitle = searchPage.Url;
+      listItem.Subtitle = $"Search {item.Name}";
     }
 
     var edit = new AddShortcutPage(item) { Icon = EditIcon };
@@ -123,8 +121,6 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
     contextMenu.Add(new CommandContextItem(edit));
 
     var delete = new CommandContextItem(
-        // title: Resources.bookmarks_delete_title,
-        // name: Resources.bookmarks_delete_name,
         title: "Delete",
         name: "Delete",
         action: () =>
@@ -150,26 +146,34 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
     return listItem;
   }
 
-    private void SaveAndUpdateCommands()
+  private void SaveAndUpdateCommands()
+  {
+    if (_storage != null)
     {
-        if (_storage != null)
-        {
-            // var jsonPath = BookmarksCommandProvider.StateJsonPath();
-            // Bookmarks.WriteToFile(jsonPath, _bookmarks);
-        }
-
-        LoadCommands();
-        RaiseItemsChanged(0);
+      var jsonPath = StateJsonPath();
+      Storage.WriteToFile(jsonPath, _storage);
     }
 
-    public override ICommandItem[] TopLevelCommands()
-    {
-        if (_commands.Count == 0)
-            {
-                LoadCommands();
-            }
+    LoadCommands();
+    RaiseItemsChanged(0);
+  }
 
-        return [.. _commands];
+  public override ICommandItem[] TopLevelCommands()
+  {
+    if (_commands.Count == 0)
+    {
+      LoadCommands();
     }
 
+    return [.. _commands];
+  }
+
+  internal static string StateJsonPath()
+  {
+    var directory = Utilities.BaseSettingsPath("WebSearchShortcut");
+    Directory.CreateDirectory(directory);
+
+    // now, the state is just next to the exe
+    return Path.Combine(directory, "WebSearchShortcut.json");
+  }
 }
