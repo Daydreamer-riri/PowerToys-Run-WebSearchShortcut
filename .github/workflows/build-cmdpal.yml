@@ -42,7 +42,7 @@ jobs:
         $appxmanifests = Get-ChildItem -Path CmdPalWebSearchShortcut -Filter *.appxmanifest -Recurse
         foreach ($appxmanifestPath in $appxmanifests) {
           $appxmanifest = [System.Xml.Linq.XDocument]::Load($appxmanifestPath)
-          $appxmanifest.Root.Element($xIdentity).Attribute("Version").Value = "${{env.VERSION}}.0"
+          $appxmanifest.Root.Element($xIdentity).Attribute("Version").Value = "${{env.VERSION}}".Trim() + ".0"
           $appxmanifest.Save($appxmanifestPath)
         }
 
