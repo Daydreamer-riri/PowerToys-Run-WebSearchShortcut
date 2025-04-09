@@ -10,9 +10,18 @@
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
 
+    <Platforms>x64;ARM64</Platforms>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>false</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
+
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
+    <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
+
+    <DefaultLanguage>en-US</DefaultLanguage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,19 +63,4 @@
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
-
-  <!-- <PropertyGroup>
-    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
-  </PropertyGroup> -->
-
-  <!-- <PropertyGroup> -->
-    <!-- <IsAotCompatible>true</IsAotCompatible> -->
-    <!-- <CsWinRTAotOptimizerEnabled>true</CsWinRTAotOptimizerEnabled> -->
-    <!-- <CsWinRTAotWarningLevel>2</CsWinRTAotWarningLevel> -->
-    <!-- Suppress DynamicallyAccessedMemberTypes.PublicParameterlessConstructor in fallback code path of Windows SDK projection -->
-    <!-- <WarningsNotAsErrors>IL2081</WarningsNotAsErrors> -->
-
-    <!-- <PublishTrimmed>true</PublishTrimmed> -->
-    <!-- <PublishSingleFile>true</PublishSingleFile> -->
-  <!-- </PropertyGroup> -->
 </Project>
