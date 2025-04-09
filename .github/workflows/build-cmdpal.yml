@@ -24,7 +24,7 @@ jobs:
     - name: Read version
       run: |
         [xml]$xml = Get-Content -Path CmdPalWebSearchShortcut\Directory.Build.Props
-        $version = $xml.Project.PropertyGroup.Version.Trim()
+        $version = "$($xml.Project.PropertyGroup.Version)".Trim()
         echo "VERSION=$version" >> $env:GITHUB_ENV
 
 
