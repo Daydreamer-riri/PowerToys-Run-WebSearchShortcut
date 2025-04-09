@@ -8,10 +8,10 @@ public sealed class Storage
 {
   public List<WebSearchShortcutItem> Data { get; set; } = [];
 
-  private static readonly JsonSerializerOptions _jsonOptions = new()
-  {
-    IncludeFields = true,
-  };
+  // private static readonly JsonSerializerOptions _jsonOptions = new()
+  // {
+  //   IncludeFields = true,
+  // };
 
   public static Storage ReadFromFile(string path)
   {
@@ -48,7 +48,7 @@ public sealed class Storage
 
       if (!string.IsNullOrEmpty(jsonStringReading))
       {
-        data = JsonSerializer.Deserialize<Storage>(jsonStringReading, _jsonOptions) ?? new Storage();
+        data = JsonSerializer.Deserialize(jsonStringReading, AppJsonSerializerContext.Default.Storage) ?? new Storage();
       }
     }
 
@@ -57,7 +57,7 @@ public sealed class Storage
 
   public static void WriteToFile(string path, Storage data)
   {
-    var jsonString = JsonSerializer.Serialize(data, _jsonOptions);
+    var jsonString = JsonSerializer.Serialize(data, AppJsonSerializerContext.Default.Storage);
 
     File.WriteAllText(WebSearchShortcutCommandsProvider.StateJsonPath(), jsonString);
   }

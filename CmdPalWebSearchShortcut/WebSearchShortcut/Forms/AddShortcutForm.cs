@@ -31,7 +31,7 @@ internal sealed partial class AddShortcutForm : FormContent
             "style": "text",
             "id": "name",
             "label": "Name",
-            "value": {{JsonSerializer.Serialize(name)}},
+            "value": {{JsonSerializer.Serialize(name, AppJsonSerializerContext.Default.String)}},
             "isRequired": true,
             "errorMessage": "Name is required"
         },
@@ -39,7 +39,7 @@ internal sealed partial class AddShortcutForm : FormContent
             "type": "Input.Text",
             "style": "text",
             "id": "url",
-            "value": {{JsonSerializer.Serialize(url)}},
+            "value": {{JsonSerializer.Serialize(url, AppJsonSerializerContext.Default.String)}},
             "label": "Url",
             "isRequired": true,
             "errorMessage": "Url is required"
@@ -47,7 +47,7 @@ internal sealed partial class AddShortcutForm : FormContent
         {
             "type": "Input.ChoiceSet",
             "id": "suggestionProvider",
-            "value": {{JsonSerializer.Serialize(suggestionProvider)}},
+            "value": {{JsonSerializer.Serialize(suggestionProvider, AppJsonSerializerContext.Default.String)}},
             "label": "SuggestionProvider",
             "isRequired": false,
             "choices": [
@@ -57,19 +57,21 @@ internal sealed partial class AddShortcutForm : FormContent
                 },
                 {{Suggestions.SuggestionProviders.Keys.Select(k => $$"""
                 {
-                    "title": {{JsonSerializer.Serialize(k)}},
-                    "value": {{JsonSerializer.Serialize(k)}}
+                    "title": {{JsonSerializer.Serialize(k, AppJsonSerializerContext.Default.String)}},
+                    "value": {{JsonSerializer.Serialize(k, AppJsonSerializerContext.Default.String)}}
                 }
                 """).Aggregate((a, b) => a + "," + b)}}
-            ]
+            ],
+            "errorMessage": ""
         },
         {
             "type": "Input.Text",
             "style": "text",
             "id": "replaceWhitespace",
-            "value": {{JsonSerializer.Serialize(replaceWhitespace)}},
+            "value": {{JsonSerializer.Serialize(replaceWhitespace, AppJsonSerializerContext.Default.String)}},
             "label": "ReplaceWhitespace",
-            "placeholder": "Specify which character(s) to replace a space"
+            "placeholder": "Specify which character(s) to replace a space",
+            "errorMessage": ""
         }
     ],
     "actions": [
