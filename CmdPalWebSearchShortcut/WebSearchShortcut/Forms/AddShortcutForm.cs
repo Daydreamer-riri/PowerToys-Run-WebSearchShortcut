@@ -62,7 +62,7 @@ internal sealed partial class AddShortcutForm : FormContent
                 }
                 """).Aggregate((a, b) => a + "," + b)}}
             ],
-            "errorMessage": ""
+            "errorMessage": "//"
         },
         {
             "type": "Input.Text",
@@ -71,7 +71,7 @@ internal sealed partial class AddShortcutForm : FormContent
             "value": {{JsonSerializer.Serialize(replaceWhitespace, AppJsonSerializerContext.Default.String)}},
             "label": "ReplaceWhitespace",
             "placeholder": "Specify which character(s) to replace a space",
-            "errorMessage": ""
+            "errorMessage": "//"
         }
     ],
     "actions": [

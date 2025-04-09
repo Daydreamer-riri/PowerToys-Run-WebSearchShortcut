@@ -79,7 +79,8 @@ public partial class SearchPage : DynamicListPage
   public override async void UpdateSearchText(string oldSearch, string newSearch)
   {
     var ignoreId = ++_lastSuggestionId;
-    allItems = [.. Query(newSearch), .. allSuggestItems];
+    var queryItems = Query(newSearch);
+    allItems = [.. queryItems, .. allSuggestItems];
     RaiseItemsChanged();
     if (string.IsNullOrWhiteSpace(Item.SuggestionProvider) || string.IsNullOrEmpty(newSearch))
     {
@@ -95,7 +96,7 @@ public partial class SearchPage : DynamicListPage
       {
         Title = s.Title,
         Subtitle = s.Description ?? "",
-        TextToSuggest = s.Title,
+        // TextToSuggest = s.Title,
         MoreCommands = [new CommandContextItem(
           title: $"Open {Name}",
           name: $"Open {Name}",
@@ -109,7 +110,7 @@ public partial class SearchPage : DynamicListPage
           }
         )]
       })];
-    List<ListItem> items = [.. Query(newSearch), .. suggestItems];
+    List<ListItem> items = [.. queryItems, .. suggestItems];
     allSuggestItems = suggestItems;
 
     allItems = items;
