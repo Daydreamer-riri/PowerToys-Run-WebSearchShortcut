@@ -1,22 +1,21 @@
+
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 using BrowserInfo = WebSearchShortcut.Helpers.DefaultBrowserInfo;
 
 namespace WebSearchShortcut.Commands;
 
-internal sealed partial class SearchWebCommand : InvokableCommand
+internal sealed partial class OpenDomainCommand : InvokableCommand
 {
   // private readonly SettingsManager _settingsManager;
 
-  public string Arguments { get; internal set; } = string.Empty;
   public WebSearchShortcutItem Item;
 
-  internal SearchWebCommand(string arguments, WebSearchShortcutItem item)
+  internal OpenDomainCommand(WebSearchShortcutItem item)
   {
-    Arguments = arguments;
     BrowserInfo.UpdateIfTimePassed();
     Icon = new IconInfo("\uE721");
-    Name = $"Search for '{arguments}'";
+    Name = $"Open {item.Name}";
     Item = item;
     // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png");
     // Name = Properties.Resources.open_in_default_browser;
@@ -25,7 +24,7 @@ internal sealed partial class SearchWebCommand : InvokableCommand
 
   public override CommandResult Invoke()
   {
-    if (!ShellHelpers.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, $"{WebSearchShortcutItem.GetSearchUrl(Item, Arguments)}"))
+    if (!ShellHelpers.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, $"{Item.Domain}"))
     {
       // TODO GH# 138 --> actually display feedback from the extension somewhere.
       return CommandResult.KeepOpen();

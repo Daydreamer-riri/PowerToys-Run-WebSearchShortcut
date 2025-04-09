@@ -29,7 +29,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
   public WebSearchShortcutCommandsProvider()
   {
     DisplayName = "WebSearchShortcut";
-    Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+    Icon = IconHelpers.FromRelativePath("Assets\\Search.png");
     _commands = [
         // new CommandItem(new WebSearchShortcutPage()) { Title = DisplayName },
           ];

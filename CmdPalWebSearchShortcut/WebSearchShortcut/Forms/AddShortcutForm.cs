@@ -18,12 +18,13 @@ internal sealed partial class AddShortcutForm : FormContent
         var name = _item?.Name ?? string.Empty;
         var url = _item?.Url ?? string.Empty;
         var suggestionProvider = _item?.SuggestionProvider ?? string.Empty;
+        var replaceWhitespace = _item?.ReplaceWhitespace ?? string.Empty;
 
         TemplateJson = $$"""
 {
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
     "type": "AdaptiveCard",
-    "version": "1.5",
+    "version": "1.6",
     "body": [
         {
             "type": "Input.Text",
@@ -61,6 +62,14 @@ internal sealed partial class AddShortcutForm : FormContent
                 }
                 """).Aggregate((a, b) => a + "," + b)}}
             ]
+        },
+        {
+            "type": "Input.Text",
+            "style": "text",
+            "id": "replaceWhitespace",
+            "value": {{JsonSerializer.Serialize(replaceWhitespace)}},
+            "label": "ReplaceWhitespace",
+            "placeholder": "Specify which character(s) to replace a space"
         }
     ],
     "actions": [
@@ -70,7 +79,8 @@ internal sealed partial class AddShortcutForm : FormContent
             "data": {
                 "name": "name",
                 "url": "url",
-                "suggestionProvider": "suggestionProvider"
+                "suggestionProvider": "suggestionProvider",
+                "replaceWhitespace": "replaceWhitespace"
             }
         }
     ]
@@ -90,33 +100,13 @@ internal sealed partial class AddShortcutForm : FormContent
         var formName = formInput["name"] ?? string.Empty;
         var formUrl = formInput["url"] ?? string.Empty;
         var formSuggestionProvider = formInput["suggestionProvider"] ?? string.Empty;
-        // var hasPlaceholder = formBookmark.ToString().Contains('{') && formBookmark.ToString().Contains('}');
-
-        // Determine the type of the bookmark
-        // string bookmarkType;
-
-        // if (formBookmark.ToString().StartsWith("http://", StringComparison.OrdinalIgnoreCase) || formBookmark.ToString().StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-        // {
-        //     bookmarkType = "web";
-        // }
-        // else if (File.Exists(formBookmark.ToString()))
-        // {
-        //     bookmarkType = "file";
-        // }
-        // else if (Directory.Exists(formBookmark.ToString()))
-        // {
-        //     bookmarkType = "folder";
-        // }
-        // else
-        // {
-        //     // Default to web if we can't determine the type
-        //     bookmarkType = "web";
-        // }
+        var formReplaceWhitespace = formInput["replaceWhitespace"] ?? string.Empty;
 
         var updated = _item ?? new WebSearchShortcutItem();
         updated.Name = formName.ToString();
         updated.Url = formUrl.ToString();
         updated.SuggestionProvider = formSuggestionProvider.ToString();
+        updated.ReplaceWhitespace = formReplaceWhitespace.ToString();
 
         AddedCommand?.Invoke(this, updated);
         return CommandResult.GoHome();

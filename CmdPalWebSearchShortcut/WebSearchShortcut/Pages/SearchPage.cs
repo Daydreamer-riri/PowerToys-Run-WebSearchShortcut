@@ -16,7 +16,9 @@ public partial class SearchPage : DynamicListPage
   public WebSearchShortcutItem Item { get; }
 
   private List<ListItem> allItems;
+  private readonly IconInfo _searchIcon = new("\uE721");
   private List<ListItem> allSuggestItems;
+  private readonly ListItem _emptyListItem;
 
   public SearchPage(WebSearchShortcutItem data)
   {
@@ -24,13 +26,8 @@ public partial class SearchPage : DynamicListPage
     Name = data.Name;
     Url = data.Url;
     Icon = !string.IsNullOrWhiteSpace(data.IconUrl) ? new IconInfo(data.IconUrl) : new IconInfo(IconFromUrl(Url));
-    allItems = [new(new NoOpCommand())
-      {
-        Title = $"Search using {data.Name}",
-        Icon = new IconInfo("\uE721")
-        // Subtitle = string.Format(CultureInfo.CurrentCulture, PluginOpen, BrowserInfo.Name ?? BrowserInfo.MSEdgeName),
-      }
-    ];
+    _emptyListItem = new ListItem(new OpenDomainCommand(data));
+    allItems = [_emptyListItem];
 
     _lastSuggestionId = 0;
     allSuggestItems = [];
@@ -50,12 +47,7 @@ public partial class SearchPage : DynamicListPage
     if (string.IsNullOrEmpty(query))
     {
       allSuggestItems = [];
-      results.Add(new ListItem(new NoOpCommand())
-      {
-        Title = $"Search {Name}",
-        TextToSuggest = query,
-        Icon = new IconInfo("\uE721")
-      });
+      results.Add(_emptyListItem);
     }
     else
     {
@@ -105,8 +97,8 @@ public partial class SearchPage : DynamicListPage
         Subtitle = s.Description ?? "",
         TextToSuggest = s.Title,
         MoreCommands = [new CommandContextItem(
-          title: $"Open {s.Title}",
-          name: $"Open {s.Title}",
+          title: $"Open {Name}",
+          name: $"Open {Name}",
           action: () =>
           {
             var uri = GetUri(Item.Domain);

@@ -52,23 +52,5 @@ namespace WebSearchShortcut
       string arguments = item.Url.Replace("%s", UrlEncode(item, search));
       return arguments;
     }
-
-    private string? IconFileName { get; set; }
-
-    // public string GetIconFileName()
-    // {
-    //     if (!string.IsNullOrEmpty(IconFileName))
-    //     {
-    //         return IconFileName;
-    //     }
-    //     var _FileName = Name ?? "";
-    //     char[] invalidChars = [':', '/', '\\', '?', '*', '<', '>', '|'];
-    //     foreach (var invalidChar in invalidChars)
-    //     {
-    //         _FileName = _FileName.Replace(invalidChar, '_');
-    //     }
-    //     IconFileName = _FileName;
-    //     return IconFileName;
-    // }
   }
 };
