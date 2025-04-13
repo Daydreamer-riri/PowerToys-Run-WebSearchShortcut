@@ -66,6 +66,14 @@ Used to set the search suggestion provider.
 - `npm`
 - `CanIUse`
 
+Planned:
+
+- [ ] `DuckDuckGo`
+- [ ] `Yandex`
+- [ ] `Baidu`
+- [ ] `Youtube`
+- [ ] `Wiki`
+
 PRs welcome!
 
 > You can also set a Provider to another search engine.
