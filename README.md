@@ -2,91 +2,31 @@
 
 [![Mentioned in Awesome PowerToys Run Plugins](https://awesome.re/mentioned-badge.svg)](https://github.com/hlaueriksson/awesome-powertoys-run-plugins)
 
-This is a simple [PowerToys Run](https://docs.microsoft.com/en-us/windows/powertoys/run) plugin for quickly selecting a specific search engine to perform searches via keyword prefixes.
+This is a simple [PowerToys CmdPal](https://learn.microsoft.com/en-us/windows/powertoys/command-palette/overview) plugin for quickly selecting a specific search engine to perform searches via keyword prefixes.
+
+> If you are looking for the Powertoys Run plugin, please check: [WebSearchShortcut run plugin](./README-Run.md)
 
 ## Preview
 
-![Preview of the plugin in action](./ScreenShots/preview.gif)
-
-> If you have configured the [`Keyword`](#keyword) field, you can use a short keyword to specify the search engine.
->
-> ![Example of the Keyword field](./ScreenShots/keyword.png)
-
-## Requirements
-
-- PowerToys minimum version 0.88.0
+![Preview of the plugin in action](./ScreenShots/preview-cmdpal.gif)
 
 ## Installation
 
-### Manual
+Run the following command with **administrator** privileges:
 
-- Download the [latest release](https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/releases/) by selecting the architecture that matches your machine: `x64` (more common) or `ARM64`
-- Close PowerToys (including from the system tray)
-- Extract the archive to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`
-- Open PowerToys
-
-### Via [ptr](https://github.com/8LWXpg/ptr)
-
-```shell
-ptr add WebSearchShortcut Daydreamer-riri/PowerToys-Run-WebSearchShortcut
+```ps1
+powershell -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/main/CmdPalWebSearchShortcut/Install.ps1'))"
 ```
 
-> [!IMPORTANT]
-> Some users are currently experiencing application crashes when using the WebSearchShortcut after disabling the WebSearch (an integrated plugin of PowerToys Run).
-> It is recommended to keep WebSearch enabled until the issue is resolved. [#23](https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/issues/23)
+> Due to sign reasons, this plugin cannot be installed via winget for now. I will do my best to resolve this issue.
 
 ## Configuration
 
-- Open the config file:
+- Access the command shown in the image:
 
-![Open the configuration file with "!config"](./ScreenShots/config.png)
+![Open the configuration"](./ScreenShots/cmdpal-add.png)
 
-> **Note**: The configuration file is located in `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Settings\Plugins\Community.PowerToys.Run.Plugin.WebSearchShortcut\WebSearchShortcutStorage.json`.
-
-- Inside the config file, you can add your desired search engines. The key is the display name of the search engine, and the [`Url`](#url) property is the URL template for performing the search.
-
-  - You can find an [example](#example) as well as a list of [configuration options](#configuration-fields) below.
-
-- After saving the file, reload the plugin with `!reload`:
-
-![Reload the configuration file with "!reload"](./ScreenShots/reload.png)
-
-### Example
-
-```json
-{
-  "Google": {
-    "Url": "https://www.google.com/search?q=%s",
-    "SuggestionProvider": "Google"
-  },
-  "Bing": {
-    "Url": "https://www.bing.com/search?q=%s",
-    "SuggestionProvider": "Bing"
-  },
-  "GitHub": {
-    "Url": "https://www.github.com/search?q=%s"
-  },
-  "GitHubStars": {
-    "Url": "https://github.com/stars?q=%s",
-    "Keyword": "gs"
-  },
-  "StackOverflow": {
-    "Url": "https://stackoverflow.com/search?q=%s",
-    "Keyword": "st"
-  },
-  "npm": {
-    "Url": "https://www.npmjs.com/search?q=%s"
-  },
-  "YouTube": {
-    "Url": "https://www.youtube.com/results?search_query=%s",
-    "Keyword": "yt"
-  },
-  "ChatGPT": {
-    "Url": "https://chat.openai.com/?q=%s",
-    "Keyword": "gpt"
-  }
-}
-```
+- Complete the form's content and save it.
 
 ## Configuration fields
 
@@ -101,54 +41,6 @@ The URL template for performing the search. Use `%s` as a placeholder for the se
   }
 }
 ```
-
-> **Note**: To use multiple URLs, you can separate them with a space (" ").
-> For example:
->
-> ```json
-> {
->   "GoogleAndBing": {
->     "Url": "https://www.google.com/search?q=%s https://www.bing.com/search?q=%s"
->   }
-> }
-> ```
->
-> Alternatively, you can use an array of URLs with the [`Urls`](#urls) field.
-
-### `Urls`
-
-`Urls` is an alias for [`Url`](#url), supporting the setting of multiple URLs in an array format.
-
-```json
-{
-  "GoogleAndBing": {
-    "Urls": ["https://www.google.com/search?q=%s", "https://www.bing.com/search?q=%s"]
-  }
-}
-```
-
-### `Keyword`
-
-Used to quickly select the target search engine using a short keyword.
-
-```json
-{
-  "Google": {
-    "Url": "https://www.google.com/search?q=%s",
-    "Keyword": "g"
-  }
-}
-```
-
-### `IconUrl`
-
-You can customize the icon by setting this field. Under normal circumstances, you don't need to set this, as the plugin will automatically download the favicon of the website corresponding to the [`Url`](#url) field. However, sometimes you might want to customize the icon, and this field comes in handy.
-
-> **Note**: This field can only be set to a network URL and cannot be set to a local file.
-
-### `IsDefault`
-
-If this option is `true`, the corresponding search engine does not need to input the trigger word.
 
 ### `ReplaceWhitespace`
 
@@ -179,14 +71,7 @@ PRs welcome!
 > You can also set a Provider to another search engine.
 > For example:
 >
-> ```json
-> {
->   "StackOverflow": {
->     "Url": "https://stackoverflow.com/search?q=%s",
->     "SuggestionProvider": "Google"
->   }
-> }
-> ```
+> ![add-suggestions](./ScreenShots/cmdpal-add-suggestions.png)
 
 ## Credits
 
