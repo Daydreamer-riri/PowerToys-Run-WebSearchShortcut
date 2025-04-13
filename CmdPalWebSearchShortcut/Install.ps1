@@ -1,0 +1,1 @@
+Add-AppPackage -Path ".\WebSearchShortcut.msix" -AllowUnsigned
