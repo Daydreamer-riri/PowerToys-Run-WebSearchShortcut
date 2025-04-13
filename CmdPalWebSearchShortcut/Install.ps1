@@ -2,9 +2,6 @@
 function Get-LatestCmdPalVersion {
     try {
         $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/releases" -ErrorAction Stop
-        # Debug output
-        Write-Host "API Response received. Found $($releases.Count) releases."
-        Write-Host "Releases: $($releases | Select-Object -ExpandProperty tag_name)"
 
         # Find the first tag that starts with CmdPal using direct access
         $fullVersion = $null
