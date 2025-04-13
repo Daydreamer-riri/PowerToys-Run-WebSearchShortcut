@@ -203,7 +203,7 @@ public static class DefaultBrowserInfo
         throw new ArgumentNullException(nameof(str), "Could not load indirect string.");
       }
 
-      // 在类的最后添加这个 P/Invoke 定义
+      // Add this P/Invoke definition at the end of the class
       [System.Runtime.InteropServices.DllImport("shlwapi.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
       static extern unsafe int SHLoadIndirectString(
           string pszSource,
