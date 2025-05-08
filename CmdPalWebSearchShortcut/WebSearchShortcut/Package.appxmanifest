@@ -16,7 +16,7 @@
        Publisher= to match your own identity -->
 
   <Properties>
-    <DisplayName>WebSearchShortcut Extension</DisplayName>
+    <DisplayName>WebSearchShortcut</DisplayName>
     <PublisherDisplayName>Riri</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
