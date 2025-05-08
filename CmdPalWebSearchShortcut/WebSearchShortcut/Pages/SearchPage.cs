@@ -81,7 +81,7 @@ public partial class SearchPage : DynamicListPage
     var ignoreId = ++_lastSuggestionId;
     var queryItems = Query(newSearch);
     allItems = [.. queryItems, .. allSuggestItems];
-    RaiseItemsChanged();
+    RaiseItemsChanged(allItems.Count);
     if (string.IsNullOrWhiteSpace(Item.SuggestionProvider) || string.IsNullOrEmpty(newSearch))
     {
       return;
@@ -114,35 +114,11 @@ public partial class SearchPage : DynamicListPage
     allSuggestItems = suggestItems;
 
     allItems = items;
-    RaiseItemsChanged();
+    RaiseItemsChanged(allItems.Count);
   }
-  // public override CommandResult Invoke()
-  // {
-  //   var target = Url;
-  //   try
-  //   {
-  //     var uri = GetUri(target);
-  //     if (uri != null)
-  //     {
-  //       _ = Launcher.LaunchUriAsync(uri);
-  //     }
-  //     else
-  //     {
-  //       // throw new UriFormatException("The provided URL is not valid.");
-  //     }
-  //   }
-  //   catch (Exception ex)
-  //   {
-  //     System.Diagnostics.Debug.WriteLine($"Error launching URL: {ex.Message}");
-  //   }
-
-  //   return CommandResult.Dismiss();
-  // }
-
   internal static Uri? GetUri(string url)
   {
-    Uri? uri;
-    if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
+    if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
     {
       if (!Uri.TryCreate("https://" + url, UriKind.Absolute, out uri))
       {

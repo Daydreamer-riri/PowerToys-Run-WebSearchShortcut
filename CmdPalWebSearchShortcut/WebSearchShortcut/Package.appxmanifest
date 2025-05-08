@@ -9,15 +9,15 @@
   IgnorableNamespaces="uap uap3 rescap">
 
   <Identity
-    Name="WebSearchShortcut"
-    Publisher="CN=AppModelSamples, OID.2.25.311729368913984317654407730594956997722=1"
+    Name="Riri.WebSearchShortcut"
+    Publisher="CN=4ABED957-26B2-4540-BC42-25782E221227"
     Version="0.0.1.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
   <Properties>
     <DisplayName>WebSearchShortcut Extension</DisplayName>
-    <PublisherDisplayName>Daydreamer-riri</PublisherDisplayName>
+    <PublisherDisplayName>Riri</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
