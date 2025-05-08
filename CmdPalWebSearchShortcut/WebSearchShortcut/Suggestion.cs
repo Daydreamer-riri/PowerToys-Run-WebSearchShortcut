@@ -36,6 +36,7 @@ public class Suggestions
       {
         { Google.Name, new Google() },
         { Bing.Name, new Bing() },
+        { YouTube.Name, new YouTube() },
         { Npm.Name, new Npm() },
         { CanIUse.Name, new CanIUse() },
       };
