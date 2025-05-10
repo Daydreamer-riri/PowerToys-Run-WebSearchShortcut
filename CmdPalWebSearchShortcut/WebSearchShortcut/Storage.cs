@@ -37,6 +37,7 @@ public sealed class Storage
           {
             Name = "Youtube",
             Url = "https://www.youtube.com/results?search_query=%s",
+            SuggestionProvider = "YouTube"
           },
       ]);
       WriteToFile(path, defaultStorage);
