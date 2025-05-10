@@ -2,6 +2,8 @@
 
 [![Mentioned in Awesome PowerToys Run Plugins](https://awesome.re/mentioned-badge.svg)](https://github.com/hlaueriksson/awesome-powertoys-run-plugins)
 
+[![Microsoft](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9p9hchbgbrf4)
+
 This is a simple [PowerToys CmdPal](https://learn.microsoft.com/en-us/windows/powertoys/command-palette/overview) plugin for quickly selecting a specific search engine to perform searches via keyword prefixes.
 
 > If you are looking for the Powertoys Run plugin, please check: [WebSearchShortcut run plugin](./README-Run.md)
@@ -12,13 +14,19 @@ This is a simple [PowerToys CmdPal](https://learn.microsoft.com/en-us/windows/po
 
 ## Installation
 
-Run the following command with **administrator** privileges:
+### MSStore
 
-```ps1
-powershell -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/main/CmdPalWebSearchShortcut/Install.ps1'))"
-```
+Click the badge below to go to the store page:
 
-> Due to sign reasons, this plugin cannot be installed via winget for now. I will do my best to resolve this issue.
+[![Microsoft](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9p9hchbgbrf4)
+
+### WinGet
+
+Coming soon.
+
+### MSIX Files
+
+You can download the MSIX files from the [Releases](https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/releases) page on GitHub. Choose the appropriate file for your architecture (**x64**(more common) or **ARM**) and install it manually.
 
 ## Configuration
 
@@ -41,6 +49,8 @@ The URL template for performing the search. Use `%s` as a placeholder for the se
   }
 }
 ```
+
+> More example: https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/blob/main/README-Run.md#example
 
 ### `ReplaceWhitespace`
 
@@ -71,7 +81,7 @@ Planned:
 - [ ] `DuckDuckGo`
 - [ ] `Yandex`
 - [ ] `Baidu`
-- [ ] `Youtube`
+- [x] `Youtube`
 - [ ] `Wiki`
 
 PRs welcome!
