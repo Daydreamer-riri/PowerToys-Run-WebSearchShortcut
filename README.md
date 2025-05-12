@@ -1,4 +1,4 @@
-# PowerToys-Run-WebSearchShortcut
+# CmdPal-WebSearchShortcut
 
 [![Mentioned in Awesome PowerToys Run Plugins](https://awesome.re/mentioned-badge.svg)](https://github.com/hlaueriksson/awesome-powertoys-run-plugins)
 
