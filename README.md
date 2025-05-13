@@ -22,7 +22,7 @@ Click the badge below to go to the store page:
 
 ### WinGet
 
-Coming soon.
+`winget install Riri.WebSearchShortcut`
 
 ### MSIX Files
 
