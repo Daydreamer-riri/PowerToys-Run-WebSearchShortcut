@@ -1,0 +1,27 @@
+name: Download Microsoft Store App Package
+on:
+  workflow_dispatch:
+
+jobs:
+  download-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Pull App Packages for Windows Terminal
+        uses: sht2017/Pull-Microsoft-Store@main
+        id: store_download
+        with:
+          product-id: '9P9HCHBGBRF4'
+          output-path: './app-packages'
+
+      - name: Verify Download
+        if: steps.store_download.outcome == 'success'
+        run: |
+          echo "Successfully downloaded packages:"
+          ls -R ./app-packages
+
+      - name: Handle Failure
+        if: steps.store_download.outcome != 'success'
+        run: echo "Download failed."
