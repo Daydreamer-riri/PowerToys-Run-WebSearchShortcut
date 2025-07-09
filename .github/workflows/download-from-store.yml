@@ -9,7 +9,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Pull App Packages for Windows Terminal
+      - name: Pull App Packages
         uses: sht2017/Pull-Microsoft-Store@main
         id: store_download
         with:
@@ -19,9 +19,25 @@ jobs:
       - name: Verify Download
         if: steps.store_download.outcome == 'success'
         run: |
+          cd app-packages
+          LATEST_VERSION=$(ls -1 *.msix 2>/dev/null | cut -d'_' -f2 | sort -V | tail -n 1)
+          if [ -z "$LATEST_VERSION" ]
+          then echo "No .msix files found."
+          else ls -1 *.msix | grep -v "_${LATEST_VERSION}_" | xargs -r rm
+          for file in *_${LATEST_VERSION}_*.msix
+          do mv -v -- "$file" "$(echo "$file" | sed 's/__.*//').msix"
+          done
+          fi
+          cd ..
           echo "Successfully downloaded packages:"
           ls -R ./app-packages
 
       - name: Handle Failure
         if: steps.store_download.outcome != 'success'
         run: echo "Download failed."
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Msix
+          path: app-packages/*.msix
