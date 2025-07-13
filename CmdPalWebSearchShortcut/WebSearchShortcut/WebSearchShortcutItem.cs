@@ -25,6 +25,8 @@ namespace WebSearchShortcut
 
     public string? ReplaceWhitespace { get; set; }
 
+    public string? HomePage { get; set; }
+
     [JsonIgnore]
     public string Domain
     {

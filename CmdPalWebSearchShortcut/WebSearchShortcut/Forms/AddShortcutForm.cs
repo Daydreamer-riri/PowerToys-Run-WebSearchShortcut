@@ -19,6 +19,7 @@ internal sealed partial class AddShortcutForm : FormContent
         var url = _item?.Url ?? string.Empty;
         var suggestionProvider = _item?.SuggestionProvider ?? string.Empty;
         var replaceWhitespace = _item?.ReplaceWhitespace ?? string.Empty;
+        var homePage = _item?.HomePage ?? string.Empty;
 
         TemplateJson = $$"""
 {
@@ -72,6 +73,16 @@ internal sealed partial class AddShortcutForm : FormContent
             "label": "ReplaceWhitespace",
             "placeholder": "Specify which character(s) to replace a space",
             "errorMessage": "//"
+        },
+        {
+            "type": "Input.Text",
+            "style": "text",
+            "id": "homePage",
+            "value": {{JsonSerializer.Serialize(homePage, AppJsonSerializerContext.Default.String)}},
+            "label": "HomePage",
+            "placeholder": "Specify the URL to open as the home page",
+            "isRequired": false,
+            "errorMessage": "//"
         }
     ],
     "actions": [
@@ -82,7 +93,8 @@ internal sealed partial class AddShortcutForm : FormContent
                 "name": "name",
                 "url": "url",
                 "suggestionProvider": "suggestionProvider",
-                "replaceWhitespace": "replaceWhitespace"
+                "replaceWhitespace": "replaceWhitespace",
+                "homePage": "homePage"
             }
         }
     ]
@@ -103,12 +115,14 @@ internal sealed partial class AddShortcutForm : FormContent
         var formUrl = formInput["url"] ?? string.Empty;
         var formSuggestionProvider = formInput["suggestionProvider"] ?? string.Empty;
         var formReplaceWhitespace = formInput["replaceWhitespace"] ?? string.Empty;
+        var formHomePage = formInput["homePage"] ?? string.Empty;
 
         var updated = _item ?? new WebSearchShortcutItem();
         updated.Name = formName.ToString();
         updated.Url = formUrl.ToString();
         updated.SuggestionProvider = formSuggestionProvider.ToString();
         updated.ReplaceWhitespace = formReplaceWhitespace.ToString();
+        updated.HomePage = formHomePage.ToString();
 
         AddedCommand?.Invoke(this, updated);
         return CommandResult.GoHome();
