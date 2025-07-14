@@ -20,6 +20,8 @@ internal sealed partial class AddShortcutForm : FormContent
         var suggestionProvider = _item?.SuggestionProvider ?? string.Empty;
         var replaceWhitespace = _item?.ReplaceWhitespace ?? string.Empty;
         var homePage = _item?.HomePage ?? string.Empty;
+        var browserPath = _item?.BrowserPath ?? string.Empty;
+        var browserArgs = _item?.BrowserArgs ?? string.Empty;
 
         TemplateJson = $$"""
 {
@@ -83,6 +85,43 @@ internal sealed partial class AddShortcutForm : FormContent
             "placeholder": "Specify the URL to open as the home page",
             "isRequired": false,
             "errorMessage": "//"
+        },
+        {
+            "type": "ActionSet",
+            "actions": [
+                {
+                    "type": "Action.ToggleVisibility",
+                    "title": "Show Advanced Browser Options",
+                    "targetElements": [
+                        "advancedBrowserSettings"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "Container",
+            "id": "advancedBrowserSettings",
+            "isVisible": false,
+            "items": [
+                {
+                    "type": "Input.Text",
+                    "style": "text",
+                    "id": "browserPath",
+                    "value": {{JsonSerializer.Serialize(browserPath, AppJsonSerializerContext.Default.String)}},
+                    "label": "BrowserPath",
+                    "placeholder": "Custom browser path (empty = default browser)",
+                    "isRequired": false
+                },
+                {
+                    "type": "Input.Text",
+                    "style": "text",
+                    "id": "browserArgs",
+                    "value": {{JsonSerializer.Serialize(browserArgs, AppJsonSerializerContext.Default.String)}},
+                    "label": "BrowserArgs",
+                    "placeholder": "Optional launch arguments, use %1 for URL",
+                    "isRequired": false
+                }
+            ]
         }
     ],
     "actions": [
@@ -94,7 +133,9 @@ internal sealed partial class AddShortcutForm : FormContent
                 "url": "url",
                 "suggestionProvider": "suggestionProvider",
                 "replaceWhitespace": "replaceWhitespace",
-                "homePage": "homePage"
+                "homePage": "homePage",
+                "browserPath": "browserPath",
+                "browserArgs": "browserArgs"
             }
         }
     ]
@@ -116,6 +157,8 @@ internal sealed partial class AddShortcutForm : FormContent
         var formSuggestionProvider = formInput["suggestionProvider"] ?? string.Empty;
         var formReplaceWhitespace = formInput["replaceWhitespace"] ?? string.Empty;
         var formHomePage = formInput["homePage"] ?? string.Empty;
+        var formBrowserPath = formInput["browserPath"] ?? string.Empty;
+        var formBrowserArgs = formInput["browserArgs"] ?? string.Empty;
 
         var updated = _item ?? new WebSearchShortcutItem();
         updated.Name = formName.ToString();
@@ -123,6 +166,8 @@ internal sealed partial class AddShortcutForm : FormContent
         updated.SuggestionProvider = formSuggestionProvider.ToString();
         updated.ReplaceWhitespace = formReplaceWhitespace.ToString();
         updated.HomePage = formHomePage.ToString();
+        updated.BrowserPath = formBrowserPath.ToString();
+        updated.BrowserArgs = formBrowserArgs.ToString();
 
         AddedCommand?.Invoke(this, updated);
         return CommandResult.GoHome();
