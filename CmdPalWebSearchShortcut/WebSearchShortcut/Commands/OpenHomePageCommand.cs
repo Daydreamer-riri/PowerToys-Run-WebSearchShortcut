@@ -1,17 +1,19 @@
 
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
+using WebSearchShortcut.Helpers;
+
 using BrowserInfo = WebSearchShortcut.Helpers.DefaultBrowserInfo;
 
 namespace WebSearchShortcut.Commands;
 
-internal sealed partial class OpenDomainCommand : InvokableCommand
+internal sealed partial class OpenHomePageCommand : InvokableCommand
 {
   // private readonly SettingsManager _settingsManager;
 
   public WebSearchShortcutItem Item;
 
-  internal OpenDomainCommand(WebSearchShortcutItem item)
+  internal OpenHomePageCommand(WebSearchShortcutItem item)
   {
     BrowserInfo.UpdateIfTimePassed();
     Icon = new IconInfo("\uE721");
@@ -24,7 +26,7 @@ internal sealed partial class OpenDomainCommand : InvokableCommand
 
   public override CommandResult Invoke()
   {
-    if (!ShellHelpers.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, $"{Item.Domain}"))
+    if (!HomePageLauncher.OpenHomePageWithBrowser(Item))
     {
       // TODO GH# 138 --> actually display feedback from the extension somewhere.
       return CommandResult.KeepOpen();

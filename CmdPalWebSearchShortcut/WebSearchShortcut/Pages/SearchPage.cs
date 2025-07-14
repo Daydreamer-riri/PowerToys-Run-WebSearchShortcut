@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Commands;
+using WebSearchShortcut.Helpers;
 using Windows.System;
 
 namespace WebSearchShortcut;
@@ -26,7 +27,7 @@ public partial class SearchPage : DynamicListPage
     Name = data.Name;
     Url = data.Url;
     Icon = !string.IsNullOrWhiteSpace(data.IconUrl) ? new IconInfo(data.IconUrl) : new IconInfo(IconFromUrl(Url));
-    _emptyListItem = new ListItem(new OpenDomainCommand(data));
+    _emptyListItem = new ListItem(new OpenHomePageCommand(data));
     allItems = [_emptyListItem];
 
     _lastSuggestionId = 0;
@@ -59,14 +60,7 @@ public partial class SearchPage : DynamicListPage
         MoreCommands = [new CommandContextItem(
           title: $"Open {Name}",
           name: $"Open {Name}",
-          action: () =>
-          {
-            var uri = GetUri(Item.Domain);
-            if (uri != null)
-            {
-              _ = Launcher.LaunchUriAsync(uri);
-            }
-          }
+          action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
         )]
       };
       results.Add(result);
@@ -100,14 +94,7 @@ public partial class SearchPage : DynamicListPage
         MoreCommands = [new CommandContextItem(
           title: $"Open {Name}",
           name: $"Open {Name}",
-          action: () =>
-          {
-            var uri = GetUri(Item.Domain);
-            if (uri != null)
-            {
-              _ = Launcher.LaunchUriAsync(uri);
-            }
-          }
+          action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
         )]
       })];
     List<ListItem> items = [.. queryItems, .. suggestItems];
