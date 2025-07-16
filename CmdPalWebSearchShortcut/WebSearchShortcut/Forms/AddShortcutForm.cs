@@ -80,7 +80,7 @@ internal sealed partial class AddShortcutForm : FormContent
             "id": "homePage",
             "value": {{JsonSerializer.Serialize(homePage, AppJsonSerializerContext.Default.String)}},
             "label": "HomePage",
-            "placeholder": "Specify the URL to open as the home page",
+            "placeholder": "Optional: custom home page URL (empty = use domain)",
             "isRequired": false,
             "errorMessage": "//"
         }
