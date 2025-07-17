@@ -1,20 +1,19 @@
 using Microsoft.CommandPalette.Extensions.Toolkit;
-
-using BrowserInfo = WebSearchShortcut.Helpers.DefaultBrowserInfo;
+using WebSearchShortcut.Helpers;
 
 namespace WebSearchShortcut.Commands;
 
 internal sealed partial class SearchWebCommand : InvokableCommand
 {
   // private readonly SettingsManager _settingsManager;
-
   public string Arguments { get; internal set; } = string.Empty;
   public WebSearchShortcutItem Item;
+  private readonly BrowserInfo BrowserInfo;
 
   internal SearchWebCommand(string arguments, WebSearchShortcutItem item)
   {
     Arguments = arguments;
-    BrowserInfo.UpdateIfTimePassed();
+    BrowserInfo = new BrowserInfo(item);
     Icon = new IconInfo("\uE721");
     Name = $"Search for '{arguments}'";
     Item = item;
