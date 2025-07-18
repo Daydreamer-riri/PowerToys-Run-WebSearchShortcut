@@ -1,4 +1,3 @@
-
 using System;
 using System.Net;
 using System.Text.Json.Serialization;
@@ -7,26 +6,17 @@ namespace WebSearchShortcut
 {
   public class WebSearchShortcutItem
   {
+    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
-
     public string? Keyword { get; set; }
-
     public string Url { get; set; } = string.Empty;
-
     // public string[]? Urls { get; set; }
-
     public string? SuggestionProvider { get; set; }
-
     // public bool? IsDefault { get; set; }
-
     public string? IconUrl { get; set; }
-
     public string? BrowserPath { get; set; }
-
     public string? ReplaceWhitespace { get; set; }
-
     public string? HomePage { get; set; }
-
     [JsonIgnore]
     public string Domain
     {
