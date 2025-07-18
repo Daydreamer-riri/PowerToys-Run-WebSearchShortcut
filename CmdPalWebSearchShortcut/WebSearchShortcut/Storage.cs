@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -50,6 +52,11 @@ public sealed class Storage
       if (!string.IsNullOrEmpty(jsonStringReading))
       {
         data = JsonSerializer.Deserialize(jsonStringReading, AppJsonSerializerContext.Default.Storage) ?? new Storage();
+        if (data.Data.Any(item => string.IsNullOrWhiteSpace(item.Id)))
+        {
+          WriteToFile(path, data);
+          data = ReadFromFile(path);
+        }
       }
     }
 
@@ -58,8 +65,27 @@ public sealed class Storage
 
   public static void WriteToFile(string path, Storage data)
   {
+    foreach (var item in data.Data)
+    {
+      if (string.IsNullOrWhiteSpace(item.Id))
+      {
+        item.Id = GenerateNewId();
+      }
+    }
+
     var jsonString = JsonSerializer.Serialize(data, AppJsonSerializerContext.Default.Storage);
 
-    File.WriteAllText(WebSearchShortcutCommandsProvider.StateJsonPath(), jsonString);
+    File.WriteAllText(path, jsonString);
   }
+
+  private static string GenerateNewId()
+  {
+    string prefix = Windows.ApplicationModel.Package.Current.Id.FamilyName;
+
+    byte[] buffer = new byte[8];
+    Random.Shared.NextBytes(buffer);
+    ulong randomNumber = BitConverter.ToUInt64(buffer, 0);
+
+    return $"{prefix}!App!ID{randomNumber}";
+    }
 }

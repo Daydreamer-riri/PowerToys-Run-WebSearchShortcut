@@ -7,7 +7,6 @@ using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Commands;
 using WebSearchShortcut.Helpers;
-using Windows.System;
 
 namespace WebSearchShortcut;
 
@@ -24,6 +23,7 @@ public partial class SearchPage : DynamicListPage
   public SearchPage(WebSearchShortcutItem data)
   {
     Item = data;
+    Id = data.Id;
     Name = data.Name;
     Url = data.Url;
     Icon = !string.IsNullOrWhiteSpace(data.IconUrl) ? new IconInfo(data.IconUrl) : new IconInfo(IconFromUrl(Url));
