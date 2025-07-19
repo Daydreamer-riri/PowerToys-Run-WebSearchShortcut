@@ -36,9 +36,9 @@ public class Suggestions
       {
         { Google.Name, new Google() },
         { Bing.Name, new Bing() },
+        { DuckDuckGo.Name, new DuckDuckGo() },
         { YouTube.Name, new YouTube() },
         { Npm.Name, new Npm() },
         { CanIUse.Name, new CanIUse() },
       };
 }
-
