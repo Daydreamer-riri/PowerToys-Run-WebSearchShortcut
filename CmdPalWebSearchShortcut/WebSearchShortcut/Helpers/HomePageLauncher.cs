@@ -1,6 +1,8 @@
 ﻿using Microsoft.CommandPalette.Extensions.Toolkit;
+using WebSearchShortcut.Browsers;
 
 namespace WebSearchShortcut.Helpers;
+
 
 internal static class HomePageLauncher
 {
@@ -14,7 +16,7 @@ internal static class HomePageLauncher
     public static bool OpenHomePageWithBrowser(WebSearchShortcutItem item)
     {
         var homePageUrl = GetHomePageUrl(item);
-        var browserInfo = new BrowserInfo(item);
+        var browserInfo = new BrowserExecutionInfo(item);
 
         return ShellHelpers.OpenCommandInShell(
             browserInfo.Path,
