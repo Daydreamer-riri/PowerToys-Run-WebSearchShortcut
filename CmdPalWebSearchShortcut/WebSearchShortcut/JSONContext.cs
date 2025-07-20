@@ -2,7 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace WebSearchShortcut;
 
-[JsonSourceGenerationOptions(IncludeFields = true)]
+[JsonSourceGenerationOptions(
+    IncludeFields = true,
+    WriteIndented = true)]
 [JsonSerializable(typeof(Storage))]
 [JsonSerializable(typeof(WebSearchShortcutItem))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
