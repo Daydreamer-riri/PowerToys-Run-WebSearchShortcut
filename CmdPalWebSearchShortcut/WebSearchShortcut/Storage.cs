@@ -52,7 +52,7 @@ public sealed class Storage
       if (!string.IsNullOrEmpty(jsonStringReading))
       {
         data = JsonSerializer.Deserialize(jsonStringReading, AppJsonSerializerContext.Default.Storage) ?? new Storage();
-        if (data.Data.Any(item => string.IsNullOrWhiteSpace(item.Id)))
+        if (data.Data.GroupBy(i => i.Id).Any(g => !string.IsNullOrWhiteSpace(g.Key) && g.Count() > 1))
         {
           WriteToFile(path, data);
           data = ReadFromFile(path);
@@ -65,12 +65,23 @@ public sealed class Storage
 
   public static void WriteToFile(string path, Storage data)
   {
+    HashSet<string> existingIds = [];
+
     foreach (var item in data.Data)
     {
-      if (string.IsNullOrWhiteSpace(item.Id))
+      bool needsNewId = string.IsNullOrWhiteSpace(item.Id) || existingIds.Contains(item.Id);
+      if (needsNewId)
       {
-        item.Id = GenerateNewId();
+        string newId;
+        do
+        {
+          newId = GenerateNewId();
+        } while (existingIds.Contains(newId));
+
+        item.Id = newId;
       }
+
+      existingIds.Add(item.Id);
     }
 
     var jsonString = JsonSerializer.Serialize(data, AppJsonSerializerContext.Default.Storage);
@@ -87,5 +98,5 @@ public sealed class Storage
     ulong randomNumber = BitConverter.ToUInt64(buffer, 0);
 
     return $"{prefix}!App!ID{randomNumber}";
-    }
+  }
 }
