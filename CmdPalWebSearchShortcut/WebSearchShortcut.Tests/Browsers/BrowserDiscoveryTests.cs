@@ -14,7 +14,7 @@ namespace WebSearchShortcut.Tests.Helpers
 
       foreach (var browerInfo in browerInfos)
       {
-        Console.WriteLine($"Found brower: {browerInfo}");
+        Console.WriteLine($"Found brower: {browerInfo.Name}({browerInfo.Id}) - {browerInfo.Path} {browerInfo.ArgumentsPattern}");
       }
 
       Console.WriteLine($"Total browers: {browerInfos.Count}");

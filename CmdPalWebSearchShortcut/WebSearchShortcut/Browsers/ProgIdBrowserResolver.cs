@@ -24,12 +24,7 @@ public static class ProgIdBrowserResolver
       throw new ArgumentException($"Invalid browser path from ProgId: {progId} → {path}");
     }
 
-    return new BrowserInfo
-    {
-      Name = name,
-      Path = path,
-      ArgumentsPattern = args
-    };
+    return new BrowserInfo(progId, name, path, args);
   }
 
   private static string? GetRegistryValue(string registryLocation, string? valueName)

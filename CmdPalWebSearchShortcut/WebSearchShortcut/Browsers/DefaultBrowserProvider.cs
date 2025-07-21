@@ -15,18 +15,15 @@ namespace WebSearchShortcut.Browsers;
 public static class DefaultBrowserProvider
 {
   /// <summary>Gets the MS Edge browse.</summary>
-  private static readonly BrowserInfo MSEdgeBrowser = new()
-  {
-    Name = "Microsoft Edge",
-
-    // Gets the path to the MS Edge browser executable.
-    Path = System.IO.Path.Combine(
-      Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-      @"Microsoft\Edge\Application\msedge.exe"),
-
-    // Gets the command line pattern of the MS Edge.
-    ArgumentsPattern = "--single-argument %1"
-  };
+  private static readonly BrowserInfo MSEdgeBrowser = new(
+      "MSEdgeHTM",
+      "Microsoft Edge",
+      System.IO.Path.Combine(
+          Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+          @"Microsoft\Edge\Application\msedge.exe"
+      ),
+      "--single-argument %1"
+  );
 
   private static readonly Lock _updateLock = new();
 
