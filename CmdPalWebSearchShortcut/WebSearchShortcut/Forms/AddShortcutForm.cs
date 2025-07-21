@@ -24,7 +24,6 @@ internal sealed partial class AddShortcutForm : FormContent
     var browserPath = _item?.BrowserPath ?? string.Empty;
     var browserArgs = _item?.BrowserArgs ?? string.Empty;
 
-    BrowserDiscovery.Reload();
     string browserChoices = BrowserDiscovery.GetAllInstalledBrowsers()
         .Where(b => !string.IsNullOrWhiteSpace(b.Path))
         .Select(b => $$"""
