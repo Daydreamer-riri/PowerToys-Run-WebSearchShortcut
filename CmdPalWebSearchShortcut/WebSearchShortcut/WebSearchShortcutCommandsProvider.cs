@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using WebSearchShortcut.Constants;
+using WebSearchShortcut.Services;
 
 namespace WebSearchShortcut;
 
@@ -20,10 +22,6 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
   private readonly AddShortcutPage _addNewCommand = new(null);
 
   private Storage? _storage;
-
-  public static IconInfo DeleteIcon { get; private set; } = new("\uE74D"); // Delete
-
-  public static IconInfo EditIcon { get; private set; } = new("\uE70F"); // Edit
 
 
   public WebSearchShortcutCommandsProvider()
@@ -54,14 +52,10 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
     {
       return;
     }
-    var url = await SearchPage.IconFromUrlFallback(new Uri(item.Domain));
-    var target = item;
-    if (target != null)
-    {
-      target.IconUrl = url;
-      SaveAndUpdateCommands();
-      ExtensionHost.LogMessage($"Updating icon URL for bookmark ({item.Name},{item.Url}) to {url}");
-    }
+
+    var url = await IconService.UpdateIconUrlAsync(item);
+    SaveAndUpdateCommands();
+    ExtensionHost.LogMessage($"Updating icon URL for bookmark ({item.Name},{item.Url}) to {url}");
   }
 
   private void Edit_AddedCommand(object sender, WebSearchShortcutItem args)
@@ -116,7 +110,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
       listItem.Subtitle = $"Search {item.Name}";
     }
 
-    var edit = new AddShortcutPage(item) { Icon = EditIcon };
+    var edit = new AddShortcutPage(item) { Icon = Icons.Edit };
     edit.AddedCommand += Edit_AddedCommand;
     contextMenu.Add(new CommandContextItem(edit));
 
@@ -137,7 +131,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         result: CommandResult.KeepOpen())
     {
       IsCritical = true,
-      Icon = DeleteIcon,
+      Icon = Icons.Delete,
     };
     contextMenu.Add(delete);
 
