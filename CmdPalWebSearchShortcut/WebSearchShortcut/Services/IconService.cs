@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
@@ -18,6 +19,16 @@ public static class IconService
 {
     private static readonly string DefaultIconFallback = "🔗";
     private static readonly string UserAgent = "Mozilla/5.0 (compatible; AcmeInc/1.0)";
+
+    /// <summary>
+    /// Blacklist of domains that have poor quality favicon.ico files
+    /// For these domains, we'll directly use Google's favicon service
+    /// </summary>
+    private static readonly HashSet<string> FaviconBlacklist = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "youtube.com",
+        "www.youtube.com"
+    };
 
     /// <summary>
     /// Gets an IconInfo for the specified item, using cached icon URL if available or generating one from the URL
@@ -70,6 +81,13 @@ public static class IconService
         if (uri == null)
         {
             return DefaultIconFallback;
+        }
+
+        // Check if the domain is in the blacklist
+        if (FaviconBlacklist.Contains(uri.Host))
+        {
+            // Directly use Google's favicon service for blacklisted domains
+            return $"https://www.google.com/s2/favicons?sz=64&domain={uri.GetLeftPart(UriPartial.Authority)}";
         }
 
         // First try the direct favicon.ico
