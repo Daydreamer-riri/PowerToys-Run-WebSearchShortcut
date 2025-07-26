@@ -10,14 +10,14 @@ namespace WebSearchShortcut.Tests.Helpers
     [TestMethod]
     public void FindUniqueHttpUrlAssociationProgIdsShouldPrintResults()
     {
-      var browerInfos = BrowserDiscovery.GetAllInstalledBrowsers();
+      var browserInfos = BrowserDiscovery.GetAllInstalledBrowsers();
 
-      foreach (var browerInfo in browerInfos)
+      foreach (var browserInfo in browserInfos)
       {
-        Console.WriteLine($"Found brower: {browerInfo.Name}({browerInfo.Id}) - {browerInfo.Path} {browerInfo.ArgumentsPattern}");
+        Console.WriteLine($"Found browser: {browserInfo.Name}({browserInfo.Id}) - {browserInfo.Path} {browserInfo.ArgumentsPattern}");
       }
 
-      Console.WriteLine($"Total browers: {browerInfos.Count}");
+      Console.WriteLine($"Total browsers: {browserInfos.Count}");
     }
   }
 }
