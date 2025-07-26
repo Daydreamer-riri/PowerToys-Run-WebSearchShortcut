@@ -1,9 +1,5 @@
-
 using Microsoft.CommandPalette.Extensions.Toolkit;
-
 using WebSearchShortcut.Helpers;
-
-using BrowserInfo = WebSearchShortcut.Helpers.DefaultBrowserInfo;
 
 namespace WebSearchShortcut.Commands;
 
@@ -15,7 +11,6 @@ internal sealed partial class OpenHomePageCommand : InvokableCommand
 
   internal OpenHomePageCommand(WebSearchShortcutItem item)
   {
-    BrowserInfo.UpdateIfTimePassed();
     Icon = new IconInfo("\uE721");
     Name = $"Open {item.Name}";
     Item = item;
