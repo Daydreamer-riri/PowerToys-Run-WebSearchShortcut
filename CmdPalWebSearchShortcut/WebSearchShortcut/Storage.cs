@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using WebSearchShortcut.Helpers;
 
 namespace WebSearchShortcut;
 
@@ -58,7 +59,7 @@ public sealed class Storage
 
   public static void WriteToFile(string path, Storage data)
   {
-    var jsonString = JsonSerializer.Serialize(data, AppJsonSerializerContext.Default.Storage);
+    var jsonString = JsonPrettyFormatter.ToPrettyJson(data, AppJsonSerializerContext.Default.Storage);
 
     File.WriteAllText(WebSearchShortcutCommandsProvider.StateJsonPath(), jsonString);
   }
