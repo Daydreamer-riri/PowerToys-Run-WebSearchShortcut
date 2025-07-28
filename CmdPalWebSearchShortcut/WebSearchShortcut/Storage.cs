@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -51,6 +52,12 @@ public sealed class Storage
             if (!string.IsNullOrEmpty(jsonStringReading))
             {
                 data = JsonSerializer.Deserialize(jsonStringReading, AppJsonSerializerContext.Default.Storage) ?? new Storage();
+
+                bool modified = EnsureIds(data.Data);
+                if (modified)
+                {
+                    WriteToFile(path, data);
+                }
             }
         }
 
@@ -59,8 +66,39 @@ public sealed class Storage
 
     public static void WriteToFile(string path, Storage data)
     {
+        EnsureIds(data.Data);
+
         var jsonString = JsonPrettyFormatter.ToPrettyJson(data, AppJsonSerializerContext.Default.Storage);
 
-        File.WriteAllText(WebSearchShortcutCommandsProvider.StateJsonPath(), jsonString);
+        File.WriteAllText(path, jsonString);
+    }
+
+    private static bool EnsureIds(List<WebSearchShortcutItem> items)
+    {
+        bool modified = false;
+        HashSet<string> existingIds = [];
+
+        foreach (var item in items)
+        {
+            while (string.IsNullOrWhiteSpace(item.Id) || existingIds.Contains(item.Id))
+            {
+                modified = true;
+                item.Id = GenerateNewId();
+            }
+            existingIds.Add(item.Id);
+        }
+
+        return modified;
+    }
+
+    private static string GenerateNewId()
+    {
+        string prefix = Windows.ApplicationModel.Package.Current.Id.FamilyName;
+
+        byte[] buffer = new byte[8];
+        Random.Shared.NextBytes(buffer);
+        ulong randomNumber = BitConverter.ToUInt64(buffer, 0);
+
+        return $"{prefix}!App!ID{randomNumber}";
     }
 }
