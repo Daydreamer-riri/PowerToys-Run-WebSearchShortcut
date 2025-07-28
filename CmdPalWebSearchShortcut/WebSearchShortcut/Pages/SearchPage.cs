@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Globalization;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Commands;
@@ -8,11 +10,16 @@ using WebSearchShortcut.Constants;
 using WebSearchShortcut.Helpers;
 using WebSearchShortcut.Services;
 using Windows.System;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut;
 
 public partial class SearchPage : DynamicListPage
 {
+  private static readonly CompositeFormat _subtitleFormat = CompositeFormat.Parse(Resources.SearchPage_Subtitle);
+  private static readonly CompositeFormat _moreCommandTitleFormat = CompositeFormat.Parse(Resources.SearchPage_MoreCommandsTitle);
+  private static readonly CompositeFormat _moreCommandNameFormat = CompositeFormat.Parse(Resources.SearchPage_MoreCommandsName);
+
   public string Url { get; }
   public WebSearchShortcutItem Item { get; }
 
@@ -55,10 +62,10 @@ public partial class SearchPage : DynamicListPage
       var result = new ListItem(new SearchWebCommand(searchTerm, Item))
       {
         Title = searchTerm,
-        Subtitle = $"Search {Name} for '{searchTerm}'",
+        Subtitle = string.Format(CultureInfo.CurrentCulture, _subtitleFormat, Name, searchTerm),
         MoreCommands = [new CommandContextItem(
-          title: $"Open {Name}",
-          name: $"Open {Name}",
+          title: string.Format(CultureInfo.CurrentCulture, _moreCommandTitleFormat, Name),
+          name: string.Format(CultureInfo.CurrentCulture, _moreCommandNameFormat, Name),
           action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
         )]
       };
@@ -88,11 +95,13 @@ public partial class SearchPage : DynamicListPage
       .Select(s => new ListItem(new SearchWebCommand(s.Title, Item))
       {
         Title = s.Title,
-        Subtitle = s.Description ?? "",
+        Subtitle = !string.IsNullOrWhiteSpace(s.Description)
+                   ? TryFormatSafe(s.Description, Item.Name, s.Title)
+                   : "",
         // TextToSuggest = s.Title,
         MoreCommands = [new CommandContextItem(
-          title: $"Open {Name}",
-          name: $"Open {Name}",
+          title: string.Format(CultureInfo.CurrentCulture, _moreCommandTitleFormat, Name),
+          name: string.Format(CultureInfo.CurrentCulture, _moreCommandNameFormat, Name),
           action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
         )]
       })];
@@ -101,5 +110,17 @@ public partial class SearchPage : DynamicListPage
 
     allItems = items;
     RaiseItemsChanged(allItems.Count);
+  }
+
+  private static string TryFormatSafe(string format, params object[] args)
+  {
+    try
+    {
+      return string.Format(CultureInfo.CurrentCulture, format, args);
+    }
+    catch (FormatException)
+    {
+      return format;
+    }
   }
 }

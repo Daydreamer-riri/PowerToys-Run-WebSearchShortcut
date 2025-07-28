@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.SuggestionsProvider;
 public class CanIUse : IWebSearchShortcutSuggestionsProvider
@@ -37,7 +38,7 @@ public class CanIUse : IWebSearchShortcutSuggestionsProvider
               : new SuggestionsItem(
                 title,
                 // Resources.search_for.Replace("%search", $"\"{title}\"")
-                $"Search for \"{title}\""
+                Resources.SuggestionsProvider_Description
               );
           })
           .Where(s => s != null)

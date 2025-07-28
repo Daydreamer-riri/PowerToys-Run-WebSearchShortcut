@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.SuggestionsProvider;
 public class Bing : IWebSearchShortcutSuggestionsProvider
@@ -45,7 +46,7 @@ public class Bing : IWebSearchShortcutSuggestionsProvider
         .Select(t => new SuggestionsItem(
           t,
           // Resources.search_for.Replace("%search", $"\"{t}\"")
-          $"Search for \"{t}\""
+          Resources.SuggestionsProvider_Description
         ))
         .ToList();
     }

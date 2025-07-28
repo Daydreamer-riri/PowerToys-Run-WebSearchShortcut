@@ -1,10 +1,14 @@
+using System.Globalization;
+using System.Text;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Browsers;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.Commands;
 
 internal sealed partial class SearchWebCommand : InvokableCommand
 {
+  private static readonly CompositeFormat _nameFormat = CompositeFormat.Parse(Resources.SearchWebCommand_Name);
   // private readonly SettingsManager _settingsManager;
   public string Arguments { get; internal set; } = string.Empty;
   public WebSearchShortcutItem Item;
@@ -15,7 +19,7 @@ internal sealed partial class SearchWebCommand : InvokableCommand
     Arguments = arguments;
     BrowserInfo = new BrowserExecutionInfo(item);
     Icon = new IconInfo("\uE721");
-    Name = $"Search for '{arguments}'";
+    Name = string.Format(CultureInfo.CurrentCulture, _nameFormat, item.Name, arguments);
     Item = item;
     // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png");
     // Name = Properties.Resources.open_in_default_browser;

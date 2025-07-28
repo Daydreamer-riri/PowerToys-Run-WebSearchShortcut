@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.SuggestionsProvider;
 public class YouTube : IWebSearchShortcutSuggestionsProvider
@@ -38,7 +39,7 @@ public class YouTube : IWebSearchShortcutSuggestionsProvider
           .Select(o =>
           {
             var title = o[0].GetString();
-            var description = $"Search for \"{title}\"";
+            var description = Resources.SuggestionsProvider_Description;
             return title == null ? null : new SuggestionsItem(title, description ?? "");
           })
           .Where(s => s != null)
