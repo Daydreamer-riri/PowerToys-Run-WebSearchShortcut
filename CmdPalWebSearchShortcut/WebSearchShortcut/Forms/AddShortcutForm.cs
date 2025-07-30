@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Windows.Foundation;
 using WebSearchShortcut.Browsers;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut;
 
@@ -24,16 +25,6 @@ internal sealed partial class AddShortcutForm : FormContent
     var browserPath = _item?.BrowserPath ?? string.Empty;
     var browserArgs = _item?.BrowserArgs ?? string.Empty;
 
-    string browserChoices = BrowserDiscovery.GetAllInstalledBrowsers()
-        .Where(b => !string.IsNullOrWhiteSpace(b.Path))
-        .Select(b => $$"""
-            {
-                "title": {{JsonSerializer.Serialize(b.Name, AppJsonSerializerContext.Default.String)}},
-                "value": {{JsonSerializer.Serialize(b.Path, AppJsonSerializerContext.Default.String)}}
-            }
-            """)
-        .Aggregate((a, b) => a + "," + b);
-
     TemplateJson = $$"""
 {
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -43,29 +34,29 @@ internal sealed partial class AddShortcutForm : FormContent
         {
             "id": "name",
             "type": "Input.Text",
-            "label": "Name",
+            "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_NameLabel, AppJsonSerializerContext.Default.String)}},
             "value": {{JsonSerializer.Serialize(name, AppJsonSerializerContext.Default.String)}},
             "isRequired": true,
-            "errorMessage": "Name is required"
+            "errorMessage": {{JsonSerializer.Serialize(Resources.AddShortcutForm_NameErrorMessage, AppJsonSerializerContext.Default.String)}}
         },
         {
             "id": "url",
             "type": "Input.Text",
             "style": "Url",
-            "label": "URL",
-            "placeholder": "Use %s as the placeholder for search terms",
+            "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_UrlLabel, AppJsonSerializerContext.Default.String)}},
+            "placeholder": {{JsonSerializer.Serialize(Resources.AddShortcutForm_UrlPlaceholder, AppJsonSerializerContext.Default.String)}},
             "value": {{JsonSerializer.Serialize(url, AppJsonSerializerContext.Default.String)}},
             "isRequired": true,
-            "errorMessage": "URL is required"
+            "errorMessage": {{JsonSerializer.Serialize(Resources.AddShortcutForm_UrlErrorMessage, AppJsonSerializerContext.Default.String)}}
         },
         {
             "id": "suggestionProvider",
             "type": "Input.ChoiceSet",
-            "label": "Suggestion Provider",
-            "placeholder": "Invalid Suggestion Provider",
+            "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_SuggestionProviderLabel, AppJsonSerializerContext.Default.String)}},
+            "placeholder": {{JsonSerializer.Serialize(Resources.AddShortcutForm_SuggestionProviderPlaceholder, AppJsonSerializerContext.Default.String)}},
             "choices": [
                 {
-                    "title": "None",
+                    "title": {{JsonSerializer.Serialize(Resources.AddShortcutForm_SuggestionProviderNone, AppJsonSerializerContext.Default.String)}},
                     "value": ""
                 },
                 {{Suggestions.SuggestionProviders.Keys.Select(k => $$"""
@@ -81,29 +72,38 @@ internal sealed partial class AddShortcutForm : FormContent
             "type": "Input.Text",
             "style": "text",
             "id": "replaceWhitespace",
-            "label": "Replace Whitespace",
-            "placeholder": "Specify which character(s) to replace a space",
+            "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_ReplaceWhitespaceLabel, AppJsonSerializerContext.Default.String)}},
+            "placeholder": {{JsonSerializer.Serialize(Resources.AddShortcutForm_ReplaceWhitespacePlaceholder, AppJsonSerializerContext.Default.String)}},
             "value": {{JsonSerializer.Serialize(replaceWhitespace, AppJsonSerializerContext.Default.String)}}
         },
         {
             "type": "Input.Text",
             "style": "text",
             "id": "homePage",
-            "label": "Homepage",
-            "placeholder": "Optional: custom home page URL (empty = use domain)",
+            "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_HomepageLabel, AppJsonSerializerContext.Default.String)}},
+            "placeholder": {{JsonSerializer.Serialize(Resources.AddShortcutForm_HomepagePlaceholder, AppJsonSerializerContext.Default.String)}},
             "value": {{JsonSerializer.Serialize(homePage, AppJsonSerializerContext.Default.String)}}
         },
         {
             "id": "browserPath",
             "type": "Input.ChoiceSet",
-            "label": "Browser",
+            "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_BrowserPathLabel, AppJsonSerializerContext.Default.String)}},
             "placeholder": {{JsonSerializer.Serialize(browserPath, AppJsonSerializerContext.Default.String)}},
             "choices": [
                 {
-                    "title": "Default",
+                    "title": {{JsonSerializer.Serialize(Resources.AddShortcutForm_BrowserPathDefault, AppJsonSerializerContext.Default.String)}},
                     "value": ""
                 },
-                {{browserChoices}}
+                {{BrowserDiscovery.GetAllInstalledBrowsers()
+                    .Where(b => !string.IsNullOrWhiteSpace(b.Path))
+                    .Select(b => $$"""
+                        {
+                            "title": {{JsonSerializer.Serialize(b.Name, AppJsonSerializerContext.Default.String)}},
+                            "value": {{JsonSerializer.Serialize(b.Path, AppJsonSerializerContext.Default.String)}}
+                        }
+                        """)
+                    .Aggregate((a, b) => a + "," + b)
+                }}
             ],
             "value": {{JsonSerializer.Serialize(browserPath, AppJsonSerializerContext.Default.String)}}
         },
@@ -111,15 +111,15 @@ internal sealed partial class AddShortcutForm : FormContent
             "id": "browserArgs",
             "type": "Input.Text",
             "style": "text",
-            "label": "Browser Arguments",
-            "placeholder": "Optional launch arguments, use %1 for URL",
+            "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_BrowserArgsLabel, AppJsonSerializerContext.Default.String)}},
+            "placeholder": {{JsonSerializer.Serialize(Resources.AddShortcutForm_BrowserArgsPlaceholder, AppJsonSerializerContext.Default.String)}},
             "value": {{JsonSerializer.Serialize(browserArgs, AppJsonSerializerContext.Default.String)}}
         }
     ],
     "actions": [
         {
             "type": "Action.Submit",
-            "title": "Save",
+            "title": {{JsonSerializer.Serialize(Resources.AddShortcutForm_Save, AppJsonSerializerContext.Default.String)}},
             "data": {
                 "name": "name",
                 "url": "url",

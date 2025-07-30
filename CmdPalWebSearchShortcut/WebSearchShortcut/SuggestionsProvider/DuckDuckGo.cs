@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.SuggestionsProvider;
 
@@ -33,13 +34,11 @@ class DuckDuckGo : IWebSearchShortcutSuggestionsProvider
           .EnumerateArray()
           .Select(o => o.GetProperty("phrase").GetString())
           .Where(s => !string.IsNullOrEmpty(s) && !s.Equals(query, StringComparison.OrdinalIgnoreCase))
-          .ToList()!;
+          .Select(s => s!)
+          .ToList();
 
       return titles
-          .Select(t => new SuggestionsItem(
-              t,
-              $"Search for \"{t}\""
-          ))
+          .Select(t => new SuggestionsItem(t))
           .ToList();
     }
     catch (Exception e)

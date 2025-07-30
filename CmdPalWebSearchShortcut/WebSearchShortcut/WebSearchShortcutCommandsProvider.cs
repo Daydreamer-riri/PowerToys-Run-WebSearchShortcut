@@ -5,13 +5,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using SmartFormat;
 using WebSearchShortcut.Constants;
+using WebSearchShortcut.Properties;
 using WebSearchShortcut.Services;
 
 namespace WebSearchShortcut;
@@ -26,7 +26,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
   public WebSearchShortcutCommandsProvider()
   {
-    DisplayName = "WebSearchShortcut";
+    DisplayName = Resources.WebSearchShortcutCommandsProvider_DisplayName;
     Icon = IconHelpers.FromRelativePath("Assets\\Search.png");
     _commands = [
         // new CommandItem(new WebSearchShortcutPage()) { Title = DisplayName },
@@ -107,7 +107,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     if (command is SearchPage searchPage)
     {
-      listItem.Subtitle = $"Search {item.Name}";
+      listItem.Subtitle = Smart.Format(Resources.WebSearchShortcutCommandsProvider_CommandItemSubtitle, new {engine = item.Name});
     }
 
     var edit = new AddShortcutPage(item) { Icon = Icons.Edit };
@@ -115,8 +115,8 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
     contextMenu.Add(new CommandContextItem(edit));
 
     var delete = new CommandContextItem(
-        title: "Delete",
-        name: "Delete",
+        title: Resources.WebSearchShortcutCommandsProvider_CommandItemDeleteTitle,
+        name: Resources.WebSearchShortcutCommandsProvider_CommandItemDeleteName,
         action: () =>
         {
           if (_storage != null)

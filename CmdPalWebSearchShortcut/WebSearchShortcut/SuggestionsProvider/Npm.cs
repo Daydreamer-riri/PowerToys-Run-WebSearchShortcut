@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace WebSearchShortcut.SuggestionsProvider;
+
 public class Npm : IWebSearchShortcutSuggestionsProvider
 {
   public static string Name => "Npm";
@@ -33,9 +34,9 @@ public class Npm : IWebSearchShortcutSuggestionsProvider
           {
             var title = o.GetProperty("name").GetString();
             var description = o.GetProperty("description").GetString();
-            return title == null ? null : new SuggestionsItem(title, description ?? "");
+            return title is null ? null : new SuggestionsItem(title, description ?? "");
           })
-          .Where(s => s != null)
+          .Where(s => s is not null)
           .Select(s => s!)
           .ToList();
 

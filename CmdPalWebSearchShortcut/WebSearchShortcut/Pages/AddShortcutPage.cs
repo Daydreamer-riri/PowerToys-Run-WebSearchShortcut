@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Windows.Foundation;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut;
 
@@ -27,7 +28,7 @@ internal sealed partial class AddShortcutPage : ContentPage
 
         _addShortcut = new AddShortcutForm(item);
         Icon = IconHelpers.FromRelativePath("Assets\\SearchAdd.png");
-        Title = isAdd ? "Add Search Shortcut" : "Edit Search Shortcut";
-        Name = isAdd ? "Add Search Shortcut" : "Edit Search Shortcut";
+        Title = isAdd ? Resources.AddShortcutPage_AddTitle : Resources.AddShortcutPage_EditTitle;
+        Name = isAdd ? Resources.AddShortcutPage_AddName : Resources.AddShortcutPage_EditName;
     }
 }

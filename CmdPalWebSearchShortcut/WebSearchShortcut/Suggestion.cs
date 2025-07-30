@@ -9,7 +9,7 @@ public interface IWebSearchShortcutSuggestionsProvider
   Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query);
 }
 
-public class SuggestionsItem(string title, string description)
+public class SuggestionsItem(string title, string? description = null)
 {
   public string Title { get; } = title;
   public string? Description { get; } = description;
@@ -20,7 +20,7 @@ public class Suggestions
   static public Task<List<SuggestionsItem>> QuerySuggestionsAsync(string name, string query)
   {
     var provider = SuggestionProviders[name];
-    if (provider != null)
+    if (provider is not null)
     {
       return provider.QuerySuggestionsAsync(query);
     }
