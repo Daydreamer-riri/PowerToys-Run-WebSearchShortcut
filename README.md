@@ -78,11 +78,11 @@ Used to set the search suggestion provider.
 
 Planned:
 
-- [ ] `DuckDuckGo`
+- [x] `DuckDuckGo`
 - [ ] `Yandex`
 - [ ] `Baidu`
 - [x] `Youtube`
-- [ ] `Wiki`
+- [x] `Wiki`
 
 PRs welcome!
 
