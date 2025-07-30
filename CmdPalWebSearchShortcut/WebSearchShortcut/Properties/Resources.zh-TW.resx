@@ -190,24 +190,24 @@
     <value>網頁搜尋捷徑</value>
   </data>
   <data name="OpenHomePageCommand_Name" xml:space="preserve">
-    <value>開啟 {0} 首頁</value>
+    <value>開啟 {engine} 首頁</value>
   </data>
   <data name="SearchPage_MoreCommandsTitle" xml:space="preserve">
-    <value>開啟 {0} 首頁</value>
+    <value>開啟 {engine} 首頁</value>
   </data>
   <data name="SearchPage_MoreCommandsName" xml:space="preserve">
-    <value>開啟 {0} 首頁</value>
+    <value>開啟 {engine} 首頁</value>
   </data>
   <data name="SearchPage_Subtitle" xml:space="preserve">
-    <value>在 {0} 上搜尋「{1}」</value>
+    <value>在 {engine} 上搜尋「{query}」</value>
   </data>
   <data name="WebSearchShortcutCommandsProvider_CommandItemSubtitle" xml:space="preserve">
-    <value>在 {0} 上搜尋</value>
+    <value>在 {engine} 上搜尋</value>
   </data>
   <data name="SearchWebCommand_Name" xml:space="preserve">
-    <value>搜尋「{1}」</value>
+    <value>搜尋「{query}」</value>
   </data>
   <data name="SuggestionsProvider_Description" xml:space="preserve">
-    <value>在 {0} 上搜尋「{1}」</value>
+    <value>在 {engine} 上搜尋「{query}」</value>
   </data>
 </root>

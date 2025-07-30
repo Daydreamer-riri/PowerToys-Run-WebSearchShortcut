@@ -190,24 +190,24 @@
     <value>WebSearchShortcut</value>
   </data>
   <data name="OpenHomePageCommand_Name" xml:space="preserve">
-    <value>Open {0}</value>
+    <value>Open {engine}</value>
   </data>
   <data name="SearchPage_MoreCommandsTitle" xml:space="preserve">
-    <value>Open {0}</value>
+    <value>Open {engine}</value>
   </data>
   <data name="SearchPage_MoreCommandsName" xml:space="preserve">
-    <value>Open {0}</value>
+    <value>Open {engine}</value>
   </data>
   <data name="SearchPage_Subtitle" xml:space="preserve">
-    <value>Search {0} for "{1}"</value>
+    <value>Search {engine} for "{query}"</value>
   </data>
   <data name="WebSearchShortcutCommandsProvider_CommandItemSubtitle" xml:space="preserve">
-    <value>Search {0}</value>
+    <value>Search {engine}</value>
   </data>
   <data name="SearchWebCommand_Name" xml:space="preserve">
-    <value>Search for "{1}"</value>
+    <value>Search for "{query}"</value>
   </data>
   <data name="SuggestionsProvider_Description" xml:space="preserve">
-    <value>Search {0} for "{1}"</value>
+    <value>Search {engine} for "{query}"</value>
   </data>
 </root>

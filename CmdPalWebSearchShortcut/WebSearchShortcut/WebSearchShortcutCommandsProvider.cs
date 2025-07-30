@@ -5,14 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using SmartFormat;
 using WebSearchShortcut.Constants;
 using WebSearchShortcut.Properties;
 using WebSearchShortcut.Services;
@@ -21,8 +18,7 @@ namespace WebSearchShortcut;
 
 public partial class WebSearchShortcutCommandsProvider : CommandProvider
 {
-  private static readonly CompositeFormat _commandItemSubtitleFormat = CompositeFormat.Parse(Resources.WebSearchShortcutCommandsProvider_CommandItemSubtitle);
-    private readonly List<ICommandItem> _commands;
+  private readonly List<ICommandItem> _commands;
   private readonly AddShortcutPage _addNewCommand = new(null);
 
   private Storage? _storage;
@@ -111,7 +107,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     if (command is SearchPage searchPage)
     {
-      listItem.Subtitle = string.Format(CultureInfo.CurrentCulture, _commandItemSubtitleFormat, item.Name);
+      listItem.Subtitle = Smart.Format(Resources.WebSearchShortcutCommandsProvider_CommandItemSubtitle, new {engine = item.Name});
     }
 
     var edit = new AddShortcutPage(item) { Icon = Icons.Edit };

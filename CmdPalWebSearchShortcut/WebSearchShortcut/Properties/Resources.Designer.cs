@@ -250,7 +250,7 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open {0}.
+        ///   Looks up a localized string similar to Open {engine}.
         /// </summary>
         internal static string OpenHomePageCommand_Name {
             get {
@@ -259,7 +259,7 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open {0}.
+        ///   Looks up a localized string similar to Open {engine}.
         /// </summary>
         internal static string SearchPage_MoreCommandsName {
             get {
@@ -268,7 +268,7 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open {0}.
+        ///   Looks up a localized string similar to Open {engine}.
         /// </summary>
         internal static string SearchPage_MoreCommandsTitle {
             get {
@@ -277,7 +277,7 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search {0} for &quot;{1}&quot;.
+        ///   Looks up a localized string similar to Search {engine} for &quot;{query}&quot;.
         /// </summary>
         internal static string SearchPage_Subtitle {
             get {
@@ -286,7 +286,7 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search for &quot;{1}&quot;.
+        ///   Looks up a localized string similar to Search for &quot;{query}&quot;.
         /// </summary>
         internal static string SearchWebCommand_Name {
             get {
@@ -295,7 +295,7 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search {0} for &quot;{1}&quot;.
+        ///   Looks up a localized string similar to Search {engine} for &quot;{query}&quot;.
         /// </summary>
         internal static string SuggestionsProvider_Description {
             get {
@@ -322,7 +322,7 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search {0}.
+        ///   Looks up a localized string similar to Search {engine}.
         /// </summary>
         internal static string WebSearchShortcutCommandsProvider_CommandItemSubtitle {
             get {

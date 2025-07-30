@@ -1,25 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Globalization;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using SmartFormat;
 using WebSearchShortcut.Commands;
-using WebSearchShortcut.Constants;
 using WebSearchShortcut.Helpers;
-using WebSearchShortcut.Services;
-using Windows.System;
 using WebSearchShortcut.Properties;
+using WebSearchShortcut.Services;
 
 namespace WebSearchShortcut;
 
 public partial class SearchPage : DynamicListPage
 {
-  private static readonly CompositeFormat _subtitleFormat = CompositeFormat.Parse(Resources.SearchPage_Subtitle);
-  private static readonly CompositeFormat _moreCommandTitleFormat = CompositeFormat.Parse(Resources.SearchPage_MoreCommandsTitle);
-  private static readonly CompositeFormat _moreCommandNameFormat = CompositeFormat.Parse(Resources.SearchPage_MoreCommandsName);
-
   public string Url { get; }
   public WebSearchShortcutItem Item { get; }
 
@@ -62,10 +55,10 @@ public partial class SearchPage : DynamicListPage
       var result = new ListItem(new SearchWebCommand(searchTerm, Item))
       {
         Title = searchTerm,
-        Subtitle = string.Format(CultureInfo.CurrentCulture, _subtitleFormat, Name, searchTerm),
+        Subtitle = Smart.Format(Resources.SearchPage_Subtitle, new { engine = Name, query = searchTerm }),
         MoreCommands = [new CommandContextItem(
-          title: string.Format(CultureInfo.CurrentCulture, _moreCommandTitleFormat, Name),
-          name: string.Format(CultureInfo.CurrentCulture, _moreCommandNameFormat, Name),
+          title: Smart.Format(Resources.SearchPage_MoreCommandsTitle, new { engine = Name }),
+          name: Smart.Format(Resources.SearchPage_MoreCommandsName, new { engine = Name }),
           action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
         )]
       };
@@ -96,12 +89,12 @@ public partial class SearchPage : DynamicListPage
       {
         Title = s.Title,
         Subtitle = !string.IsNullOrWhiteSpace(s.Description)
-                   ? TryFormatSafe(s.Description, Item.Name, s.Title)
+                   ? TryFormatSafe(s.Description, new { engine = Item.Name, query = s.Title })
                    : "",
         // TextToSuggest = s.Title,
         MoreCommands = [new CommandContextItem(
-          title: string.Format(CultureInfo.CurrentCulture, _moreCommandTitleFormat, Name),
-          name: string.Format(CultureInfo.CurrentCulture, _moreCommandNameFormat, Name),
+          title: Smart.Format(Resources.SearchPage_MoreCommandsTitle, new { engine = Name }),
+          name: Smart.Format(Resources.SearchPage_MoreCommandsName, new { engine = Name }),
           action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
         )]
       })];
@@ -112,13 +105,13 @@ public partial class SearchPage : DynamicListPage
     RaiseItemsChanged(allItems.Count);
   }
 
-  private static string TryFormatSafe(string format, params object[] args)
+  private static string TryFormatSafe(string format, object args)
   {
     try
     {
-      return string.Format(CultureInfo.CurrentCulture, format, args);
+      return Smart.Format(format, args);
     }
-    catch (FormatException)
+    catch (Exception)  // TODO: Improve exception handling
     {
       return format;
     }
