@@ -66,7 +66,8 @@ internal sealed partial class AddShortcutForm : FormContent
                 }
                 """).Aggregate((a, b) => a + "," + b)}}
             ],
-            "value": {{JsonSerializer.Serialize(suggestionProvider, AppJsonSerializerContext.Default.String)}}
+            "value": {{JsonSerializer.Serialize(suggestionProvider, AppJsonSerializerContext.Default.String)}},
+            "errorMessage": "// Just for space between items"
         },
         {
             "type": "Input.Text",
@@ -74,7 +75,8 @@ internal sealed partial class AddShortcutForm : FormContent
             "id": "replaceWhitespace",
             "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_ReplaceWhitespaceLabel, AppJsonSerializerContext.Default.String)}},
             "placeholder": {{JsonSerializer.Serialize(Resources.AddShortcutForm_ReplaceWhitespacePlaceholder, AppJsonSerializerContext.Default.String)}},
-            "value": {{JsonSerializer.Serialize(replaceWhitespace, AppJsonSerializerContext.Default.String)}}
+            "value": {{JsonSerializer.Serialize(replaceWhitespace, AppJsonSerializerContext.Default.String)}},
+            "errorMessage": "// Just for space between items"
         },
         {
             "type": "Input.Text",
@@ -82,7 +84,8 @@ internal sealed partial class AddShortcutForm : FormContent
             "id": "homePage",
             "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_HomepageLabel, AppJsonSerializerContext.Default.String)}},
             "placeholder": {{JsonSerializer.Serialize(Resources.AddShortcutForm_HomepagePlaceholder, AppJsonSerializerContext.Default.String)}},
-            "value": {{JsonSerializer.Serialize(homePage, AppJsonSerializerContext.Default.String)}}
+            "value": {{JsonSerializer.Serialize(homePage, AppJsonSerializerContext.Default.String)}},
+            "errorMessage": "// Just for space between items"
         },
         {
             "id": "browserPath",
@@ -105,7 +108,8 @@ internal sealed partial class AddShortcutForm : FormContent
                     .Aggregate((a, b) => a + "," + b)
                 }}
             ],
-            "value": {{JsonSerializer.Serialize(browserPath, AppJsonSerializerContext.Default.String)}}
+            "value": {{JsonSerializer.Serialize(browserPath, AppJsonSerializerContext.Default.String)}},
+            "errorMessage": "// Just for space between items"
         },
         {
             "id": "browserArgs",
@@ -113,7 +117,8 @@ internal sealed partial class AddShortcutForm : FormContent
             "style": "text",
             "label": {{JsonSerializer.Serialize(Resources.AddShortcutForm_BrowserArgsLabel, AppJsonSerializerContext.Default.String)}},
             "placeholder": {{JsonSerializer.Serialize(Resources.AddShortcutForm_BrowserArgsPlaceholder, AppJsonSerializerContext.Default.String)}},
-            "value": {{JsonSerializer.Serialize(browserArgs, AppJsonSerializerContext.Default.String)}}
+            "value": {{JsonSerializer.Serialize(browserArgs, AppJsonSerializerContext.Default.String)}},
+            "errorMessage": "// Just for space between items"
         }
     ],
     "actions": [
