@@ -33,16 +33,12 @@ class Google : IWebSearchShortcutSuggestionsProvider
       List<string> titles = results
           .EnumerateArray()
           .Select(o => o.GetString())
-          .Where(s => s != null)
+          .Where(s => s is not null)
           .Select(s => s!)
           .ToList();
 
       return titles
-          .Select(t => new SuggestionsItem(
-              t,
-              // Resources.search_for.Replace("%search", $"\"{t}\"")
-              Resources.SuggestionsProvider_Description
-          ))
+          .Select(t => new SuggestionsItem(t))
           .ToList();
     }
     catch (Exception e)

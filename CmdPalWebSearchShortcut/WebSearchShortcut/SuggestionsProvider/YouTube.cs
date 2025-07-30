@@ -10,6 +10,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.SuggestionsProvider;
+
 public class YouTube : IWebSearchShortcutSuggestionsProvider
 {
   public static string Name => "YouTube";
@@ -39,10 +40,9 @@ public class YouTube : IWebSearchShortcutSuggestionsProvider
           .Select(o =>
           {
             var title = o[0].GetString();
-            var description = Resources.SuggestionsProvider_Description;
-            return title == null ? null : new SuggestionsItem(title, description ?? "");
+            return title is null ? null : new SuggestionsItem(title);
           })
-          .Where(s => s != null)
+          .Where(s => s is not null)
           .Select(s => s!)
           .ToList();
 

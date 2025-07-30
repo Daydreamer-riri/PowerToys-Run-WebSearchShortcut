@@ -207,7 +207,4 @@
   <data name="SearchWebCommand_Name" xml:space="preserve">
     <value>Search for "{query}"</value>
   </data>
-  <data name="SuggestionsProvider_Description" xml:space="preserve">
-    <value>Search {engine} for "{query}"</value>
-  </data>
 </root>

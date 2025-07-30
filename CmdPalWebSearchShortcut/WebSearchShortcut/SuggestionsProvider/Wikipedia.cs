@@ -29,31 +29,19 @@ class Wikipedia : IWebSearchShortcutSuggestionsProvider
       using var json = await JsonDocument.ParseAsync(resultStream);
 
       var results = json.RootElement.GetProperty("pages");
-
-      var titleDescriptionPairs = results
-          .EnumerateArray()
-          .Where(o =>
-              o.TryGetProperty("title", out var titleProp) &&
-              !string.IsNullOrWhiteSpace(titleProp.GetString())
-          )
-          .Select(o =>
-          {
-              string title = o.GetProperty("title").GetString()!;
-              string? description = o.TryGetProperty("description", out var descProp)
-                  ? descProp.GetString()
-                  : null;
-
-              return (title, description);
-          });
-
-          return [
-              .. titleDescriptionPairs.Select(pair =>
-                  new SuggestionsItem(
-                      pair.title,
-                      pair.description ?? Resources.SuggestionsProvider_Description
-                  )
-              )
-          ];
+ 
+      List<SuggestionsItem> items = [
+          .. results
+              .EnumerateArray()
+              .Select(o => (
+                  Title: o.TryGetProperty("title", out var t) ? t.GetString() : null,
+                  Description: o.TryGetProperty("description", out var d) ? d.GetString() : null
+              ))
+              .Where(p => !string.IsNullOrWhiteSpace(p.Title))
+              .Select(p => new SuggestionsItem(p.Title!, p.Description ?? ""))
+      ];
+ 
+      return items;
     }
     catch (Exception e)
     {

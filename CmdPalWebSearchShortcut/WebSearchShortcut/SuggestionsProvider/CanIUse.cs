@@ -33,13 +33,9 @@ public class CanIUse : IWebSearchShortcutSuggestionsProvider
           .Select(o =>
           {
             var title = o.GetString();
-            return title == null
+            return title is null
               ? null
-              : new SuggestionsItem(
-                title,
-                // Resources.search_for.Replace("%search", $"\"{title}\"")
-                Resources.SuggestionsProvider_Description
-              );
+              : new SuggestionsItem(title);
           })
           .Where(s => s != null)
           .Select(s => s!)

@@ -34,13 +34,11 @@ class DuckDuckGo : IWebSearchShortcutSuggestionsProvider
           .EnumerateArray()
           .Select(o => o.GetProperty("phrase").GetString())
           .Where(s => !string.IsNullOrEmpty(s) && !s.Equals(query, StringComparison.OrdinalIgnoreCase))
-          .ToList()!;
+          .Select(s => s!)
+          .ToList();
 
       return titles
-          .Select(t => new SuggestionsItem(
-              t,
-              Resources.SuggestionsProvider_Description
-          ))
+          .Select(t => new SuggestionsItem(t))
           .ToList();
     }
     catch (Exception e)

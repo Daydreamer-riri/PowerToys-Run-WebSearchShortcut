@@ -295,15 +295,6 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search {engine} for &quot;{query}&quot;.
-        /// </summary>
-        internal static string SuggestionsProvider_Description {
-            get {
-                return ResourceManager.GetString("SuggestionsProvider_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         internal static string WebSearchShortcutCommandsProvider_CommandItemDeleteName {

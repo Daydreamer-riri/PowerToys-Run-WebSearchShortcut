@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CommandPalette.Extensions;
@@ -88,9 +87,7 @@ public partial class SearchPage : DynamicListPage
       .Select(s => new ListItem(new SearchWebCommand(s.Title, Item))
       {
         Title = s.Title,
-        Subtitle = !string.IsNullOrWhiteSpace(s.Description)
-                   ? TryFormatSafe(s.Description, new { engine = Item.Name, query = s.Title })
-                   : "",
+        Subtitle = s.Description ?? Smart.Format(Resources.SearchPage_Subtitle, new { engine = Name, query = s.Title }),
         // TextToSuggest = s.Title,
         MoreCommands = [new CommandContextItem(
           title: Smart.Format(Resources.SearchPage_MoreCommandsTitle, new { engine = Name }),
@@ -103,17 +100,5 @@ public partial class SearchPage : DynamicListPage
 
     allItems = items;
     RaiseItemsChanged(allItems.Count);
-  }
-
-  private static string TryFormatSafe(string format, object args)
-  {
-    try
-    {
-      return Smart.Format(format, args);
-    }
-    catch (Exception)  // TODO: Improve exception handling
-    {
-      return format;
-    }
   }
 }
