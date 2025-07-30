@@ -88,7 +88,7 @@ public partial class SearchPage : DynamicListPage
       {
         Title = s.Title,
         Subtitle = s.Description ?? Smart.Format(Resources.SearchPage_Subtitle, new { engine = Name, query = s.Title }),
-        // TextToSuggest = s.Title,
+        TextToSuggest = s.Title,
         MoreCommands = [new CommandContextItem(
           title: Smart.Format(Resources.SearchPage_MoreCommandsTitle, new { engine = Name }),
           name: Smart.Format(Resources.SearchPage_MoreCommandsName, new { engine = Name }),
