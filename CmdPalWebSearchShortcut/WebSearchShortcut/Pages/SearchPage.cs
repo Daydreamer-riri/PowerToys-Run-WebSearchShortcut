@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using SmartFormat;
 using WebSearchShortcut.Commands;
 using WebSearchShortcut.Helpers;
 using WebSearchShortcut.Properties;
@@ -54,10 +53,10 @@ public partial class SearchPage : DynamicListPage
       var result = new ListItem(new SearchWebCommand(searchTerm, Item))
       {
         Title = searchTerm,
-        Subtitle = Smart.Format(Resources.SearchPage_Subtitle, new { engine = Name, query = searchTerm }),
+        Subtitle = StringFormatter.Format(Resources.SearchPage_Subtitle, new () { ["engine"] = Name, ["query"] = searchTerm }),
         MoreCommands = [new CommandContextItem(
-          title: Smart.Format(Resources.SearchPage_MoreCommandsTitle, new { engine = Name }),
-          name: Smart.Format(Resources.SearchPage_MoreCommandsName, new { engine = Name }),
+          title: StringFormatter.Format(Resources.SearchPage_MoreCommandsTitle, new () { ["engine"] = Name }),
+          name: StringFormatter.Format(Resources.SearchPage_MoreCommandsName, new () { ["engine"] = Name }),
           action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
         )]
       };
@@ -87,11 +86,11 @@ public partial class SearchPage : DynamicListPage
       .Select(s => new ListItem(new SearchWebCommand(s.Title, Item))
       {
         Title = s.Title,
-        Subtitle = s.Description ?? Smart.Format(Resources.SearchPage_Subtitle, new { engine = Name, query = s.Title }),
+        Subtitle = s.Description ?? StringFormatter.Format(Resources.SearchPage_Subtitle, new() { ["engine"] = Name, ["query"] = s.Title }),
         TextToSuggest = s.Title,
         MoreCommands = [new CommandContextItem(
-          title: Smart.Format(Resources.SearchPage_MoreCommandsTitle, new { engine = Name }),
-          name: Smart.Format(Resources.SearchPage_MoreCommandsName, new { engine = Name }),
+          title: StringFormatter.Format(Resources.SearchPage_MoreCommandsTitle, new() { ["engine"] = Name }),
+          name: StringFormatter.Format(Resources.SearchPage_MoreCommandsName, new() { ["engine"] = Name }),
           action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
         )]
       })];

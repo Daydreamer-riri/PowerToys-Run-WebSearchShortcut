@@ -1,5 +1,4 @@
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using SmartFormat;
 using WebSearchShortcut.Properties;
 using WebSearchShortcut.Helpers;
 
@@ -13,7 +12,7 @@ internal sealed partial class OpenHomePageCommand : InvokableCommand
   internal OpenHomePageCommand(WebSearchShortcutItem item)
   {
     Icon = new IconInfo("\uE721");
-    Name = Smart.Format(Resources.OpenHomePageCommand_Name, new {engine = item.Name});
+    Name = StringFormatter.Format(Resources.OpenHomePageCommand_Name, new() { ["engine"] = item.Name });
     Item = item;
     // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png");
     // Name = Properties.Resources.open_in_default_browser;

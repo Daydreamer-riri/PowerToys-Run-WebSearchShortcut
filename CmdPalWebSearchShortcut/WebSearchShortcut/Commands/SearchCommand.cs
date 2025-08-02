@@ -1,6 +1,6 @@
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using SmartFormat;
 using WebSearchShortcut.Browsers;
+using WebSearchShortcut.Helpers;
 using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.Commands;
@@ -17,7 +17,7 @@ internal sealed partial class SearchWebCommand : InvokableCommand
     Arguments = arguments;
     BrowserInfo = new BrowserExecutionInfo(item);
     Icon = new IconInfo("\uE721");
-    Name = Smart.Format(Resources.SearchWebCommand_Name, new {engine = item.Name, query=arguments});
+    Name = StringFormatter.Format(Resources.SearchWebCommand_Name, new() { ["engine"] = item.Name, ["query"] = arguments });
     Item = item;
     // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png");
     // Name = Properties.Resources.open_in_default_browser;

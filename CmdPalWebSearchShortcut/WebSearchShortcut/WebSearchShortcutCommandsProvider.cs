@@ -9,8 +9,8 @@ using System.IO;
 using System.Linq;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using SmartFormat;
 using WebSearchShortcut.Constants;
+using WebSearchShortcut.Helpers;
 using WebSearchShortcut.Properties;
 using WebSearchShortcut.Services;
 
@@ -107,7 +107,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     if (command is SearchPage searchPage)
     {
-      listItem.Subtitle = Smart.Format(Resources.WebSearchShortcutCommandsProvider_CommandItemSubtitle, new {engine = item.Name});
+      listItem.Subtitle = StringFormatter.Format(Resources.WebSearchShortcutCommandsProvider_CommandItemSubtitle, new() { ["engine"] = item.Name });
     }
 
     var edit = new AddShortcutPage(item) { Icon = Icons.Edit };
