@@ -61,6 +61,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
   private void Edit_AddedCommand(object sender, WebSearchShortcutItem args)
   {
     ExtensionHost.LogMessage($"Edited bookmark ({args.Name},{args.Url})");
+    UpdateIconUrl(args);
 
     SaveAndUpdateCommands();
   }

@@ -58,10 +58,17 @@ public static class IconService
         try
         {
             var uri = UriHelper.GetUri(baseString);
-            if (uri != null)
+            if (uri == null)
             {
-                return $"{uri.Scheme}://{uri.Host}/favicon.ico";
+                return DefaultIconFallback;
             }
+            // Check if the domain is in the blacklist
+            if (FaviconBlacklist.Contains(uri.Host))
+            {
+                // Directly use Google's favicon service for blacklisted domains
+                return $"https://www.google.com/s2/favicons?sz=64&domain={uri.GetLeftPart(UriPartial.Authority)}";
+            }
+            return $"{uri.Scheme}://{uri.Host}/favicon.ico";
         }
         catch (UriFormatException)
         {
