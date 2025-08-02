@@ -11,52 +11,52 @@ namespace WebSearchShortcut.SuggestionsProvider;
 
 public class Bing : IWebSearchShortcutSuggestionsProvider
 {
-  public static string Name => "Bing";
+    public static string Name => "Bing";
 
-  private HttpClient Http { get; } = new HttpClient();
+    private HttpClient Http { get; } = new HttpClient();
 
-  public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
-  {
-    try
+    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
     {
-      const string api = "https://api.bing.com/qsonhs.aspx?q=";
+        try
+        {
+            const string api = "https://api.bing.com/qsonhs.aspx?q=";
 
-      await using var resultStream = await Http.GetStreamAsync(
-              api + Uri.EscapeDataString(query)
-          )
-          .ConfigureAwait(false);
+            await using var resultStream = await Http.GetStreamAsync(
+                    api + Uri.EscapeDataString(query)
+                )
+                .ConfigureAwait(false);
 
-      using var json = await JsonDocument.ParseAsync(resultStream);
-      var root = json.RootElement.GetProperty("AS");
+            using var json = await JsonDocument.ParseAsync(resultStream);
+            var root = json.RootElement.GetProperty("AS");
 
-      if (root.GetProperty("FullResults").GetInt32() == 0)
-        return [];
+            if (root.GetProperty("FullResults").GetInt32() == 0)
+                return [];
 
-      List<string> titles = root.GetProperty("Results")
-          .EnumerateArray()
-          .SelectMany(r =>
-              r.GetProperty("Suggests")
-                  .EnumerateArray()
-                  .Select(s => s.GetProperty("Txt").GetString())
-          )
-          .Where(s => s is not null)
-          .Select(s => s!)
-          .ToList();
+            List<string> titles = root.GetProperty("Results")
+                .EnumerateArray()
+                .SelectMany(r =>
+                    r.GetProperty("Suggests")
+                        .EnumerateArray()
+                        .Select(s => s.GetProperty("Txt").GetString())
+                )
+                .Where(s => s is not null)
+                .Select(s => s!)
+                .ToList();
 
-      return titles
-        .Select(t => new SuggestionsItem(t))
-        .ToList();
+            return titles
+              .Select(t => new SuggestionsItem(t))
+              .ToList();
+        }
+        catch (Exception e)
+            when (e is HttpRequestException or { InnerException: TimeoutException })
+        {
+            ExtensionHost.LogMessage($"{e.Message}");
+            return [];
+        }
     }
-    catch (Exception e)
-        when (e is HttpRequestException or { InnerException: TimeoutException })
+
+    public override string ToString()
     {
-      ExtensionHost.LogMessage($"{e.Message}");
-      return [];
+        return "Bing";
     }
-  }
-
-  public override string ToString()
-  {
-    return "Bing";
-  }
 }

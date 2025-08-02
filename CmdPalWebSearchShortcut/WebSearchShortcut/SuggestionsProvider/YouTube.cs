@@ -13,50 +13,50 @@ namespace WebSearchShortcut.SuggestionsProvider;
 
 public class YouTube : IWebSearchShortcutSuggestionsProvider
 {
-  public static string Name => "YouTube";
+    public static string Name => "YouTube";
 
-  private HttpClient Http { get; } = new HttpClient();
+    private HttpClient Http { get; } = new HttpClient();
 
-  public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
-  {
-    try
+    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
     {
-      const string api = "https://suggestqueries-clients6.youtube.com/complete/search?ds=yt&client=youtube&gs_ri=youtube&q=";
+        try
+        {
+            const string api = "https://suggestqueries-clients6.youtube.com/complete/search?ds=yt&client=youtube&gs_ri=youtube&q=";
 
-      var result = await Http.GetStringAsync(api + Uri.EscapeDataString(query));
+            var result = await Http.GetStringAsync(api + Uri.EscapeDataString(query));
 
-      var match = Regex.Match(result, @"window\.google\.ac\.h\((.*)\)$");
-      if (!match.Success)
-      {
-        ExtensionHost.LogMessage("No match found in the response.");
-        return new List<SuggestionsItem>();
-      }
+            var match = Regex.Match(result, @"window\.google\.ac\.h\((.*)\)$");
+            if (!match.Success)
+            {
+                ExtensionHost.LogMessage("No match found in the response.");
+                return new List<SuggestionsItem>();
+            }
 
-      var jsonContent = match.Groups[1].Value;
-      using var json = JsonDocument.Parse(jsonContent);
-      var results = json.RootElement[1].EnumerateArray();
+            var jsonContent = match.Groups[1].Value;
+            using var json = JsonDocument.Parse(jsonContent);
+            var results = json.RootElement[1].EnumerateArray();
 
-      List<SuggestionsItem> items = results
-          .Select(o =>
-          {
-            var title = o[0].GetString();
-            return title is null ? null : new SuggestionsItem(title);
-          })
-          .Where(s => s is not null)
-          .Select(s => s!)
-          .ToList();
+            List<SuggestionsItem> items = results
+                .Select(o =>
+                {
+                    var title = o[0].GetString();
+                    return title is null ? null : new SuggestionsItem(title);
+                })
+                .Where(s => s is not null)
+                .Select(s => s!)
+                .ToList();
 
-      return items;
+            return items;
+        }
+        catch (Exception e)
+        {
+            ExtensionHost.LogMessage($"{e.Message}");
+            return [];
+        }
     }
-    catch (Exception e)
+
+    public override string ToString()
     {
-      ExtensionHost.LogMessage($"{e.Message}");
-      return [];
+        return "YouTube";
     }
-  }
-
-  public override string ToString()
-  {
-    return "YouTube";
-  }
 }

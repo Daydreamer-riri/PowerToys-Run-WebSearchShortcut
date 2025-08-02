@@ -10,48 +10,48 @@ using WebSearchShortcut.Properties;
 namespace WebSearchShortcut.SuggestionsProvider;
 public class CanIUse : IWebSearchShortcutSuggestionsProvider
 {
-  public static string Name => "CanIUse";
+    public static string Name => "CanIUse";
 
-  private HttpClient Http { get; } = new HttpClient();
+    private HttpClient Http { get; } = new HttpClient();
 
-  public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
-  {
-    try
+    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
     {
-      const string api = "https://caniuse.com/process/query.php?search=";
+        try
+        {
+            const string api = "https://caniuse.com/process/query.php?search=";
 
-      await using var resultStream = await Http.GetStreamAsync( api + Uri.EscapeDataString(query))
-          .ConfigureAwait(false);
+            await using var resultStream = await Http.GetStreamAsync(api + Uri.EscapeDataString(query))
+                .ConfigureAwait(false);
 
-      using var json = await JsonDocument.ParseAsync(resultStream);
-      var featureIds = json
-          .RootElement.GetProperty("featureIds")
-          .EnumerateArray()
-          .Take(10);
+            using var json = await JsonDocument.ParseAsync(resultStream);
+            var featureIds = json
+                .RootElement.GetProperty("featureIds")
+                .EnumerateArray()
+                .Take(10);
 
-      List<SuggestionsItem> items = featureIds
-          .Select(o =>
-          {
-            var title = o.GetString();
-            return title is null
-              ? null
-              : new SuggestionsItem(title);
-          })
-          .Where(s => s != null)
-          .Select(s => s!)
-          .ToList();
+            List<SuggestionsItem> items = featureIds
+                .Select(o =>
+                {
+                    var title = o.GetString();
+                    return title is null
+                ? null
+                : new SuggestionsItem(title);
+                })
+                .Where(s => s != null)
+                .Select(s => s!)
+                .ToList();
 
-      return items;
+            return items;
+        }
+        catch (Exception e)
+        {
+            ExtensionHost.LogMessage($"{e.Message}");
+            return [];
+        }
     }
-    catch (Exception e)
+
+    public override string ToString()
     {
-      ExtensionHost.LogMessage($"{e.Message}");
-      return [];
+        return "CanIUse";
     }
-  }
-
-  public override string ToString()
-  {
-    return "CanIUse";
-  }
 }

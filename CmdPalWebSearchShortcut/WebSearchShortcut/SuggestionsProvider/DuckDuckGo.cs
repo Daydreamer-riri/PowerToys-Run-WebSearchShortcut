@@ -11,45 +11,45 @@ namespace WebSearchShortcut.SuggestionsProvider;
 
 class DuckDuckGo : IWebSearchShortcutSuggestionsProvider
 {
-  public static string Name => "DuckDuckGo";
+    public static string Name => "DuckDuckGo";
 
-  private HttpClient Http { get; } = new HttpClient();
+    private HttpClient Http { get; } = new HttpClient();
 
-  public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
-  {
-    try
+    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
     {
-      const string api = "https://duckduckgo.com/ac/?q=";
+        try
+        {
+            const string api = "https://duckduckgo.com/ac/?q=";
 
-      await using var resultStream = await Http.GetStreamAsync(
-              api + Uri.EscapeDataString(query)
-          )
-          .ConfigureAwait(false);
+            await using var resultStream = await Http.GetStreamAsync(
+                    api + Uri.EscapeDataString(query)
+                )
+                .ConfigureAwait(false);
 
-      using var json = await JsonDocument.ParseAsync(resultStream);
+            using var json = await JsonDocument.ParseAsync(resultStream);
 
-      var results = json.RootElement;
+            var results = json.RootElement;
 
-      List<string> titles = results
-          .EnumerateArray()
-          .Select(o => o.GetProperty("phrase").GetString())
-          .Where(s => !string.IsNullOrEmpty(s) && !s.Equals(query, StringComparison.OrdinalIgnoreCase))
-          .Select(s => s!)
-          .ToList();
+            List<string> titles = results
+                .EnumerateArray()
+                .Select(o => o.GetProperty("phrase").GetString())
+                .Where(s => !string.IsNullOrEmpty(s) && !s.Equals(query, StringComparison.OrdinalIgnoreCase))
+                .Select(s => s!)
+                .ToList();
 
-      return titles
-          .Select(t => new SuggestionsItem(t))
-          .ToList();
+            return titles
+                .Select(t => new SuggestionsItem(t))
+                .ToList();
+        }
+        catch (Exception e)
+        {
+            ExtensionHost.LogMessage($"{e.Message}");
+            return [];
+        }
     }
-    catch (Exception e)
+
+    public override string ToString()
     {
-      ExtensionHost.LogMessage($"{e.Message}");
-      return [];
+        return "DuckDuckGo";
     }
-  }
-
-  public override string ToString()
-  {
-    return "DuckDuckGo";
-  }
 }

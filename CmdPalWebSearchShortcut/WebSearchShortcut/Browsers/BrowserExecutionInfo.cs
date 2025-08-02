@@ -5,39 +5,39 @@ namespace WebSearchShortcut.Browsers;
 
 public class BrowserExecutionInfo
 {
-  public string? Path { get; }
-  public string? ArgumentsPattern { get; }
+    public string? Path { get; }
+    public string? ArgumentsPattern { get; }
 
-  public BrowserExecutionInfo(WebSearchShortcutItem item)
-  {
-    DefaultBrowserProvider.UpdateIfTimePassed();
-
-    Path = !string.IsNullOrWhiteSpace(item.BrowserPath)
-           ? item.BrowserPath
-           : DefaultBrowserProvider.Path;
-
-    string? trimmedArgs;
-
-    if (!string.IsNullOrWhiteSpace(item.BrowserArgs))
+    public BrowserExecutionInfo(WebSearchShortcutItem item)
     {
-      trimmedArgs = item.BrowserArgs.Trim();
-    }
-    else if (string.IsNullOrWhiteSpace(item.BrowserPath))
-    {
-      trimmedArgs = DefaultBrowserProvider.ArgumentsPattern;
-    }
-    else
-    {
-      trimmedArgs = BrowserDiscovery
-                        .GetAllInstalledBrowsers()
-                        .FirstOrDefault(b => string.Equals(b.Path, item.BrowserPath, StringComparison.OrdinalIgnoreCase))
-                        ?.ArgumentsPattern.Trim();
-    }
+        DefaultBrowserProvider.UpdateIfTimePassed();
 
-    trimmedArgs ??= string.Empty;
+        Path = !string.IsNullOrWhiteSpace(item.BrowserPath)
+               ? item.BrowserPath
+               : DefaultBrowserProvider.Path;
 
-    ArgumentsPattern = trimmedArgs.Contains("%1", StringComparison.Ordinal)
-                     ? trimmedArgs
-                    : trimmedArgs + " %1";
+        string? trimmedArgs;
+
+        if (!string.IsNullOrWhiteSpace(item.BrowserArgs))
+        {
+            trimmedArgs = item.BrowserArgs.Trim();
+        }
+        else if (string.IsNullOrWhiteSpace(item.BrowserPath))
+        {
+            trimmedArgs = DefaultBrowserProvider.ArgumentsPattern;
+        }
+        else
+        {
+            trimmedArgs = BrowserDiscovery
+                              .GetAllInstalledBrowsers()
+                              .FirstOrDefault(b => string.Equals(b.Path, item.BrowserPath, StringComparison.OrdinalIgnoreCase))
+                              ?.ArgumentsPattern.Trim();
+        }
+
+        trimmedArgs ??= string.Empty;
+
+        ArgumentsPattern = trimmedArgs.Contains("%1", StringComparison.Ordinal)
+                         ? trimmedArgs
+                        : trimmedArgs + " %1";
     }
 }

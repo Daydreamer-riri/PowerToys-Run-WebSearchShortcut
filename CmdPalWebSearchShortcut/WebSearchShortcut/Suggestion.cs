@@ -6,34 +6,34 @@ namespace WebSearchShortcut;
 
 public interface IWebSearchShortcutSuggestionsProvider
 {
-  Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query);
+    Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query);
 }
 
 public class SuggestionsItem(string title, string? description = null)
 {
-  public string Title { get; } = title;
-  public string? Description { get; } = description;
+    public string Title { get; } = title;
+    public string? Description { get; } = description;
 }
 
 public class Suggestions
 {
-  static public Task<List<SuggestionsItem>> QuerySuggestionsAsync(string name, string query)
-  {
-    var provider = SuggestionProviders[name];
-    if (provider is not null)
+    static public Task<List<SuggestionsItem>> QuerySuggestionsAsync(string name, string query)
     {
-      return provider.QuerySuggestionsAsync(query);
+        var provider = SuggestionProviders[name];
+        if (provider is not null)
+        {
+            return provider.QuerySuggestionsAsync(query);
+        }
+        return Task.FromResult(new List<SuggestionsItem>());
     }
-    return Task.FromResult(new List<SuggestionsItem>());
-  }
 
-  static public Dictionary<
-      string,
-      IWebSearchShortcutSuggestionsProvider
-  > SuggestionProviders
-  { get; set; } =
-      new()
-      {
+    static public Dictionary<
+        string,
+        IWebSearchShortcutSuggestionsProvider
+    > SuggestionProviders
+    { get; set; } =
+        new()
+        {
         { Google.Name, new Google() },
         { Bing.Name, new Bing() },
         { DuckDuckGo.Name, new DuckDuckGo() },
@@ -41,5 +41,5 @@ public class Suggestions
         { Wikipedia.Name, new Wikipedia() },
         { Npm.Name, new Npm() },
         { CanIUse.Name, new CanIUse() },
-      };
+        };
 }

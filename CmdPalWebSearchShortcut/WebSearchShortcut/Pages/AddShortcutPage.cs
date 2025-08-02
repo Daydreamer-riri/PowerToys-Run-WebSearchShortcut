@@ -14,8 +14,8 @@ internal sealed partial class AddShortcutPage : ContentPage
 
     internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand
     {
-      add => _addShortcut.AddedCommand += value;
-      remove => _addShortcut.AddedCommand -= value;
+        add => _addShortcut.AddedCommand += value;
+        remove => _addShortcut.AddedCommand -= value;
     }
 
     public override IContent[] GetContent() => [_addShortcut];

@@ -11,45 +11,45 @@ namespace WebSearchShortcut.SuggestionsProvider;
 
 class Google : IWebSearchShortcutSuggestionsProvider
 {
-  public static string Name => "Google";
+    public static string Name => "Google";
 
-  private HttpClient Http { get; } = new HttpClient();
+    private HttpClient Http { get; } = new HttpClient();
 
-  public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
-  {
-    try
+    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
     {
-      const string api = "https://www.google.com/complete/search?output=chrome&q=";
+        try
+        {
+            const string api = "https://www.google.com/complete/search?output=chrome&q=";
 
-      await using var resultStream = await Http.GetStreamAsync(
-              api + Uri.EscapeDataString(query)
-          )
-          .ConfigureAwait(false);
+            await using var resultStream = await Http.GetStreamAsync(
+                    api + Uri.EscapeDataString(query)
+                )
+                .ConfigureAwait(false);
 
-      using var json = await JsonDocument.ParseAsync(resultStream);
+            using var json = await JsonDocument.ParseAsync(resultStream);
 
-      var results = json.RootElement.EnumerateArray().ElementAt(1);
+            var results = json.RootElement.EnumerateArray().ElementAt(1);
 
-      List<string> titles = results
-          .EnumerateArray()
-          .Select(o => o.GetString())
-          .Where(s => s is not null)
-          .Select(s => s!)
-          .ToList();
+            List<string> titles = results
+                .EnumerateArray()
+                .Select(o => o.GetString())
+                .Where(s => s is not null)
+                .Select(s => s!)
+                .ToList();
 
-      return titles
-          .Select(t => new SuggestionsItem(t))
-          .ToList();
+            return titles
+                .Select(t => new SuggestionsItem(t))
+                .ToList();
+        }
+        catch (Exception e)
+        {
+            ExtensionHost.LogMessage($"{e.Message}");
+            return [];
+        }
     }
-    catch (Exception e)
+
+    public override string ToString()
     {
-      ExtensionHost.LogMessage($"{e.Message}");
-      return [];
+        return "Google";
     }
-  }
-
-  public override string ToString()
-  {
-    return "Google";
-  }
 }

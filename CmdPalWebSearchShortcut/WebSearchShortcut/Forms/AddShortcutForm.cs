@@ -10,22 +10,22 @@ namespace WebSearchShortcut;
 
 internal sealed partial class AddShortcutForm : FormContent
 {
-  internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand;
+    internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand;
 
-  private readonly WebSearchShortcutItem? _item;
+    private readonly WebSearchShortcutItem? _item;
 
-  public AddShortcutForm(WebSearchShortcutItem? item)
-  {
-    _item = item;
-    var name = _item?.Name ?? string.Empty;
-    var url = _item?.Url ?? string.Empty;
-    var suggestionProvider = _item?.SuggestionProvider ?? string.Empty;
-    var replaceWhitespace = _item?.ReplaceWhitespace ?? string.Empty;
-    var homePage = _item?.HomePage ?? string.Empty;
-    var browserPath = _item?.BrowserPath ?? string.Empty;
-    var browserArgs = _item?.BrowserArgs ?? string.Empty;
+    public AddShortcutForm(WebSearchShortcutItem? item)
+    {
+        _item = item;
+        var name = _item?.Name ?? string.Empty;
+        var url = _item?.Url ?? string.Empty;
+        var suggestionProvider = _item?.SuggestionProvider ?? string.Empty;
+        var replaceWhitespace = _item?.ReplaceWhitespace ?? string.Empty;
+        var homePage = _item?.HomePage ?? string.Empty;
+        var browserPath = _item?.BrowserPath ?? string.Empty;
+        var browserArgs = _item?.BrowserArgs ?? string.Empty;
 
-    TemplateJson = $$"""
+        TemplateJson = $$"""
 {
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
     "type": "AdaptiveCard",
@@ -98,15 +98,14 @@ internal sealed partial class AddShortcutForm : FormContent
                     "value": ""
                 },
                 {{BrowserDiscovery.GetAllInstalledBrowsers()
-                    .Where(b => !string.IsNullOrWhiteSpace(b.Path))
-                    .Select(b => $$"""
+                        .Where(b => !string.IsNullOrWhiteSpace(b.Path))
+                        .Select(b => $$"""
                         {
                             "title": {{JsonSerializer.Serialize(b.Name, AppJsonSerializerContext.Default.String)}},
                             "value": {{JsonSerializer.Serialize(b.Path, AppJsonSerializerContext.Default.String)}}
                         }
                         """)
-                    .Aggregate((a, b) => a + "," + b)
-                }}
+                        .Aggregate((a, b) => a + "," + b)}}
             ],
             "value": {{JsonSerializer.Serialize(browserPath, AppJsonSerializerContext.Default.String)}},
             "errorMessage": "// Just for space between items"
@@ -138,35 +137,35 @@ internal sealed partial class AddShortcutForm : FormContent
     ]
 }
 """;
-  }
-
-  public override CommandResult SubmitForm(string payload)
-  {
-    var formInput = JsonNode.Parse(payload);
-    if (formInput == null)
-    {
-      return CommandResult.GoHome();
     }
 
-    // get the name and url out of the values
-    var formName = formInput["name"] ?? string.Empty;
-    var formUrl = formInput["url"] ?? string.Empty;
-    var formSuggestionProvider = formInput["suggestionProvider"] ?? string.Empty;
-    var formReplaceWhitespace = formInput["replaceWhitespace"] ?? string.Empty;
-    var formHomePage = formInput["homePage"] ?? string.Empty;
-    var formBrowserPath = formInput["browserPath"] ?? string.Empty;
-    var formBrowserArgs = formInput["browserArgs"] ?? string.Empty;
+    public override CommandResult SubmitForm(string payload)
+    {
+        var formInput = JsonNode.Parse(payload);
+        if (formInput == null)
+        {
+            return CommandResult.GoHome();
+        }
 
-    var updated = _item ?? new WebSearchShortcutItem();
-    updated.Name = formName.ToString();
-    updated.Url = formUrl.ToString();
-    updated.SuggestionProvider = formSuggestionProvider.ToString();
-    updated.ReplaceWhitespace = formReplaceWhitespace.ToString();
-    updated.HomePage = formHomePage.ToString();
-    updated.BrowserPath = formBrowserPath.ToString();
-    updated.BrowserArgs = formBrowserArgs.ToString();
+        // get the name and url out of the values
+        var formName = formInput["name"] ?? string.Empty;
+        var formUrl = formInput["url"] ?? string.Empty;
+        var formSuggestionProvider = formInput["suggestionProvider"] ?? string.Empty;
+        var formReplaceWhitespace = formInput["replaceWhitespace"] ?? string.Empty;
+        var formHomePage = formInput["homePage"] ?? string.Empty;
+        var formBrowserPath = formInput["browserPath"] ?? string.Empty;
+        var formBrowserArgs = formInput["browserArgs"] ?? string.Empty;
 
-    AddedCommand?.Invoke(this, updated);
-    return CommandResult.GoHome();
-  }
+        var updated = _item ?? new WebSearchShortcutItem();
+        updated.Name = formName.ToString();
+        updated.Url = formUrl.ToString();
+        updated.SuggestionProvider = formSuggestionProvider.ToString();
+        updated.ReplaceWhitespace = formReplaceWhitespace.ToString();
+        updated.HomePage = formHomePage.ToString();
+        updated.BrowserPath = formBrowserPath.ToString();
+        updated.BrowserArgs = formBrowserArgs.ToString();
+
+        AddedCommand?.Invoke(this, updated);
+        return CommandResult.GoHome();
+    }
 }
