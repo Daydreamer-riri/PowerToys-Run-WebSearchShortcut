@@ -1,8 +1,8 @@
-# Created using wingetcreate 1.9.14.0
-# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.9.0.schema.json
+# Created using wingetcreate 1.10.3.0
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
 
 PackageIdentifier: Riri.WebSearchShortcut
-PackageVersion: 0.0.3.0
+PackageVersion: 0.1.1.0
 PackageLocale: en-US
 Publisher: Riri
 PublisherUrl: https://github.com/Daydreamer-riri
@@ -22,9 +22,9 @@ Tags:
 - search
 - search-engine
 - windows-commandpalette-extension
-ReleaseNotesUrl: https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut/releases/tag/CmdPal0.0.3
+ReleaseNotesUrl: https://github.com/Daydreamer-riri/CmdPal-WebSearchShortcut/releases/tag/CmdPal0.1.1
 Documentations:
 - DocumentLabel: Wiki
   DocumentUrl: https://github.com/Daydreamer-riri/PowerToys-Run-WebSearchShortcut
 ManifestType: defaultLocale
-ManifestVersion: 1.9.0
+ManifestVersion: 1.10.0
