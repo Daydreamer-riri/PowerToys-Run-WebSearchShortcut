@@ -23,7 +23,6 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private Storage? _storage;
 
-
     public WebSearchShortcutCommandsProvider()
     {
         DisplayName = Resources.WebSearchShortcut_DisplayName;
