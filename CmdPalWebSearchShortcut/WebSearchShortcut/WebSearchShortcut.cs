@@ -4,7 +4,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
 using System.Threading;
 using Microsoft.CommandPalette.Extensions;
 

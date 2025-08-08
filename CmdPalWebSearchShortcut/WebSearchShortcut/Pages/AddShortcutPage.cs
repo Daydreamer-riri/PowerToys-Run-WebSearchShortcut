@@ -1,6 +1,4 @@
 
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Windows.Foundation;
@@ -28,7 +26,7 @@ internal sealed partial class AddShortcutPage : ContentPage
 
         _addShortcut = new AddShortcutForm(item);
         Icon = IconHelpers.FromRelativePath("Assets\\SearchAdd.png");
-        Title = isAdd ? Resources.AddShortcutPage_AddTitle : Resources.AddShortcutPage_EditTitle;
-        Name = isAdd ? Resources.AddShortcutPage_AddName : Resources.AddShortcutPage_EditName;
+        Title = isAdd ? Resources.AddShortcut_AddTitle : Resources.SearchShortcut_EditTitle;
+        Name = isAdd ? Resources.AddShortcut_AddName : Resources.SearchShortcut_EditName;
     }
 }

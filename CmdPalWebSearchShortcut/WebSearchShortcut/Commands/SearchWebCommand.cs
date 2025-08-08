@@ -17,7 +17,7 @@ internal sealed partial class SearchWebCommand : InvokableCommand
         Arguments = arguments;
         BrowserInfo = new BrowserExecutionInfo(item);
         Icon = new IconInfo("\uE721");
-        Name = StringFormatter.Format(Resources.SearchWebCommand_Name, new() { ["engine"] = item.Name, ["query"] = arguments });
+        Name = StringFormatter.Format(Resources.SearchText_NameTemplate, new() { ["engine"] = item.Name, ["query"] = arguments });
         Item = item;
         // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png");
         // Name = Properties.Resources.open_in_default_browser;
@@ -26,7 +26,7 @@ internal sealed partial class SearchWebCommand : InvokableCommand
 
     public override CommandResult Invoke()
     {
-        if (!ShellHelpers.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, $"{WebSearchShortcutItem.GetSearchUrl(Item, Arguments)}"))
+        if (!ShellHelpers.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, WebSearchShortcutItem.GetSearchUrl(Item, Arguments)))
         {
             // TODO GH# 138 --> actually display feedback from the extension somewhere.
             return CommandResult.KeepOpen();
