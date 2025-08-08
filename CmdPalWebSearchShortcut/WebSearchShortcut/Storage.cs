@@ -61,6 +61,6 @@ public sealed class Storage
     {
         var jsonString = JsonPrettyFormatter.ToPrettyJson(data, AppJsonSerializerContext.Default.Storage);
 
-        File.WriteAllText(WebSearchShortcutCommandsProvider.StateJsonPath(), jsonString);
+        File.WriteAllText(path, jsonString);
     }
 }
