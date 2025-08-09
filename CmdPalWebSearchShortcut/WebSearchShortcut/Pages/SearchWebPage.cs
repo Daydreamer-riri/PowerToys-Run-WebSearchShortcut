@@ -48,7 +48,7 @@ public partial class SearchWebPage : DynamicListPage
         else
         {
             var searchTerm = query;
-            var result = new ListItem(new SearchWebCommand(searchTerm, Item))
+            var result = new ListItem(new SearchWebCommand(Item, searchTerm))
             {
                 Title = searchTerm,
                 Subtitle = StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = searchTerm }),
@@ -81,7 +81,7 @@ public partial class SearchWebPage : DynamicListPage
         }
 
         List<ListItem> suggestItems = [
-            .. suggestions.Select(s => new ListItem(new SearchWebCommand(s.Title, Item))
+            .. suggestions.Select(s => new ListItem(new SearchWebCommand(Item, s.Title))
             {
                 Title = s.Title,
                 Subtitle = s.Description ?? StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = s.Title }),
