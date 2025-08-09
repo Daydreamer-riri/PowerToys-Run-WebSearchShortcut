@@ -20,17 +20,13 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 {
     private readonly List<ICommandItem> _commands;
     private readonly AddShortcutPage _addNewCommand = new(null);
-
     private Storage? _storage;
-
 
     public WebSearchShortcutCommandsProvider()
     {
         DisplayName = Resources.WebSearchShortcut_DisplayName;
         Icon = IconHelpers.FromRelativePath("Assets\\Search.png");
-        _commands = [
-              // new CommandItem(new WebSearchShortcutPage()) { Title = DisplayName },
-              ];
+        _commands = [];
         _addNewCommand.AddedCommand += AddNewCommand_AddedCommand;
     }
 
@@ -106,7 +102,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         var listItem = new CommandItem(command) { Icon = command.Icon };
         List<CommandContextItem> contextMenu = [];
 
-        if (command is SearchWebPage searchWebPage)
+        if (command is SearchWebPage)
         {
             listItem.Subtitle = StringFormatter.Format(Resources.SearchShortcut_SubtitleTemplate, new() { ["engine"] = item.Name });
         }
@@ -168,7 +164,6 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         var directory = Utilities.BaseSettingsPath("WebSearchShortcut");
         Directory.CreateDirectory(directory);
 
-        // now, the state is just next to the exe
         return Path.Combine(directory, "WebSearchShortcut.json");
     }
 }

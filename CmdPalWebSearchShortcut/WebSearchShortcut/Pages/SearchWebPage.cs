@@ -11,18 +11,16 @@ namespace WebSearchShortcut;
 
 public partial class SearchWebPage : DynamicListPage
 {
-    public string Url { get; }
     public WebSearchShortcutItem Item { get; }
-
+    private readonly ListItem _emptyListItem;
+    private int _lastSuggestionId;
     private List<ListItem> allItems;
     private List<ListItem> allSuggestItems;
-    private readonly ListItem _emptyListItem;
 
     public SearchWebPage(WebSearchShortcutItem data)
     {
         Item = data;
         Name = data.Name;
-        Url = data.Url;
         Icon = IconService.GetIconInfo(data);
         _emptyListItem = new ListItem(new OpenHomePageCommand(data)) { Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name }) };
         allItems = [_emptyListItem];
@@ -35,7 +33,7 @@ public partial class SearchWebPage : DynamicListPage
     {
         return [
           ..allItems,
-    ];
+        ];
     }
 
     public List<ListItem> Query(string query)
@@ -62,22 +60,26 @@ public partial class SearchWebPage : DynamicListPage
         return results;
     }
 
-    private int _lastSuggestionId;
     public override async void UpdateSearchText(string oldSearch, string newSearch)
     {
         var ignoreId = ++_lastSuggestionId;
+
         var queryItems = Query(newSearch);
         allItems = [.. queryItems, .. allSuggestItems];
         RaiseItemsChanged(allItems.Count);
+
         if (string.IsNullOrWhiteSpace(Item.SuggestionProvider) || string.IsNullOrEmpty(newSearch))
         {
             return;
         }
+
         var suggestions = await Suggestions.QuerySuggestionsAsync(Item.SuggestionProvider, newSearch);
+
         if (ignoreId != _lastSuggestionId)
         {
             return;
         }
+
         List<ListItem> suggestItems = [
             .. suggestions.Select(s => new ListItem(new SearchWebCommand(s.Title, Item))
             {
@@ -87,10 +89,12 @@ public partial class SearchWebPage : DynamicListPage
                 MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Item))]
             })
         ];
-        List<ListItem> items = [.. queryItems, .. suggestItems];
-        allSuggestItems = suggestItems;
 
+        List<ListItem> items = [.. queryItems, .. suggestItems];
+
+        allSuggestItems = suggestItems;
         allItems = items;
+
         RaiseItemsChanged(allItems.Count);
     }
 }

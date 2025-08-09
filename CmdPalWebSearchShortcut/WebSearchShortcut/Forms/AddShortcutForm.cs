@@ -10,8 +10,6 @@ namespace WebSearchShortcut;
 
 internal sealed partial class AddShortcutForm : FormContent
 {
-    internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand;
-
     private readonly WebSearchShortcutItem? _item;
 
     public AddShortcutForm(WebSearchShortcutItem? item)
@@ -138,6 +136,8 @@ internal sealed partial class AddShortcutForm : FormContent
 }
 """;
     }
+
+    internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand;
 
     public override CommandResult SubmitForm(string payload)
     {

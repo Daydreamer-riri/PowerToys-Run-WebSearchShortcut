@@ -1,6 +1,3 @@
-
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Windows.Foundation;
@@ -11,14 +8,6 @@ namespace WebSearchShortcut;
 internal sealed partial class AddShortcutPage : ContentPage
 {
     private readonly AddShortcutForm _addShortcut;
-
-    internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand
-    {
-        add => _addShortcut.AddedCommand += value;
-        remove => _addShortcut.AddedCommand -= value;
-    }
-
-    public override IContent[] GetContent() => [_addShortcut];
 
     public AddShortcutPage(WebSearchShortcutItem? item)
     {
@@ -31,4 +20,12 @@ internal sealed partial class AddShortcutPage : ContentPage
         Title = isAdd ? Resources.AddShortcut_AddTitle : Resources.SearchShortcut_EditTitle;
         Name = isAdd ? Resources.AddShortcut_AddName : Resources.SearchShortcut_EditName;
     }
+
+    internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand
+    {
+        add => _addShortcut.AddedCommand += value;
+        remove => _addShortcut.AddedCommand -= value;
+    }
+
+    public override IContent[] GetContent() => [_addShortcut];
 }
