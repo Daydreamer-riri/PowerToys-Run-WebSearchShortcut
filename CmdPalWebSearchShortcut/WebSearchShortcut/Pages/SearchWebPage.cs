@@ -55,7 +55,7 @@ public partial class SearchWebPage : DynamicListPage
             var result = new ListItem(new SearchWebCommand(Item, searchTerm))
             {
                 Title = searchTerm,
-                Subtitle = StringFormatter.Format(Resources.SearchText_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = searchTerm }),
+                Subtitle = StringFormatter.Format(Resources.SearchItem_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = searchTerm }),
                 MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Item))]
             };
             results.Add(result);
@@ -88,7 +88,7 @@ public partial class SearchWebPage : DynamicListPage
             .. suggestions.Select(s => new ListItem(new SearchWebCommand(Item, s.Title))
             {
                 Title = s.Title,
-                Subtitle = s.Description ?? StringFormatter.Format(Resources.SearchText_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = s.Title }),
+                Subtitle = s.Description ?? StringFormatter.Format(Resources.SearchItem_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = s.Title }),
                 TextToSuggest = s.Title,
                 MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Item))]
             })

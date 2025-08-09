@@ -198,10 +198,10 @@
   <data name="OpenHomePage_TitleTemplate" xml:space="preserve">
     <value>Ouvrir {engine}</value>
   </data>
-  <data name="SearchText_NameTemplate" xml:space="preserve">
+  <data name="SearchItem_NameTemplate" xml:space="preserve">
     <value>Rechercher "{query}"</value>
   </data>
-  <data name="SearchText_SubtitleTemplate" xml:space="preserve">
+  <data name="SearchItem_SubtitleTemplate" xml:space="preserve">
     <value>Rechercher "{query}" sur {engine}</value>
   </data>
 </root>

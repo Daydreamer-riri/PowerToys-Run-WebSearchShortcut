@@ -198,10 +198,10 @@
   <data name="OpenHomePage_TitleTemplate" xml:space="preserve">
     <value>開啟 {engine} 首頁</value>
   </data>
-  <data name="SearchText_NameTemplate" xml:space="preserve">
+  <data name="SearchItem_NameTemplate" xml:space="preserve">
     <value>搜尋「{query}」</value>
   </data>
-  <data name="SearchText_SubtitleTemplate" xml:space="preserve">
+  <data name="SearchItem_SubtitleTemplate" xml:space="preserve">
     <value>在 {engine} 上搜尋「{query}」</value>
   </data>
 </root>

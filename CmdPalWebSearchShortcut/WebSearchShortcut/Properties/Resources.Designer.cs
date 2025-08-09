@@ -250,6 +250,24 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search for &quot;{query}&quot;.
+        /// </summary>
+        internal static string SearchItem_NameTemplate {
+            get {
+                return ResourceManager.GetString("SearchItem_NameTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search {engine} for &quot;{query}&quot;.
+        /// </summary>
+        internal static string SearchItem_SubtitleTemplate {
+            get {
+                return ResourceManager.GetString("SearchItem_SubtitleTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         internal static string SearchShortcut_DeleteName {
@@ -291,24 +309,6 @@ namespace WebSearchShortcut.Properties {
         internal static string SearchShortcut_SubtitleTemplate {
             get {
                 return ResourceManager.GetString("SearchShortcut_SubtitleTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search for &quot;{query}&quot;.
-        /// </summary>
-        internal static string SearchText_NameTemplate {
-            get {
-                return ResourceManager.GetString("SearchText_NameTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search {engine} for &quot;{query}&quot;.
-        /// </summary>
-        internal static string SearchText_SubtitleTemplate {
-            get {
-                return ResourceManager.GetString("SearchText_SubtitleTemplate", resourceCulture);
             }
         }
         

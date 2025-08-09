@@ -198,10 +198,10 @@
   <data name="OpenHomePage_TitleTemplate" xml:space="preserve">
     <value>打开 {engine}</value>
   </data>
-  <data name="SearchText_NameTemplate" xml:space="preserve">
+  <data name="SearchItem_NameTemplate" xml:space="preserve">
     <value>搜索“{query}”</value>
   </data>
-  <data name="SearchText_SubtitleTemplate" xml:space="preserve">
+  <data name="SearchItem_SubtitleTemplate" xml:space="preserve">
     <value>在 {engine} 中搜索“{query}”</value>
   </data>
 </root>
