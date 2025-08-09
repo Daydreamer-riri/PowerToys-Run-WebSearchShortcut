@@ -9,11 +9,6 @@ public sealed class Storage
 {
     public List<WebSearchShortcutItem> Data { get; set; } = [];
 
-    // private static readonly JsonSerializerOptions _jsonOptions = new()
-    // {
-    //   IncludeFields = true,
-    // };
-
     public static Storage ReadFromFile(string path)
     {
         var data = new Storage();

@@ -19,8 +19,6 @@ internal sealed partial class SearchWebCommand : InvokableCommand
         Icon = new IconInfo("\uE721");
         Name = StringFormatter.Format(Resources.SearchText_NameTemplate, new() { ["engine"] = item.Name, ["query"] = arguments });
         Item = item;
-        // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png");
-        // Name = Properties.Resources.open_in_default_browser;
         // _settingsManager = settingsManager;
     }
 

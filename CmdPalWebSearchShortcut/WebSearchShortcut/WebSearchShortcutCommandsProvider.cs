@@ -27,9 +27,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
     {
         DisplayName = Resources.WebSearchShortcut_DisplayName;
         Icon = IconHelpers.FromRelativePath("Assets\\Search.png");
-        _commands = [
-              // new CommandItem(new WebSearchShortcutPage()) { Title = DisplayName },
-              ];
+        _commands = [];
         _addNewCommand.AddedCommand += AddNewCommand_AddedCommand;
     }
 
@@ -167,7 +165,6 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         var directory = Utilities.BaseSettingsPath("WebSearchShortcut");
         Directory.CreateDirectory(directory);
 
-        // now, the state is just next to the exe
         return Path.Combine(directory, "WebSearchShortcut.json");
     }
 }
