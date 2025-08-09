@@ -6,9 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using WebSearchShortcut.Constants;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.Services;
 
