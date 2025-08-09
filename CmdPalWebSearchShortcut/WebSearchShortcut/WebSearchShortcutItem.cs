@@ -39,10 +39,17 @@ namespace WebSearchShortcut
             return WebUtility.UrlEncode(search.Replace(" ", item.ReplaceWhitespace));
         }
 
-        static public string GetSearchUrl(WebSearchShortcutItem item, string search)
+        static public string GetSearchUrl(WebSearchShortcutItem item, string query)
         {
-            string arguments = item.Url.Replace("%s", UrlEncode(item, search));
+            string arguments = item.Url.Replace("%s", UrlEncode(item, query));
             return arguments;
+        }
+
+        static public string GetHomePageUrl(WebSearchShortcutItem item)
+        {
+            return !string.IsNullOrWhiteSpace(item.HomePage)
+                   ? item.HomePage
+                   : item.Domain;
         }
     }
 };

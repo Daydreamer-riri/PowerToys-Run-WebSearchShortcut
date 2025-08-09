@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using WebSearchShortcut.Constants;
 using WebSearchShortcut.Helpers;
 using WebSearchShortcut.Properties;
 using WebSearchShortcut.Services;
@@ -23,14 +22,11 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private Storage? _storage;
 
-
     public WebSearchShortcutCommandsProvider()
     {
-        DisplayName = Resources.WebSearchShortcutCommandsProvider_DisplayName;
+        DisplayName = Resources.WebSearchShortcut_DisplayName;
         Icon = IconHelpers.FromRelativePath("Assets\\Search.png");
-        _commands = [
-              // new CommandItem(new WebSearchShortcutPage()) { Title = DisplayName },
-              ];
+        _commands = [];
         _addNewCommand.AddedCommand += AddNewCommand_AddedCommand;
     }
 
@@ -102,13 +98,13 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private CommandItem ShortcutToCommandItem(WebSearchShortcutItem item)
     {
-        ICommand command = new SearchPage(item);
+        ICommand command = new SearchWebPage(item);
         var listItem = new CommandItem(command) { Icon = command.Icon };
         List<CommandContextItem> contextMenu = [];
 
-        if (command is SearchPage searchPage)
+        if (command is SearchWebPage)
         {
-            listItem.Subtitle = StringFormatter.Format(Resources.WebSearchShortcutCommandsProvider_CommandItemSubtitle, new() { ["engine"] = item.Name });
+            listItem.Subtitle = StringFormatter.Format(Resources.SearchShortcut_SubtitleTemplate, new() { ["engine"] = item.Name });
         }
 
         var edit = new AddShortcutPage(item) { Icon = Icons.Edit };
@@ -116,8 +112,8 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         contextMenu.Add(new CommandContextItem(edit));
 
         var delete = new CommandContextItem(
-            title: Resources.WebSearchShortcutCommandsProvider_CommandItemDeleteTitle,
-            name: Resources.WebSearchShortcutCommandsProvider_CommandItemDeleteName,
+            title: Resources.SearchShortcut_DeleteTitle,
+            name: Resources.SearchShortcut_DeleteName,
             action: () =>
             {
                 if (_storage != null)
@@ -168,7 +164,6 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         var directory = Utilities.BaseSettingsPath("WebSearchShortcut");
         Directory.CreateDirectory(directory);
 
-        // now, the state is just next to the exe
         return Path.Combine(directory, "WebSearchShortcut.json");
     }
 }

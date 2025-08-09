@@ -8,25 +8,23 @@ namespace WebSearchShortcut.Commands;
 internal sealed partial class SearchWebCommand : InvokableCommand
 {
     // private readonly SettingsManager _settingsManager;
-    public string Arguments { get; internal set; } = string.Empty;
     public WebSearchShortcutItem Item;
+    public string Query { get; internal set; } = string.Empty;
     private readonly BrowserExecutionInfo BrowserInfo;
 
-    internal SearchWebCommand(string arguments, WebSearchShortcutItem item)
+    internal SearchWebCommand(WebSearchShortcutItem item, string query)
     {
-        Arguments = arguments;
+        Query = query;
         BrowserInfo = new BrowserExecutionInfo(item);
         Icon = new IconInfo("\uE721");
-        Name = StringFormatter.Format(Resources.SearchWebCommand_Name, new() { ["engine"] = item.Name, ["query"] = arguments });
+        Name = StringFormatter.Format(Resources.SearchItem_NameTemplate, new() { ["engine"] = item.Name, ["query"] = query });
         Item = item;
-        // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png");
-        // Name = Properties.Resources.open_in_default_browser;
         // _settingsManager = settingsManager;
     }
 
     public override CommandResult Invoke()
     {
-        if (!ShellHelpers.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, $"{WebSearchShortcutItem.GetSearchUrl(Item, Arguments)}"))
+        if (!ShellHelpers.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, WebSearchShortcutItem.GetSearchUrl(Item, Query)))
         {
             // TODO GH# 138 --> actually display feedback from the extension somewhere.
             return CommandResult.KeepOpen();
