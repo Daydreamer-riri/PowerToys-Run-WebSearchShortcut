@@ -15,7 +15,7 @@ internal sealed partial class SearchWebCommand : InvokableCommand
     internal SearchWebCommand(WebSearchShortcutItem item, string query)
     {
         Name = StringFormatter.Format(Resources.SearchQuery_NameTemplate, new() { ["engine"] = item.Name, ["query"] = query });
-        Icon = new IconInfo("\uE721");
+        Icon = Icons.Search;
         Item = item;
         BrowserInfo = new BrowserExecutionInfo(item);
         _query = query;

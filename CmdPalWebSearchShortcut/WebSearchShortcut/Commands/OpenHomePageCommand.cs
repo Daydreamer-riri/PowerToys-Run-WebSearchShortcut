@@ -13,7 +13,7 @@ internal sealed partial class OpenHomePageCommand : InvokableCommand
     internal OpenHomePageCommand(WebSearchShortcutItem item)
     {
         Name = StringFormatter.Format(Resources.OpenHomePage_NameTemplate, new() { ["engine"] = item.Name });
-        Icon = new IconInfo("\uE721");
+        Icon = Icons.Search;
         Item = item;
         _browserInfo = new BrowserExecutionInfo(item);
     }
