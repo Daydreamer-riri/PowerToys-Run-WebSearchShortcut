@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Commands;
@@ -9,92 +10,95 @@ using WebSearchShortcut.Services;
 
 namespace WebSearchShortcut;
 
-public partial class SearchWebPage : DynamicListPage
+internal sealed partial class SearchWebPage : DynamicListPage
 {
-    public WebSearchShortcutDataEntry Shortcut { get; }
-    private readonly ListItem _emptyListItem;
-    private int _lastSuggestionId;
-    private List<ListItem> allItems;
-    private List<ListItem> allSuggestItems;
+    private readonly WebSearchShortcutDataEntry _shortcut;
+    private readonly IListItem _openHomePageItem;
+    private IListItem[] _items = [];
+    private IListItem[] _suggestionItems = [];
+    private int _updateEpoch;
 
     public SearchWebPage(WebSearchShortcutDataEntry shortcut)
     {
-        Shortcut = shortcut;
+        _shortcut = shortcut;
+
         Name = shortcut.Name;
         Icon = IconService.GetIconInfo(shortcut);
-        _emptyListItem = new ListItem(new OpenHomePageCommand(shortcut)) { Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name }) };
-        allItems = [_emptyListItem];
-
-        _lastSuggestionId = 0;
-        allSuggestItems = [];
-    }
-
-    public override IListItem[] GetItems()
-    {
-        return [
-          ..allItems,
-        ];
-    }
-
-    public List<ListItem> Query(string query)
-    {
-        var results = new List<ListItem>();
-        // empty query
-        if (string.IsNullOrEmpty(query))
+        _openHomePageItem = new ListItem(new OpenHomePageCommand(shortcut))
         {
-            allSuggestItems = [];
-            results.Add(_emptyListItem);
-        }
-        else
-        {
-            var searchTerm = query;
-            var result = new ListItem(new SearchWebCommand(Shortcut, searchTerm))
-            {
-                Title = searchTerm,
-                Subtitle = StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = searchTerm }),
-                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Shortcut))]
-            };
-            results.Add(result);
-        }
+            Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name })
+        };
 
-        return results;
+        _updateEpoch = 0;
+
+        _items = [_openHomePageItem];
     }
+
+    public override IListItem[] GetItems() => _items;
 
     public override async void UpdateSearchText(string oldSearch, string newSearch)
     {
-        var ignoreId = ++_lastSuggestionId;
+        var capturedEpoch = Interlocked.Increment(ref _updateEpoch);
 
-        var queryItems = Query(newSearch);
-        allItems = [.. queryItems, .. allSuggestItems];
-        RaiseItemsChanged(allItems.Count);
-
-        if (string.IsNullOrWhiteSpace(Shortcut.SuggestionProvider) || string.IsNullOrEmpty(newSearch))
+        if (string.IsNullOrEmpty(newSearch))
         {
+            _suggestionItems = [];
+
+            RenderItems([_openHomePageItem]);
+
             return;
         }
 
-        var suggestions = await Suggestions.QuerySuggestionsAsync(Shortcut.SuggestionProvider, newSearch);
+        var primaryItems = BuildPrimaryItems(newSearch);
 
-        if (ignoreId != _lastSuggestionId)
-        {
+        RenderItems([.. primaryItems, .. _suggestionItems]);
+
+        if (string.IsNullOrEmpty(_shortcut.SuggestionProvider))
             return;
-        }
 
-        List<ListItem> suggestItems = [
-            .. suggestions.Select(s => new ListItem(new SearchWebCommand(Shortcut, s.Title))
+        var suggestionItems = await GetSuggestionItemsAsync(newSearch);
+
+        if (capturedEpoch != _updateEpoch)
+            return;
+
+        _suggestionItems = suggestionItems;
+
+        RenderItems([.. primaryItems, .. _suggestionItems]);
+    }
+
+    private void RenderItems(IListItem[] items)
+    {
+        _items = items;
+
+        RaiseItemsChanged(_items.Length);
+    }
+
+    private ListItem[] BuildPrimaryItems(string searchText)
+    {
+        return
+        [
+            new ListItem(new SearchWebCommand(_shortcut, searchText))
             {
-                Title = s.Title,
-                Subtitle = s.Description ?? StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = s.Title }),
-                TextToSuggest = s.Title,
-                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Shortcut))]
+                Title = searchText,
+                Subtitle = StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = searchText }),
+                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(_shortcut))]
+            }
+        ];
+    }
+
+    private async Task<ListItem[]> GetSuggestionItemsAsync(string searchText)
+    {
+        var suggestions = await Suggestions.QuerySuggestionsAsync(_shortcut.SuggestionProvider!, searchText).ConfigureAwait(false);
+
+        return
+        [
+            .. suggestions.Select(suggestion => new ListItem(new SearchWebCommand(_shortcut, suggestion.Title))
+            {
+                Title = suggestion.Title,
+                Subtitle = suggestion.Description ?? StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = suggestion.Title }),
+                TextToSuggest = suggestion.Title,
+                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(_shortcut))]
             })
         ];
-
-        List<ListItem> items = [.. queryItems, .. suggestItems];
-
-        allSuggestItems = suggestItems;
-        allItems = items;
-
-        RaiseItemsChanged(allItems.Count);
     }
 }
