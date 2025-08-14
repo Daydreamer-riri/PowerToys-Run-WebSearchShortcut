@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Win32;
 
 namespace WebSearchShortcut.Browsers;
 
 public static class BrowserDiscovery
 {
-    private static readonly object _loadLock = new();
+    private static readonly Lock _loadLock = new();
     private static bool _isLoaded;
-    private static List<BrowserInfo> _cachedBrowsers = [];
+    private static BrowserInfo[] _cachedBrowsers = [];
 
-    public static List<BrowserInfo> GetAllInstalledBrowsers()
+    public static BrowserInfo[] GetAllInstalledBrowsers()
     {
         if (_isLoaded) return _cachedBrowsers;
 
@@ -36,9 +37,9 @@ public static class BrowserDiscovery
         }
     }
 
-    private static List<BrowserInfo> LoadInstalledBrowsers()
+    private static BrowserInfo[] LoadInstalledBrowsers()
     {
-        List<string> progIds = GetAssociatedProgIds();
+        string[] progIds = GetAssociatedProgIds();
         List<BrowserInfo> result = [];
 
         foreach (var progId in progIds)
@@ -56,9 +57,9 @@ public static class BrowserDiscovery
         return [.. result.OrderBy(b => b.Name, StringComparer.OrdinalIgnoreCase)];
     }
 
-    private static List<string> GetAssociatedProgIds()
+    private static string[] GetAssociatedProgIds()
     {
-        HashSet<string> progIdSet = new HashSet<string>();
+        HashSet<string> progIdSet = [];
 
         progIdSet.UnionWith(ScanProgIdsFromRegistry(
             Registry.LocalMachine,

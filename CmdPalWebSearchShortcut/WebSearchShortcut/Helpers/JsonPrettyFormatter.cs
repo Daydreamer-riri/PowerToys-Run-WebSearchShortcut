@@ -6,7 +6,7 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace WebSearchShortcut.Helpers;
 
-internal static class JsonPrettyFormatter
+public static class JsonPrettyFormatter
 {
     private static readonly JsonWriterOptions PrettyWriterOptions = new()
     {

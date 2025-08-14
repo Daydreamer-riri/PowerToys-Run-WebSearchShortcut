@@ -5,7 +5,7 @@ using WebSearchShortcut.Helpers;
 
 namespace WebSearchShortcut;
 
-public sealed class Storage
+internal sealed class Storage
 {
     public List<WebSearchShortcutDataEntry> Data { get; set; } = [];
 
