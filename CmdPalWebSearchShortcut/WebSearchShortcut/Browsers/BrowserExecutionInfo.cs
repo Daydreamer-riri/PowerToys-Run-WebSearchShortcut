@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace WebSearchShortcut.Browsers;
 
-public class BrowserExecutionInfo
+internal sealed class BrowserExecutionInfo
 {
     public string? Path { get; }
     public string? ArgumentsPattern { get; }

@@ -7,7 +7,7 @@ namespace WebSearchShortcut;
 
 internal sealed partial class AddShortcutPage : ContentPage
 {
-    private readonly AddShortcutForm _addShortcut;
+    private readonly AddShortcutForm _addShortcutForm;
 
     public AddShortcutPage(WebSearchShortcutDataEntry? shortcut)
     {
@@ -15,7 +15,7 @@ internal sealed partial class AddShortcutPage : ContentPage
         var url = shortcut?.Url ?? string.Empty;
         var isAdd = string.IsNullOrEmpty(name) && string.IsNullOrEmpty(url);
 
-        _addShortcut = new AddShortcutForm(shortcut);
+        _addShortcutForm = new AddShortcutForm(shortcut);
         Icon = IconHelpers.FromRelativePath("Assets\\SearchAdd.png");
         Title = isAdd ? Resources.AddShortcut_AddTitle : Resources.SearchShortcut_EditTitle;
         Name = isAdd ? Resources.AddShortcut_AddName : Resources.SearchShortcut_EditName;
@@ -23,9 +23,9 @@ internal sealed partial class AddShortcutPage : ContentPage
 
     internal event TypedEventHandler<object, WebSearchShortcutDataEntry>? AddedCommand
     {
-        add => _addShortcut.AddedCommand += value;
-        remove => _addShortcut.AddedCommand -= value;
+        add => _addShortcutForm.AddedCommand += value;
+        remove => _addShortcutForm.AddedCommand -= value;
     }
 
-    public override IContent[] GetContent() => [_addShortcut];
+    public override IContent[] GetContent() => [_addShortcutForm];
 }

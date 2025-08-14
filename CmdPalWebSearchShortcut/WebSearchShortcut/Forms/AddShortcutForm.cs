@@ -15,13 +15,13 @@ internal sealed partial class AddShortcutForm : FormContent
     public AddShortcutForm(WebSearchShortcutDataEntry? shortcut)
     {
         _shortcut = shortcut;
-        var name = _shortcut?.Name ?? string.Empty;
-        var url = _shortcut?.Url ?? string.Empty;
-        var suggestionProvider = _shortcut?.SuggestionProvider ?? string.Empty;
-        var replaceWhitespace = _shortcut?.ReplaceWhitespace ?? string.Empty;
-        var homePage = _shortcut?.HomePage ?? string.Empty;
-        var browserPath = _shortcut?.BrowserPath ?? string.Empty;
-        var browserArgs = _shortcut?.BrowserArgs ?? string.Empty;
+        var name = shortcut?.Name ?? string.Empty;
+        var url = shortcut?.Url ?? string.Empty;
+        var suggestionProvider = shortcut?.SuggestionProvider ?? string.Empty;
+        var replaceWhitespace = shortcut?.ReplaceWhitespace ?? string.Empty;
+        var homePage = shortcut?.HomePage ?? string.Empty;
+        var browserPath = shortcut?.BrowserPath ?? string.Empty;
+        var browserArgs = shortcut?.BrowserArgs ?? string.Empty;
 
         TemplateJson = $$"""
 {
@@ -139,33 +139,21 @@ internal sealed partial class AddShortcutForm : FormContent
 
     internal event TypedEventHandler<object, WebSearchShortcutDataEntry>? AddedCommand;
 
-    public override CommandResult SubmitForm(string payload)
+    public override CommandResult SubmitForm(string inputs)
     {
-        var formInput = JsonNode.Parse(payload);
-        if (formInput == null)
-        {
-            return CommandResult.GoHome();
-        }
+        var root = JsonNode.Parse(inputs);
+        if (root is null) return CommandResult.GoHome();
 
-        // get the name and url out of the values
-        var formName = formInput["name"] ?? string.Empty;
-        var formUrl = formInput["url"] ?? string.Empty;
-        var formSuggestionProvider = formInput["suggestionProvider"] ?? string.Empty;
-        var formReplaceWhitespace = formInput["replaceWhitespace"] ?? string.Empty;
-        var formHomePage = formInput["homePage"] ?? string.Empty;
-        var formBrowserPath = formInput["browserPath"] ?? string.Empty;
-        var formBrowserArgs = formInput["browserArgs"] ?? string.Empty;
+        var shortcut = _shortcut ?? new WebSearchShortcutDataEntry();
+        shortcut.Name = root["name"]?.GetValue<string>() ?? string.Empty;
+        shortcut.Url = root["url"]?.GetValue<string>() ?? string.Empty;
+        shortcut.SuggestionProvider = root["suggestionProvider"]?.GetValue<string>() ?? string.Empty;
+        shortcut.ReplaceWhitespace = root["replaceWhitespace"]?.GetValue<string>() ?? string.Empty;
+        shortcut.HomePage = root["homePage"]?.GetValue<string>() ?? string.Empty;
+        shortcut.BrowserPath = root["browserPath"]?.GetValue<string>() ?? string.Empty;
+        shortcut.BrowserArgs = root["browserArgs"]?.GetValue<string>() ?? string.Empty;
 
-        var updated = _shortcut ?? new WebSearchShortcutDataEntry();
-        updated.Name = formName.ToString();
-        updated.Url = formUrl.ToString();
-        updated.SuggestionProvider = formSuggestionProvider.ToString();
-        updated.ReplaceWhitespace = formReplaceWhitespace.ToString();
-        updated.HomePage = formHomePage.ToString();
-        updated.BrowserPath = formBrowserPath.ToString();
-        updated.BrowserArgs = formBrowserArgs.ToString();
-
-        AddedCommand?.Invoke(this, updated);
+        AddedCommand?.Invoke(this, shortcut);
         return CommandResult.GoHome();
     }
 }

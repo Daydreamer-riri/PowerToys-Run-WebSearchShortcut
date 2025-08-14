@@ -14,7 +14,7 @@ namespace WebSearchShortcut.Services;
 /// <summary>
 /// Provides icon-related services for web search shortcuts
 /// </summary>
-public static class IconService
+internal static class IconService
 {
     private static readonly string DefaultIconFallback = "🔗";
     private static readonly string UserAgent = "Mozilla/5.0 (compatible; AcmeInc/1.0)";

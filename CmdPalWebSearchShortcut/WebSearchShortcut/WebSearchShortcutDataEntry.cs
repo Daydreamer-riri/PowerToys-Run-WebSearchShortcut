@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace WebSearchShortcut;
 
-public class WebSearchShortcutDataEntry
+internal sealed class WebSearchShortcutDataEntry
 {
     public string Name { get; set; } = string.Empty;
     public string? Keyword { get; set; }

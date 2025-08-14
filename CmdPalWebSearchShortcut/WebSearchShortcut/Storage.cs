@@ -5,7 +5,7 @@ using WebSearchShortcut.Helpers;
 
 namespace WebSearchShortcut;
 
-public sealed class Storage
+internal sealed class Storage
 {
     public List<WebSearchShortcutDataEntry> Data { get; set; } = [];
 
@@ -39,7 +39,7 @@ public sealed class Storage
             WriteToFile(path, defaultStorage);
         }
 
-        // if the file exists, load it and append the new item
+        // if the file exists, load the saved shortcuts
         if (File.Exists(path))
         {
             var jsonStringReading = File.ReadAllText(path);
