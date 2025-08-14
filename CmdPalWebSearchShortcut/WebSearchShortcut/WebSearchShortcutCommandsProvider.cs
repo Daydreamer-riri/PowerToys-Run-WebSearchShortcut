@@ -26,7 +26,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     public WebSearchShortcutCommandsProvider()
     {
-        DisplayName = Resources.WebSearchShortcutCommandsProvider_DisplayName;
+        DisplayName = Resources.WebSearchShortcut_DisplayName;
         Icon = IconHelpers.FromRelativePath("Assets\\Search.png");
         _commands = [
               // new CommandItem(new WebSearchShortcutPage()) { Title = DisplayName },
@@ -108,7 +108,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
         if (command is SearchPage searchPage)
         {
-            listItem.Subtitle = StringFormatter.Format(Resources.WebSearchShortcutCommandsProvider_CommandItemSubtitle, new() { ["engine"] = item.Name });
+            listItem.Subtitle = StringFormatter.Format(Resources.SearchShortcut_SubtitleTemplate, new() { ["engine"] = item.Name });
         }
 
         var edit = new AddShortcutPage(item) { Icon = Icons.Edit };
@@ -116,8 +116,8 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         contextMenu.Add(new CommandContextItem(edit));
 
         var delete = new CommandContextItem(
-            title: Resources.WebSearchShortcutCommandsProvider_CommandItemDeleteTitle,
-            name: Resources.WebSearchShortcutCommandsProvider_CommandItemDeleteName,
+            title: Resources.SearchShortcut_DeleteTitle,
+            name: Resources.SearchShortcut_DeleteName,
             action: () =>
             {
                 if (_storage != null)
