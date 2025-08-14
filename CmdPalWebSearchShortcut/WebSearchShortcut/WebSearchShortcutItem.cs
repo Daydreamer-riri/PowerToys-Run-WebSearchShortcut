@@ -44,5 +44,12 @@ namespace WebSearchShortcut
             string arguments = item.Url.Replace("%s", UrlEncode(item, search));
             return arguments;
         }
+
+        static public string GetHomePageUrl(WebSearchShortcutItem item)
+        {
+            return !string.IsNullOrWhiteSpace(item.HomePage)
+                   ? item.HomePage
+                   : item.Domain;
+        }
     }
 };

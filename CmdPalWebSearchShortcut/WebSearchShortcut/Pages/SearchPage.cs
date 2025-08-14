@@ -24,7 +24,7 @@ public partial class SearchPage : DynamicListPage
         Name = data.Name;
         Url = data.Url;
         Icon = IconService.GetIconInfo(data);
-        _emptyListItem = new ListItem(new OpenHomePageCommand(data));
+        _emptyListItem = new ListItem(new OpenHomePageCommand(data)) { Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name }) };
         allItems = [_emptyListItem];
 
         _lastSuggestionId = 0;
@@ -54,11 +54,7 @@ public partial class SearchPage : DynamicListPage
             {
                 Title = searchTerm,
                 Subtitle = StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = searchTerm }),
-                MoreCommands = [new CommandContextItem(
-          title: StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new () { ["engine"] = Name }),
-          name: StringFormatter.Format(Resources.OpenHomePage_NameTemplate, new () { ["engine"] = Name }),
-          action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
-        )]
+                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Item))]
             };
             results.Add(result);
         }
@@ -82,18 +78,15 @@ public partial class SearchPage : DynamicListPage
         {
             return;
         }
-        List<ListItem> suggestItems = [.. suggestions
-      .Select(s => new ListItem(new SearchWebCommand(s.Title, Item))
-      {
-        Title = s.Title,
-        Subtitle = s.Description ?? StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = s.Title }),
-        TextToSuggest = s.Title,
-        MoreCommands = [new CommandContextItem(
-          title: StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name }),
-          name: StringFormatter.Format(Resources.OpenHomePage_NameTemplate, new() { ["engine"] = Name }),
-          action: () => HomePageLauncher.OpenHomePageWithBrowser(Item)
-        )]
-      })];
+        List<ListItem> suggestItems = [
+            .. suggestions.Select(s => new ListItem(new SearchWebCommand(s.Title, Item))
+            {
+                Title = s.Title,
+                Subtitle = s.Description ?? StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = s.Title }),
+                TextToSuggest = s.Title,
+                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Item))]
+            })
+        ];
         List<ListItem> items = [.. queryItems, .. suggestItems];
         allSuggestItems = suggestItems;
 
