@@ -7,20 +7,20 @@ namespace WebSearchShortcut.Commands;
 
 internal sealed partial class OpenHomePageCommand : InvokableCommand
 {
-    public WebSearchShortcutItem Item;
+    public WebSearchShortcutDataEntry Shortcut;
     private readonly BrowserExecutionInfo _browserInfo;
 
-    internal OpenHomePageCommand(WebSearchShortcutItem item)
+    internal OpenHomePageCommand(WebSearchShortcutDataEntry shortcut)
     {
-        Name = StringFormatter.Format(Resources.OpenHomePage_NameTemplate, new() { ["engine"] = item.Name });
+        Name = StringFormatter.Format(Resources.OpenHomePage_NameTemplate, new() { ["engine"] = shortcut.Name });
         Icon = Icons.Search;
-        Item = item;
-        _browserInfo = new BrowserExecutionInfo(item);
+        Shortcut = shortcut;
+        _browserInfo = new BrowserExecutionInfo(shortcut);
     }
 
     public override CommandResult Invoke()
     {
-        if (!ShellHelpers.OpenCommandInShell(_browserInfo.Path, _browserInfo.ArgumentsPattern, WebSearchShortcutItem.GetHomePageUrl(Item)))
+        if (!ShellHelpers.OpenCommandInShell(_browserInfo.Path, _browserInfo.ArgumentsPattern, WebSearchShortcutDataEntry.GetHomePageUrl(Shortcut)))
         {
             // TODO GH# 138 --> actually display feedback from the extension somewhere.
             return CommandResult.KeepOpen();

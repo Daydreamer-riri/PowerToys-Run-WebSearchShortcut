@@ -11,18 +11,18 @@ namespace WebSearchShortcut;
 
 public partial class SearchWebPage : DynamicListPage
 {
-    public WebSearchShortcutItem Item { get; }
+    public WebSearchShortcutDataEntry Shortcut { get; }
     private readonly ListItem _emptyListItem;
     private int _lastSuggestionId;
     private List<ListItem> allItems;
     private List<ListItem> allSuggestItems;
 
-    public SearchWebPage(WebSearchShortcutItem data)
+    public SearchWebPage(WebSearchShortcutDataEntry shortcut)
     {
-        Item = data;
-        Name = data.Name;
-        Icon = IconService.GetIconInfo(data);
-        _emptyListItem = new ListItem(new OpenHomePageCommand(data)) { Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name }) };
+        Shortcut = shortcut;
+        Name = shortcut.Name;
+        Icon = IconService.GetIconInfo(shortcut);
+        _emptyListItem = new ListItem(new OpenHomePageCommand(shortcut)) { Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name }) };
         allItems = [_emptyListItem];
 
         _lastSuggestionId = 0;
@@ -48,11 +48,11 @@ public partial class SearchWebPage : DynamicListPage
         else
         {
             var searchTerm = query;
-            var result = new ListItem(new SearchWebCommand(Item, searchTerm))
+            var result = new ListItem(new SearchWebCommand(Shortcut, searchTerm))
             {
                 Title = searchTerm,
                 Subtitle = StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = searchTerm }),
-                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Item))]
+                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Shortcut))]
             };
             results.Add(result);
         }
@@ -68,12 +68,12 @@ public partial class SearchWebPage : DynamicListPage
         allItems = [.. queryItems, .. allSuggestItems];
         RaiseItemsChanged(allItems.Count);
 
-        if (string.IsNullOrWhiteSpace(Item.SuggestionProvider) || string.IsNullOrEmpty(newSearch))
+        if (string.IsNullOrWhiteSpace(Shortcut.SuggestionProvider) || string.IsNullOrEmpty(newSearch))
         {
             return;
         }
 
-        var suggestions = await Suggestions.QuerySuggestionsAsync(Item.SuggestionProvider, newSearch);
+        var suggestions = await Suggestions.QuerySuggestionsAsync(Shortcut.SuggestionProvider, newSearch);
 
         if (ignoreId != _lastSuggestionId)
         {
@@ -81,12 +81,12 @@ public partial class SearchWebPage : DynamicListPage
         }
 
         List<ListItem> suggestItems = [
-            .. suggestions.Select(s => new ListItem(new SearchWebCommand(Item, s.Title))
+            .. suggestions.Select(s => new ListItem(new SearchWebCommand(Shortcut, s.Title))
             {
                 Title = s.Title,
                 Subtitle = s.Description ?? StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = s.Title }),
                 TextToSuggest = s.Title,
-                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Item))]
+                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(Shortcut))]
             })
         ];
 

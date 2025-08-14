@@ -29,34 +29,34 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         _addNewCommand.AddedCommand += AddNewCommand_AddedCommand;
     }
 
-    private void AddNewCommand_AddedCommand(object sender, WebSearchShortcutItem args)
+    private void AddNewCommand_AddedCommand(object sender, WebSearchShortcutDataEntry shortcut)
     {
-        ExtensionHost.LogMessage($"Adding bookmark ({args.Name},{args.Url})");
+        ExtensionHost.LogMessage($"Adding bookmark ({shortcut.Name},{shortcut.Url})");
         if (_storage != null)
         {
-            _storage.Data.Add(args);
-            UpdateIconUrl(args);
+            _storage.Data.Add(shortcut);
+            UpdateIconUrl(shortcut);
         }
 
         SaveAndUpdateCommands();
     }
 
-    private async void UpdateIconUrl(WebSearchShortcutItem item)
+    private async void UpdateIconUrl(WebSearchShortcutDataEntry shortcut)
     {
-        if (_storage == null || !string.IsNullOrWhiteSpace(item.IconUrl))
+        if (_storage == null || !string.IsNullOrWhiteSpace(shortcut.IconUrl))
         {
             return;
         }
 
-        var url = await IconService.UpdateIconUrlAsync(item);
+        var url = await IconService.UpdateIconUrlAsync(shortcut);
         SaveAndUpdateCommands();
-        ExtensionHost.LogMessage($"Updating icon URL for bookmark ({item.Name},{item.Url}) to {url}");
+        ExtensionHost.LogMessage($"Updating icon URL for bookmark ({shortcut.Name},{shortcut.Url}) to {url}");
     }
 
-    private void Edit_AddedCommand(object sender, WebSearchShortcutItem args)
+    private void Edit_AddedCommand(object sender, WebSearchShortcutDataEntry shortcut)
     {
-        ExtensionHost.LogMessage($"Edited bookmark ({args.Name},{args.Url})");
-        UpdateIconUrl(args);
+        ExtensionHost.LogMessage($"Edited bookmark ({shortcut.Name},{shortcut.Url})");
+        UpdateIconUrl(shortcut);
 
         SaveAndUpdateCommands();
     }
@@ -95,18 +95,18 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         }
     }
 
-    private CommandItem ShortcutToCommandItem(WebSearchShortcutItem item)
+    private CommandItem ShortcutToCommandItem(WebSearchShortcutDataEntry shortcut)
     {
-        ICommand command = new SearchWebPage(item);
+        ICommand command = new SearchWebPage(shortcut);
         var listItem = new CommandItem(command) { Icon = command.Icon };
         List<CommandContextItem> contextMenu = [];
 
         if (command is SearchWebPage)
         {
-            listItem.Subtitle = StringFormatter.Format(Resources.SearchShortcut_SubtitleTemplate, new() { ["engine"] = item.Name });
+            listItem.Subtitle = StringFormatter.Format(Resources.SearchShortcut_SubtitleTemplate, new() { ["engine"] = shortcut.Name });
         }
 
-        var edit = new AddShortcutPage(item) { Icon = Icons.Edit };
+        var edit = new AddShortcutPage(shortcut) { Icon = Icons.Edit };
         edit.AddedCommand += Edit_AddedCommand;
         contextMenu.Add(new CommandContextItem(edit));
 
@@ -117,9 +117,9 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
             {
                 if (_storage != null)
                 {
-                    ExtensionHost.LogMessage($"Deleting bookmark ({item.Name},{item.Url})");
+                    ExtensionHost.LogMessage($"Deleting bookmark ({shortcut.Name},{shortcut.Url})");
 
-                    _storage.Data.Remove(item);
+                    _storage.Data.Remove(shortcut);
 
                     SaveAndUpdateCommands();
                 }

@@ -7,7 +7,7 @@ namespace WebSearchShortcut;
 
 public sealed class Storage
 {
-    public List<WebSearchShortcutItem> Data { get; set; } = [];
+    public List<WebSearchShortcutDataEntry> Data { get; set; } = [];
 
     public static Storage ReadFromFile(string path)
     {
@@ -17,19 +17,19 @@ public sealed class Storage
         {
             var defaultStorage = new Storage();
             defaultStorage.Data.AddRange([
-                new WebSearchShortcutItem
+                new WebSearchShortcutDataEntry
                 {
                     Name = "Google",
                     Url = "https://www.google.com/search?q=%s",
                     SuggestionProvider = "Google",
                 },
-                new WebSearchShortcutItem
+                new WebSearchShortcutDataEntry
                 {
                     Name = "Bing",
                     Url = "https://www.bing.com/search?q=%s",
                     SuggestionProvider = "Bing",
                 },
-                new WebSearchShortcutItem
+                new WebSearchShortcutDataEntry
                 {
                     Name = "Youtube",
                     Url = "https://www.youtube.com/results?search_query=%s",

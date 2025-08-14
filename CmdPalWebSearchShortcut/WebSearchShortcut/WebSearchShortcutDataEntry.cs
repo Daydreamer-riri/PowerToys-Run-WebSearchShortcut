@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace WebSearchShortcut;
 
-public class WebSearchShortcutItem
+public class WebSearchShortcutDataEntry
 {
     public string Name { get; set; } = string.Empty;
     public string? Keyword { get; set; }
@@ -26,30 +26,30 @@ public class WebSearchShortcutItem
         }
     }
 
-    static string UrlEncode(WebSearchShortcutItem item, string search)
+    static string UrlEncode(WebSearchShortcutDataEntry shortcut, string query)
     {
-        if (string.IsNullOrWhiteSpace(item.ReplaceWhitespace) || item.ReplaceWhitespace == " ")
+        if (string.IsNullOrWhiteSpace(shortcut.ReplaceWhitespace) || shortcut.ReplaceWhitespace == " ")
         {
-            return WebUtility.UrlEncode(search);
+            return WebUtility.UrlEncode(query);
         }
-        if (item.ReplaceWhitespace == "%20")
+        if (shortcut.ReplaceWhitespace == "%20")
         {
-            return WebUtility.UrlEncode(search).Replace("+", "%20");
+            return WebUtility.UrlEncode(query).Replace("+", "%20");
         }
-        return WebUtility.UrlEncode(search.Replace(" ", item.ReplaceWhitespace));
+        return WebUtility.UrlEncode(query.Replace(" ", shortcut.ReplaceWhitespace));
     }
 
-    static public string GetSearchUrl(WebSearchShortcutItem item, string search)
+    static public string GetSearchUrl(WebSearchShortcutDataEntry shortcut, string query)
     {
-        string arguments = item.Url.Replace("%s", UrlEncode(item, search));
+        string arguments = shortcut.Url.Replace("%s", UrlEncode(shortcut, query));
 
         return arguments;
     }
 
-    static public string GetHomePageUrl(WebSearchShortcutItem item)
+    static public string GetHomePageUrl(WebSearchShortcutDataEntry shortcut)
     {
-        return !string.IsNullOrWhiteSpace(item.HomePage)
-                ? item.HomePage
-                : item.Domain;
+        return !string.IsNullOrWhiteSpace(shortcut.HomePage)
+                ? shortcut.HomePage
+                : shortcut.Domain;
     }
 }

@@ -8,21 +8,21 @@ public class BrowserExecutionInfo
     public string? Path { get; }
     public string? ArgumentsPattern { get; }
 
-    public BrowserExecutionInfo(WebSearchShortcutItem item)
+    public BrowserExecutionInfo(WebSearchShortcutDataEntry shortcut)
     {
         DefaultBrowserProvider.UpdateIfTimePassed();
 
-        Path = !string.IsNullOrWhiteSpace(item.BrowserPath)
-               ? item.BrowserPath
+        Path = !string.IsNullOrWhiteSpace(shortcut.BrowserPath)
+               ? shortcut.BrowserPath
                : DefaultBrowserProvider.Path;
 
         string? trimmedArgs;
 
-        if (!string.IsNullOrWhiteSpace(item.BrowserArgs))
+        if (!string.IsNullOrWhiteSpace(shortcut.BrowserArgs))
         {
-            trimmedArgs = item.BrowserArgs.Trim();
+            trimmedArgs = shortcut.BrowserArgs.Trim();
         }
-        else if (string.IsNullOrWhiteSpace(item.BrowserPath))
+        else if (string.IsNullOrWhiteSpace(shortcut.BrowserPath))
         {
             trimmedArgs = DefaultBrowserProvider.ArgumentsPattern;
         }
@@ -30,7 +30,7 @@ public class BrowserExecutionInfo
         {
             trimmedArgs = BrowserDiscovery
                               .GetAllInstalledBrowsers()
-                              .FirstOrDefault(b => string.Equals(b.Path, item.BrowserPath, StringComparison.OrdinalIgnoreCase))
+                              .FirstOrDefault(b => string.Equals(b.Path, shortcut.BrowserPath, StringComparison.OrdinalIgnoreCase))
                               ?.ArgumentsPattern.Trim();
         }
 

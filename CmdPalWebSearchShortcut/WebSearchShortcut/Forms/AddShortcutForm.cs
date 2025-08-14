@@ -10,18 +10,18 @@ namespace WebSearchShortcut;
 
 internal sealed partial class AddShortcutForm : FormContent
 {
-    private readonly WebSearchShortcutItem? _item;
+    private readonly WebSearchShortcutDataEntry? _shortcut;
 
-    public AddShortcutForm(WebSearchShortcutItem? item)
+    public AddShortcutForm(WebSearchShortcutDataEntry? shortcut)
     {
-        _item = item;
-        var name = _item?.Name ?? string.Empty;
-        var url = _item?.Url ?? string.Empty;
-        var suggestionProvider = _item?.SuggestionProvider ?? string.Empty;
-        var replaceWhitespace = _item?.ReplaceWhitespace ?? string.Empty;
-        var homePage = _item?.HomePage ?? string.Empty;
-        var browserPath = _item?.BrowserPath ?? string.Empty;
-        var browserArgs = _item?.BrowserArgs ?? string.Empty;
+        _shortcut = shortcut;
+        var name = _shortcut?.Name ?? string.Empty;
+        var url = _shortcut?.Url ?? string.Empty;
+        var suggestionProvider = _shortcut?.SuggestionProvider ?? string.Empty;
+        var replaceWhitespace = _shortcut?.ReplaceWhitespace ?? string.Empty;
+        var homePage = _shortcut?.HomePage ?? string.Empty;
+        var browserPath = _shortcut?.BrowserPath ?? string.Empty;
+        var browserArgs = _shortcut?.BrowserArgs ?? string.Empty;
 
         TemplateJson = $$"""
 {
@@ -137,7 +137,7 @@ internal sealed partial class AddShortcutForm : FormContent
 """;
     }
 
-    internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand;
+    internal event TypedEventHandler<object, WebSearchShortcutDataEntry>? AddedCommand;
 
     public override CommandResult SubmitForm(string payload)
     {
@@ -156,7 +156,7 @@ internal sealed partial class AddShortcutForm : FormContent
         var formBrowserPath = formInput["browserPath"] ?? string.Empty;
         var formBrowserArgs = formInput["browserArgs"] ?? string.Empty;
 
-        var updated = _item ?? new WebSearchShortcutItem();
+        var updated = _shortcut ?? new WebSearchShortcutDataEntry();
         updated.Name = formName.ToString();
         updated.Url = formUrl.ToString();
         updated.SuggestionProvider = formSuggestionProvider.ToString();
