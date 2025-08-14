@@ -9,7 +9,7 @@ using WebSearchShortcut.Services;
 
 namespace WebSearchShortcut;
 
-public partial class SearchPage : DynamicListPage
+public partial class SearchWebPage : DynamicListPage
 {
     public string Url { get; }
     public WebSearchShortcutItem Item { get; }
@@ -18,7 +18,7 @@ public partial class SearchPage : DynamicListPage
     private List<ListItem> allSuggestItems;
     private readonly ListItem _emptyListItem;
 
-    public SearchPage(WebSearchShortcutItem data)
+    public SearchWebPage(WebSearchShortcutItem data)
     {
         Item = data;
         Name = data.Name;

@@ -102,11 +102,11 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private CommandItem ShortcutToCommandItem(WebSearchShortcutItem item)
     {
-        ICommand command = new SearchPage(item);
+        ICommand command = new SearchWebPage(item);
         var listItem = new CommandItem(command) { Icon = command.Icon };
         List<CommandContextItem> contextMenu = [];
 
-        if (command is SearchPage searchPage)
+        if (command is SearchWebPage searchWebPage)
         {
             listItem.Subtitle = StringFormatter.Format(Resources.SearchShortcut_SubtitleTemplate, new() { ["engine"] = item.Name });
         }
