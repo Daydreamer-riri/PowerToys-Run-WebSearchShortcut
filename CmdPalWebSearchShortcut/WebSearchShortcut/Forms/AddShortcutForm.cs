@@ -10,20 +10,18 @@ namespace WebSearchShortcut;
 
 internal sealed partial class AddShortcutForm : FormContent
 {
-    internal event TypedEventHandler<object, WebSearchShortcutItem>? AddedCommand;
+    private readonly WebSearchShortcutDataEntry? _shortcut;
 
-    private readonly WebSearchShortcutItem? _item;
-
-    public AddShortcutForm(WebSearchShortcutItem? item)
+    public AddShortcutForm(WebSearchShortcutDataEntry? shortcut)
     {
-        _item = item;
-        var name = _item?.Name ?? string.Empty;
-        var url = _item?.Url ?? string.Empty;
-        var suggestionProvider = _item?.SuggestionProvider ?? string.Empty;
-        var replaceWhitespace = _item?.ReplaceWhitespace ?? string.Empty;
-        var homePage = _item?.HomePage ?? string.Empty;
-        var browserPath = _item?.BrowserPath ?? string.Empty;
-        var browserArgs = _item?.BrowserArgs ?? string.Empty;
+        _shortcut = shortcut;
+        var name = shortcut?.Name ?? string.Empty;
+        var url = shortcut?.Url ?? string.Empty;
+        var suggestionProvider = shortcut?.SuggestionProvider ?? string.Empty;
+        var replaceWhitespace = shortcut?.ReplaceWhitespace ?? string.Empty;
+        var homePage = shortcut?.HomePage ?? string.Empty;
+        var browserPath = shortcut?.BrowserPath ?? string.Empty;
+        var browserArgs = shortcut?.BrowserArgs ?? string.Empty;
 
         TemplateJson = $$"""
 {
@@ -59,10 +57,10 @@ internal sealed partial class AddShortcutForm : FormContent
                     "title": {{JsonSerializer.Serialize(Resources.AddShortcutForm_SuggestionProviderNone, AppJsonSerializerContext.Default.String)}},
                     "value": ""
                 },
-                {{Suggestions.SuggestionProviders.Keys.Select(k => $$"""
+                {{SuggestionsRegistry.ProviderNames.Select(key => $$"""
                 {
-                    "title": {{JsonSerializer.Serialize(k, AppJsonSerializerContext.Default.String)}},
-                    "value": {{JsonSerializer.Serialize(k, AppJsonSerializerContext.Default.String)}}
+                    "title": {{JsonSerializer.Serialize(key, AppJsonSerializerContext.Default.String)}},
+                    "value": {{JsonSerializer.Serialize(key, AppJsonSerializerContext.Default.String)}}
                 }
                 """).Aggregate((a, b) => a + "," + b)}}
             ],
@@ -139,33 +137,23 @@ internal sealed partial class AddShortcutForm : FormContent
 """;
     }
 
-    public override CommandResult SubmitForm(string payload)
+    internal event TypedEventHandler<object, WebSearchShortcutDataEntry>? AddedCommand;
+
+    public override CommandResult SubmitForm(string inputs)
     {
-        var formInput = JsonNode.Parse(payload);
-        if (formInput == null)
-        {
-            return CommandResult.GoHome();
-        }
+        var root = JsonNode.Parse(inputs);
+        if (root is null) return CommandResult.GoHome();
 
-        // get the name and url out of the values
-        var formName = formInput["name"] ?? string.Empty;
-        var formUrl = formInput["url"] ?? string.Empty;
-        var formSuggestionProvider = formInput["suggestionProvider"] ?? string.Empty;
-        var formReplaceWhitespace = formInput["replaceWhitespace"] ?? string.Empty;
-        var formHomePage = formInput["homePage"] ?? string.Empty;
-        var formBrowserPath = formInput["browserPath"] ?? string.Empty;
-        var formBrowserArgs = formInput["browserArgs"] ?? string.Empty;
+        var shortcut = _shortcut ?? new WebSearchShortcutDataEntry();
+        shortcut.Name = root["name"]?.GetValue<string>() ?? string.Empty;
+        shortcut.Url = root["url"]?.GetValue<string>() ?? string.Empty;
+        shortcut.SuggestionProvider = root["suggestionProvider"]?.GetValue<string>() ?? string.Empty;
+        shortcut.ReplaceWhitespace = root["replaceWhitespace"]?.GetValue<string>() ?? string.Empty;
+        shortcut.HomePage = root["homePage"]?.GetValue<string>() ?? string.Empty;
+        shortcut.BrowserPath = root["browserPath"]?.GetValue<string>() ?? string.Empty;
+        shortcut.BrowserArgs = root["browserArgs"]?.GetValue<string>() ?? string.Empty;
 
-        var updated = _item ?? new WebSearchShortcutItem();
-        updated.Name = formName.ToString();
-        updated.Url = formUrl.ToString();
-        updated.SuggestionProvider = formSuggestionProvider.ToString();
-        updated.ReplaceWhitespace = formReplaceWhitespace.ToString();
-        updated.HomePage = formHomePage.ToString();
-        updated.BrowserPath = formBrowserPath.ToString();
-        updated.BrowserArgs = formBrowserArgs.ToString();
-
-        AddedCommand?.Invoke(this, updated);
+        AddedCommand?.Invoke(this, shortcut);
         return CommandResult.GoHome();
     }
 }

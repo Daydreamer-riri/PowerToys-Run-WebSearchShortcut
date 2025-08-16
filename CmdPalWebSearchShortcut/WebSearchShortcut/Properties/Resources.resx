@@ -117,11 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="WebSearchShortcut_DisplayName" xml:space="preserve">
+    <value>WebSearchShortcut</value>
+  </data>
+  <data name="AddShortcut_AddName" xml:space="preserve">
+    <value>Add Search Shortcut</value>
+  </data>
+  <data name="AddShortcut_AddTitle" xml:space="preserve">
+    <value>Add Search Shortcut</value>
+  </data>
   <data name="AddShortcutForm_NameLabel" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="AddShortcutForm_NameErrorMessage" xml:space="preserve">
+    <value>Name is required</value>
+  </data>
+  <data name="AddShortcutForm_UrlLabel" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="AddShortcutForm_UrlPlaceholder" xml:space="preserve">
+    <value>Use %s in the URL for the search term</value>
+  </data>
+  <data name="AddShortcutForm_UrlErrorMessage" xml:space="preserve">
+    <value>URL is required</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderLabel" xml:space="preserve">
+    <value>Suggestion Provider</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderPlaceholder" xml:space="preserve">
+    <value>Invalid Suggestion Provider</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="AddShortcutForm_ReplaceWhitespaceLabel" xml:space="preserve">
+    <value>Replace Whitespace (Optional)</value>
+  </data>
+  <data name="AddShortcutForm_ReplaceWhitespacePlaceholder" xml:space="preserve">
+    <value>Specify which character(s) to replace a space</value>
+  </data>
   <data name="AddShortcutForm_HomepageLabel" xml:space="preserve">
     <value>Custom Home Page (Optional)</value>
+  </data>
+  <data name="AddShortcutForm_HomepagePlaceholder" xml:space="preserve">
+    <value>Use domain by default</value>
   </data>
   <data name="AddShortcutForm_BrowserArgsLabel" xml:space="preserve">
     <value>Browser Arguments (Optional)</value>
@@ -135,76 +174,34 @@
   <data name="AddShortcutForm_BrowserPathDefault" xml:space="preserve">
     <value>Default</value>
   </data>
-  <data name="AddShortcutForm_NameErrorMessage" xml:space="preserve">
-    <value>Name is required</value>
-  </data>
-  <data name="AddShortcutForm_UrlLabel" xml:space="preserve">
-    <value>URL</value>
-  </data>
-  <data name="AddShortcutForm_UrlErrorMessage" xml:space="preserve">
-    <value>URL is required</value>
-  </data>
-  <data name="AddShortcutForm_UrlPlaceholder" xml:space="preserve">
-    <value>Use %s in the URL for the search term</value>
-  </data>
-  <data name="AddShortcutPage_AddTitle" xml:space="preserve">
-    <value>Add Search Shortcut</value>
-  </data>
-  <data name="AddShortcutPage_EditTitle" xml:space="preserve">
-    <value>Edit Search Shortcut</value>
-  </data>
-  <data name="AddShortcutPage_AddName" xml:space="preserve">
-    <value>Add Search Shortcut</value>
-  </data>
-  <data name="AddShortcutPage_EditName" xml:space="preserve">
-    <value>Edit Search Shortcut</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderLabel" xml:space="preserve">
-    <value>Suggestion Provider</value>
-  </data>
-  <data name="AddShortcutForm_ReplaceWhitespaceLabel" xml:space="preserve">
-    <value>Replace Whitespace (Optional)</value>
-  </data>
-  <data name="AddShortcutForm_ReplaceWhitespacePlaceholder" xml:space="preserve">
-    <value>Specify which character(s) to replace a space</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderPlaceholder" xml:space="preserve">
-    <value>Invalid Suggestion Provider</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderNone" xml:space="preserve">
-    <value>None</value>
-  </data>
-  <data name="AddShortcutForm_HomepagePlaceholder" xml:space="preserve">
-    <value>Use domain by default</value>
-  </data>
   <data name="AddShortcutForm_Save" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemDeleteTitle" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemDeleteName" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_DisplayName" xml:space="preserve">
-    <value>WebSearchShortcut</value>
-  </data>
-  <data name="OpenHomePageCommand_Name" xml:space="preserve">
-    <value>Open {engine}</value>
-  </data>
-  <data name="SearchPage_MoreCommandsTitle" xml:space="preserve">
-    <value>Open {engine}</value>
-  </data>
-  <data name="SearchPage_MoreCommandsName" xml:space="preserve">
-    <value>Open {engine}</value>
-  </data>
-  <data name="SearchPage_Subtitle" xml:space="preserve">
-    <value>Search {engine} for "{query}"</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemSubtitle" xml:space="preserve">
+  <data name="SearchShortcut_SubtitleTemplate" xml:space="preserve">
     <value>Search {engine}</value>
   </data>
-  <data name="SearchWebCommand_Name" xml:space="preserve">
+  <data name="SearchShortcut_EditName" xml:space="preserve">
+    <value>Edit Search Shortcut</value>
+  </data>
+  <data name="SearchShortcut_EditTitle" xml:space="preserve">
+    <value>Edit Search Shortcut</value>
+  </data>
+  <data name="SearchShortcut_DeleteName" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SearchShortcut_DeleteTitle" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="OpenHomePage_NameTemplate" xml:space="preserve">
+    <value>Open {engine}</value>
+  </data>
+  <data name="OpenHomePage_TitleTemplate" xml:space="preserve">
+    <value>Open {engine}</value>
+  </data>
+  <data name="SearchQuery_NameTemplate" xml:space="preserve">
     <value>Search for "{query}"</value>
+  </data>
+  <data name="SearchQuery_SubtitleTemplate" xml:space="preserve">
+    <value>Search {engine} for "{query}"</value>
   </data>
 </root>

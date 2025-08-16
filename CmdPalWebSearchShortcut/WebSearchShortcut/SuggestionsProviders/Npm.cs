@@ -1,44 +1,45 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using WebSearchShortcut.Properties;
 
-namespace WebSearchShortcut.SuggestionsProvider;
+namespace WebSearchShortcut.SuggestionsProviders;
 
-public class Npm : IWebSearchShortcutSuggestionsProvider
+internal sealed class Npm : ISuggestionsProvider
 {
-    public static string Name => "Npm";
+    public string Name => "Npm";
 
     private HttpClient Http { get; } = new HttpClient();
 
-    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
+    public async Task<Suggestion[]> GetSuggestionsAsync(string query, CancellationToken cancellationToken = default)
     {
         try
         {
             const string api = "https://www.npmjs.com/search/suggestions?q=";
 
             await using var resultStream = await Http.GetStreamAsync(
-                    api + Uri.EscapeDataString(query)
+                    api + Uri.EscapeDataString(query),
+                    cancellationToken
                 )
                 .ConfigureAwait(false);
 
-            using var json = await JsonDocument.ParseAsync(resultStream);
+            using var json = await JsonDocument.ParseAsync(resultStream, cancellationToken: cancellationToken);
 
             var results = json.RootElement.EnumerateArray();
 
-            List<SuggestionsItem> items = results
+            Suggestion[] items = [.. results
                 .Select(o =>
                 {
                     var title = o.GetProperty("name").GetString();
                     var description = o.GetProperty("description").GetString();
-                    return title is null ? null : new SuggestionsItem(title, description ?? "");
+                    return title is null ? null : new Suggestion(title, description ?? "");
                 })
                 .Where(s => s is not null)
-                .Select(s => s!)
-                .ToList();
+                .Select(s => s!)];
 
             return items;
         }

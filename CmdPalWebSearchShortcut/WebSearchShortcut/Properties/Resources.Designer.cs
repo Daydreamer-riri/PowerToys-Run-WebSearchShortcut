@@ -61,6 +61,24 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Search Shortcut.
+        /// </summary>
+        internal static string AddShortcut_AddName {
+            get {
+                return ResourceManager.GetString("AddShortcut_AddName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Search Shortcut.
+        /// </summary>
+        internal static string AddShortcut_AddTitle {
+            get {
+                return ResourceManager.GetString("AddShortcut_AddTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browser Arguments (Optional).
         /// </summary>
         internal static string AddShortcutForm_BrowserArgsLabel {
@@ -214,119 +232,92 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Search Shortcut.
+        ///   Looks up a localized string similar to Open {engine}.
         /// </summary>
-        internal static string AddShortcutPage_AddName {
+        internal static string OpenHomePage_NameTemplate {
             get {
-                return ResourceManager.GetString("AddShortcutPage_AddName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Search Shortcut.
-        /// </summary>
-        internal static string AddShortcutPage_AddTitle {
-            get {
-                return ResourceManager.GetString("AddShortcutPage_AddTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit Search Shortcut.
-        /// </summary>
-        internal static string AddShortcutPage_EditName {
-            get {
-                return ResourceManager.GetString("AddShortcutPage_EditName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit Search Shortcut.
-        /// </summary>
-        internal static string AddShortcutPage_EditTitle {
-            get {
-                return ResourceManager.GetString("AddShortcutPage_EditTitle", resourceCulture);
+                return ResourceManager.GetString("OpenHomePage_NameTemplate", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Open {engine}.
         /// </summary>
-        internal static string OpenHomePageCommand_Name {
+        internal static string OpenHomePage_TitleTemplate {
             get {
-                return ResourceManager.GetString("OpenHomePageCommand_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open {engine}.
-        /// </summary>
-        internal static string SearchPage_MoreCommandsName {
-            get {
-                return ResourceManager.GetString("SearchPage_MoreCommandsName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open {engine}.
-        /// </summary>
-        internal static string SearchPage_MoreCommandsTitle {
-            get {
-                return ResourceManager.GetString("SearchPage_MoreCommandsTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search {engine} for &quot;{query}&quot;.
-        /// </summary>
-        internal static string SearchPage_Subtitle {
-            get {
-                return ResourceManager.GetString("SearchPage_Subtitle", resourceCulture);
+                return ResourceManager.GetString("OpenHomePage_TitleTemplate", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Search for &quot;{query}&quot;.
         /// </summary>
-        internal static string SearchWebCommand_Name {
+        internal static string SearchQuery_NameTemplate {
             get {
-                return ResourceManager.GetString("SearchWebCommand_Name", resourceCulture);
+                return ResourceManager.GetString("SearchQuery_NameTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search {engine} for &quot;{query}&quot;.
+        /// </summary>
+        internal static string SearchQuery_SubtitleTemplate {
+            get {
+                return ResourceManager.GetString("SearchQuery_SubtitleTemplate", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string WebSearchShortcutCommandsProvider_CommandItemDeleteName {
+        internal static string SearchShortcut_DeleteName {
             get {
-                return ResourceManager.GetString("WebSearchShortcutCommandsProvider_CommandItemDeleteName", resourceCulture);
+                return ResourceManager.GetString("SearchShortcut_DeleteName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string WebSearchShortcutCommandsProvider_CommandItemDeleteTitle {
+        internal static string SearchShortcut_DeleteTitle {
             get {
-                return ResourceManager.GetString("WebSearchShortcutCommandsProvider_CommandItemDeleteTitle", resourceCulture);
+                return ResourceManager.GetString("SearchShortcut_DeleteTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Search Shortcut.
+        /// </summary>
+        internal static string SearchShortcut_EditName {
+            get {
+                return ResourceManager.GetString("SearchShortcut_EditName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Search Shortcut.
+        /// </summary>
+        internal static string SearchShortcut_EditTitle {
+            get {
+                return ResourceManager.GetString("SearchShortcut_EditTitle", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Search {engine}.
         /// </summary>
-        internal static string WebSearchShortcutCommandsProvider_CommandItemSubtitle {
+        internal static string SearchShortcut_SubtitleTemplate {
             get {
-                return ResourceManager.GetString("WebSearchShortcutCommandsProvider_CommandItemSubtitle", resourceCulture);
+                return ResourceManager.GetString("SearchShortcut_SubtitleTemplate", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to WebSearchShortcut.
         /// </summary>
-        internal static string WebSearchShortcutCommandsProvider_DisplayName {
+        internal static string WebSearchShortcut_DisplayName {
             get {
-                return ResourceManager.GetString("WebSearchShortcutCommandsProvider_DisplayName", resourceCulture);
+                return ResourceManager.GetString("WebSearchShortcut_DisplayName", resourceCulture);
             }
         }
     }

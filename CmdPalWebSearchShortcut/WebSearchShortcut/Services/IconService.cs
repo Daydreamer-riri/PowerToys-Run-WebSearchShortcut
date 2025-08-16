@@ -6,16 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using WebSearchShortcut.Constants;
+using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.Services;
 
 /// <summary>
 /// Provides icon-related services for web search shortcuts
 /// </summary>
-public static class IconService
+internal static class IconService
 {
     private static readonly string DefaultIconFallback = "🔗";
     private static readonly string UserAgent = "Mozilla/5.0 (compatible; AcmeInc/1.0)";
@@ -31,15 +30,15 @@ public static class IconService
     };
 
     /// <summary>
-    /// Gets an IconInfo for the specified item, using cached icon URL if available or generating one from the URL
+    /// Gets an IconInfo for the specified shortcut, using cached icon URL if available or generating one from the URL
     /// </summary>
-    /// <param name="item">The web search shortcut item</param>
+    /// <param name="shortcut">The web search shortcut data entry</param>
     /// <returns>IconInfo instance</returns>
-    public static IconInfo GetIconInfo(WebSearchShortcutItem item)
+    public static IconInfo GetIconInfo(WebSearchShortcutDataEntry shortcut)
     {
-        return !string.IsNullOrWhiteSpace(item.IconUrl)
-            ? new IconInfo(item.IconUrl)
-            : new IconInfo(GetFaviconUrlFromUrl(item.Url));
+        return !string.IsNullOrWhiteSpace(shortcut.IconUrl)
+            ? new IconInfo(shortcut.IconUrl)
+            : new IconInfo(GetFaviconUrlFromUrl(shortcut.Url));
     }
 
     /// <summary>
@@ -131,24 +130,24 @@ public static class IconService
     }
 
     /// <summary>
-    /// Updates the icon URL for a web search shortcut item asynchronously
+    /// Updates the icon URL for a web search shortcut data entry asynchronously
     /// </summary>
-    /// <param name="item">The item to update</param>
+    /// <param name="shortcut">The shortcut to update</param>
     /// <returns>The updated icon URL</returns>
-    public static async Task<string> UpdateIconUrlAsync(WebSearchShortcutItem item)
+    public static async Task<string> UpdateIconUrlAsync(WebSearchShortcutDataEntry shortcut)
     {
-        if (item == null || !string.IsNullOrWhiteSpace(item.IconUrl))
+        if (shortcut == null || !string.IsNullOrWhiteSpace(shortcut.IconUrl))
         {
-            return item?.IconUrl ?? DefaultIconFallback;
+            return shortcut?.IconUrl ?? DefaultIconFallback;
         }
 
         try
         {
-            var uri = UriHelper.GetUri(item.Domain ?? item.Url);
+            var uri = UriHelper.GetUri(shortcut.Domain ?? shortcut.Url);
             if (uri != null)
             {
                 var iconUrl = await GetValidFaviconUrlAsync(uri);
-                item.IconUrl = iconUrl;
+                shortcut.IconUrl = iconUrl;
                 return iconUrl;
             }
         }

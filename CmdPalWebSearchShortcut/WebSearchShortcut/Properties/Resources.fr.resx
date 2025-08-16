@@ -117,11 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="WebSearchShortcut_DisplayName" xml:space="preserve">
+    <value>WebSearchShortcut</value>
+  </data>
+  <data name="AddShortcut_AddName" xml:space="preserve">
+    <value>Ajouter un raccourci de recherche</value>
+  </data>
+  <data name="AddShortcut_AddTitle" xml:space="preserve">
+    <value>Ajouter un raccourci de recherche</value>
+  </data>
   <data name="AddShortcutForm_NameLabel" xml:space="preserve">
     <value>Nom</value>
   </data>
+  <data name="AddShortcutForm_NameErrorMessage" xml:space="preserve">
+    <value>Le nom est obligatoire</value>
+  </data>
+  <data name="AddShortcutForm_UrlLabel" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="AddShortcutForm_UrlPlaceholder" xml:space="preserve">
+    <value>Utilisez %s dans l'URL pour le terme de recherche</value>
+  </data>
+  <data name="AddShortcutForm_UrlErrorMessage" xml:space="preserve">
+    <value>L'URL est obligatoire</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderLabel" xml:space="preserve">
+    <value>Fournisseur de suggestions</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderPlaceholder" xml:space="preserve">
+    <value>Fournisseur de suggestions invalide</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderNone" xml:space="preserve">
+    <value>Aucun</value>
+  </data>
+  <data name="AddShortcutForm_ReplaceWhitespaceLabel" xml:space="preserve">
+    <value>Remplacer les espaces (Optionnel)</value>
+  </data>
+  <data name="AddShortcutForm_ReplaceWhitespacePlaceholder" xml:space="preserve">
+    <value>Spécifiez quel(s) caractère(s) remplace(nt) un espace</value>
+  </data>
   <data name="AddShortcutForm_HomepageLabel" xml:space="preserve">
     <value>Page d'accueil personnalisée (Optionnel)</value>
+  </data>
+  <data name="AddShortcutForm_HomepagePlaceholder" xml:space="preserve">
+    <value>Utiliser le domaine par défaut</value>
   </data>
   <data name="AddShortcutForm_BrowserArgsLabel" xml:space="preserve">
     <value>Arguments du navigateur (Optionnel)</value>
@@ -135,76 +174,34 @@
   <data name="AddShortcutForm_BrowserPathDefault" xml:space="preserve">
     <value>Par défaut</value>
   </data>
-  <data name="AddShortcutForm_NameErrorMessage" xml:space="preserve">
-    <value>Le nom est obligatoire</value>
-  </data>
-  <data name="AddShortcutForm_UrlLabel" xml:space="preserve">
-    <value>URL</value>
-  </data>
-  <data name="AddShortcutForm_UrlErrorMessage" xml:space="preserve">
-    <value>L'URL est obligatoire</value>
-  </data>
-  <data name="AddShortcutForm_UrlPlaceholder" xml:space="preserve">
-    <value>Utilisez %s dans l'URL pour le terme de recherche</value>
-  </data>
-  <data name="AddShortcutPage_AddTitle" xml:space="preserve">
-    <value>Ajouter un raccourci de recherche</value>
-  </data>
-  <data name="AddShortcutPage_EditTitle" xml:space="preserve">
-    <value>Modifier le raccourci de recherche</value>
-  </data>
-  <data name="AddShortcutPage_AddName" xml:space="preserve">
-    <value>Ajouter un raccourci de recherche</value>
-  </data>
-  <data name="AddShortcutPage_EditName" xml:space="preserve">
-    <value>Modifier le raccourci de recherche</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderLabel" xml:space="preserve">
-    <value>Fournisseur de suggestions</value>
-  </data>
-  <data name="AddShortcutForm_ReplaceWhitespaceLabel" xml:space="preserve">
-    <value>Remplacer les espaces (Optionnel)</value>
-  </data>
-  <data name="AddShortcutForm_ReplaceWhitespacePlaceholder" xml:space="preserve">
-    <value>Spécifiez quel(s) caractère(s) remplace(nt) un espace</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderPlaceholder" xml:space="preserve">
-    <value>Fournisseur de suggestions invalide</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderNone" xml:space="preserve">
-    <value>Aucun</value>
-  </data>
-  <data name="AddShortcutForm_HomepagePlaceholder" xml:space="preserve">
-    <value>Utiliser le domaine par défaut</value>
-  </data>
   <data name="AddShortcutForm_Save" xml:space="preserve">
     <value>Enregistrer</value>
   </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemDeleteTitle" xml:space="preserve">
-    <value>Supprimer</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemDeleteName" xml:space="preserve">
-    <value>Supprimer</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_DisplayName" xml:space="preserve">
-    <value>WebSearchShortcut</value>
-  </data>
-  <data name="OpenHomePageCommand_Name" xml:space="preserve">
-    <value>Ouvrir {engine}</value>
-  </data>
-  <data name="SearchPage_MoreCommandsTitle" xml:space="preserve">
-    <value>Ouvrir {engine}</value>
-  </data>
-  <data name="SearchPage_MoreCommandsName" xml:space="preserve">
-    <value>Ouvrir {engine}</value>
-  </data>
-  <data name="SearchPage_Subtitle" xml:space="preserve">
-    <value>Rechercher "{query}" sur {engine}</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemSubtitle" xml:space="preserve">
+  <data name="SearchShortcut_SubtitleTemplate" xml:space="preserve">
     <value>Rechercher sur {engine}</value>
   </data>
-  <data name="SearchWebCommand_Name" xml:space="preserve">
+  <data name="SearchShortcut_EditName" xml:space="preserve">
+    <value>Modifier le raccourci de recherche</value>
+  </data>
+  <data name="SearchShortcut_EditTitle" xml:space="preserve">
+    <value>Modifier le raccourci de recherche</value>
+  </data>
+  <data name="SearchShortcut_DeleteName" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="SearchShortcut_DeleteTitle" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="OpenHomePage_NameTemplate" xml:space="preserve">
+    <value>Ouvrir {engine}</value>
+  </data>
+  <data name="OpenHomePage_TitleTemplate" xml:space="preserve">
+    <value>Ouvrir {engine}</value>
+  </data>
+  <data name="SearchQuery_NameTemplate" xml:space="preserve">
     <value>Rechercher "{query}"</value>
+  </data>
+  <data name="SearchQuery_SubtitleTemplate" xml:space="preserve">
+    <value>Rechercher "{query}" sur {engine}</value>
   </data>
 </root>
