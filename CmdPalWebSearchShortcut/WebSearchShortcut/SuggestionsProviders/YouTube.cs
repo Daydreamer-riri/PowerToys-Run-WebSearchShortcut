@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Properties;
@@ -15,13 +16,13 @@ internal sealed class YouTube : ISuggestionsProvider
 
     private HttpClient Http { get; } = new HttpClient();
 
-    public async Task<Suggestion[]> GetSuggestionsAsync(string query)
+    public async Task<Suggestion[]> GetSuggestionsAsync(string query, CancellationToken cancellationToken = default)
     {
         try
         {
             const string api = "https://suggestqueries-clients6.youtube.com/complete/search?ds=yt&client=youtube&gs_ri=youtube&q=";
 
-            var result = await Http.GetStringAsync(api + Uri.EscapeDataString(query));
+            var result = await Http.GetStringAsync(api + Uri.EscapeDataString(query), cancellationToken);
 
             var match = Regex.Match(result, @"window\.google\.ac\.h\((.*)\)$");
             if (!match.Success)

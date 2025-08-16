@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Properties;
@@ -14,16 +15,16 @@ internal sealed class CanIUse : ISuggestionsProvider
 
     private HttpClient Http { get; } = new HttpClient();
 
-    public async Task<Suggestion[]> GetSuggestionsAsync(string query)
+    public async Task<Suggestion[]> GetSuggestionsAsync(string query, CancellationToken cancellationToken = default)
     {
         try
         {
             const string api = "https://caniuse.com/process/query.php?search=";
 
-            await using var resultStream = await Http.GetStreamAsync(api + Uri.EscapeDataString(query))
+            await using var resultStream = await Http.GetStreamAsync(api + Uri.EscapeDataString(query), cancellationToken)
                 .ConfigureAwait(false);
 
-            using var json = await JsonDocument.ParseAsync(resultStream);
+            using var json = await JsonDocument.ParseAsync(resultStream, cancellationToken: cancellationToken);
             var featureIds = json
                 .RootElement.GetProperty("featureIds")
                 .EnumerateArray()

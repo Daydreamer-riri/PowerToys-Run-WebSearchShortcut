@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ internal sealed partial class SearchWebPage : DynamicListPage
     private readonly IListItem _openHomePageItem;
     private IListItem[] _items = [];
     private IListItem[] _suggestionItems = [];
-    private int _updateEpoch;
+    private CancellationTokenSource? _suggestionsCancellationTokenSource;
 
     public SearchWebPage(WebSearchShortcutDataEntry shortcut)
     {
@@ -29,8 +30,6 @@ internal sealed partial class SearchWebPage : DynamicListPage
             Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name })
         };
 
-        _updateEpoch = 0;
-
         _items = [_openHomePageItem];
     }
 
@@ -38,7 +37,10 @@ internal sealed partial class SearchWebPage : DynamicListPage
 
     public override async void UpdateSearchText(string oldSearch, string newSearch)
     {
-        var capturedEpoch = Interlocked.Increment(ref _updateEpoch);
+        var currentCancellation = new CancellationTokenSource();
+        var previousCancellation = Interlocked.Exchange(ref _suggestionsCancellationTokenSource, currentCancellation);
+        previousCancellation?.Cancel();
+        previousCancellation?.Dispose();
 
         if (string.IsNullOrEmpty(newSearch))
         {
@@ -56,9 +58,17 @@ internal sealed partial class SearchWebPage : DynamicListPage
         if (string.IsNullOrEmpty(_shortcut.SuggestionProvider))
             return;
 
-        var suggestionItems = await GetSuggestionItemsAsync(newSearch);
+        ListItem[] suggestionItems;
+        try
+        {
+            suggestionItems = await GetSuggestionItemsAsync(newSearch, currentCancellation.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
 
-        if (capturedEpoch != _updateEpoch)
+        if (!ReferenceEquals(_suggestionsCancellationTokenSource, currentCancellation) || currentCancellation.IsCancellationRequested)
             return;
 
         _suggestionItems = suggestionItems;
@@ -86,11 +96,11 @@ internal sealed partial class SearchWebPage : DynamicListPage
         ];
     }
 
-    private async Task<ListItem[]> GetSuggestionItemsAsync(string searchText)
+    private async Task<ListItem[]> GetSuggestionItemsAsync(string searchText, CancellationToken cancellationToken)
     {
         var suggestions = await SuggestionsRegistry
             .Get(_shortcut.SuggestionProvider!)
-            .GetSuggestionsAsync(searchText)
+            .GetSuggestionsAsync(searchText, cancellationToken)
             .ConfigureAwait(false);
 
         return
