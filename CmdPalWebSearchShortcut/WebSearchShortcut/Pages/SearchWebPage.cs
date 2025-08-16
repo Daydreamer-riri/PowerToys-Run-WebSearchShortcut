@@ -88,7 +88,10 @@ internal sealed partial class SearchWebPage : DynamicListPage
 
     private async Task<ListItem[]> GetSuggestionItemsAsync(string searchText)
     {
-        var suggestions = await Suggestions.QuerySuggestionsAsync(_shortcut.SuggestionProvider!, searchText).ConfigureAwait(false);
+        var suggestions = await SuggestionsRegistry
+            .Get(_shortcut.SuggestionProvider!)
+            .GetSuggestionsAsync(searchText)
+            .ConfigureAwait(false);
 
         return
         [

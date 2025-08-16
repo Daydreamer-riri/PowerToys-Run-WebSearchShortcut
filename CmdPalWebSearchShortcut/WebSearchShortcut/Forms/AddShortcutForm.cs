@@ -57,10 +57,10 @@ internal sealed partial class AddShortcutForm : FormContent
                     "title": {{JsonSerializer.Serialize(Resources.AddShortcutForm_SuggestionProviderNone, AppJsonSerializerContext.Default.String)}},
                     "value": ""
                 },
-                {{Suggestions.SuggestionProviders.Keys.Select(k => $$"""
+                {{SuggestionsRegistry.ProviderNames.Select(key => $$"""
                 {
-                    "title": {{JsonSerializer.Serialize(k, AppJsonSerializerContext.Default.String)}},
-                    "value": {{JsonSerializer.Serialize(k, AppJsonSerializerContext.Default.String)}}
+                    "title": {{JsonSerializer.Serialize(key, AppJsonSerializerContext.Default.String)}},
+                    "value": {{JsonSerializer.Serialize(key, AppJsonSerializerContext.Default.String)}}
                 }
                 """).Aggregate((a, b) => a + "," + b)}}
             ],

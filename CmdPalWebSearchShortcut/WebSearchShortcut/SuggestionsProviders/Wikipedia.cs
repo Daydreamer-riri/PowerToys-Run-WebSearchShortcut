@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -7,15 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Properties;
 
-namespace WebSearchShortcut.SuggestionsProvider;
+namespace WebSearchShortcut.SuggestionsProviders;
 
-class Wikipedia : IWebSearchShortcutSuggestionsProvider
+internal sealed class Wikipedia : ISuggestionsProvider
 {
-    public static string Name => "Wikipedia";
+    public string Name => "Wikipedia";
 
     private HttpClient Http { get; } = new HttpClient();
 
-    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
+    public async Task<Suggestion[]> GetSuggestionsAsync(string query)
     {
         try
         {
@@ -30,7 +29,7 @@ class Wikipedia : IWebSearchShortcutSuggestionsProvider
 
             var results = json.RootElement.GetProperty("pages");
 
-            List<SuggestionsItem> items = [
+            Suggestion[] items = [
                 .. results
               .EnumerateArray()
               .Select(o => (
@@ -38,7 +37,7 @@ class Wikipedia : IWebSearchShortcutSuggestionsProvider
                   Description: o.TryGetProperty("description", out var d) ? d.GetString() : null
               ))
               .Where(p => !string.IsNullOrWhiteSpace(p.Title))
-              .Select(p => new SuggestionsItem(p.Title!, p.Description ?? ""))
+              .Select(p => new Suggestion(p.Title!, p.Description ?? ""))
             ];
 
             return items;

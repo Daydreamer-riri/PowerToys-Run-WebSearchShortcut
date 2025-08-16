@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -7,14 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Properties;
 
-namespace WebSearchShortcut.SuggestionsProvider;
-public class CanIUse : IWebSearchShortcutSuggestionsProvider
+namespace WebSearchShortcut.SuggestionsProviders;
+
+internal sealed class CanIUse : ISuggestionsProvider
 {
-    public static string Name => "CanIUse";
+    public string Name => "CanIUse";
 
     private HttpClient Http { get; } = new HttpClient();
 
-    public async Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query)
+    public async Task<Suggestion[]> GetSuggestionsAsync(string query)
     {
         try
         {
@@ -29,17 +29,16 @@ public class CanIUse : IWebSearchShortcutSuggestionsProvider
                 .EnumerateArray()
                 .Take(10);
 
-            List<SuggestionsItem> items = featureIds
+            Suggestion[] items = [.. featureIds
                 .Select(o =>
                 {
                     var title = o.GetString();
                     return title is null
                 ? null
-                : new SuggestionsItem(title);
+                : new Suggestion(title);
                 })
                 .Where(s => s != null)
-                .Select(s => s!)
-                .ToList();
+                .Select(s => s!)];
 
             return items;
         }
