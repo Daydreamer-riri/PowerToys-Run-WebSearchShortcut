@@ -1,45 +1,40 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using WebSearchShortcut.SuggestionsProvider;
+using WebSearchShortcut.SuggestionsProviders;
 
 namespace WebSearchShortcut;
 
-public interface IWebSearchShortcutSuggestionsProvider
+internal interface ISuggestionsProvider
 {
-    Task<List<SuggestionsItem>> QuerySuggestionsAsync(string query);
+    string Name { get; }
+    Task<IReadOnlyList<Suggestion>> GetSuggestionsAsync(string query);
 }
 
-public class SuggestionsItem(string title, string? description = null)
-{
-    public string Title { get; } = title;
-    public string? Description { get; } = description;
-}
+internal sealed record Suggestion(string Title, string? Description = null);
 
-public class Suggestions
+internal static class SuggestionsRegistry
 {
-    static public Task<List<SuggestionsItem>> QuerySuggestionsAsync(string name, string query)
-    {
-        var provider = SuggestionProviders[name];
-        if (provider is not null)
-        {
-            return provider.QuerySuggestionsAsync(query);
-        }
-        return Task.FromResult(new List<SuggestionsItem>());
-    }
+    public static IReadOnlyCollection<string> ProviderNames => _suggestionsProviders.Keys;
 
-    static public Dictionary<
-        string,
-        IWebSearchShortcutSuggestionsProvider
-    > SuggestionProviders
-    { get; set; } =
-        new()
+    public static ISuggestionsProvider Get(string name) =>
+        _suggestionsProviders.TryGetValue(name, out var provider)
+            ? provider
+            : throw new KeyNotFoundException($"Unknown suggestion provider: '{name}'.");
+
+    public static bool TryGet(string name, out ISuggestionsProvider provider) =>
+        _suggestionsProviders.TryGetValue(name, out provider!);
+
+    private static readonly Dictionary<string, ISuggestionsProvider> _suggestionsProviders =
+        new ISuggestionsProvider[]
         {
-        { Google.Name, new Google() },
-        { Bing.Name, new Bing() },
-        { DuckDuckGo.Name, new DuckDuckGo() },
-        { YouTube.Name, new YouTube() },
-        { Wikipedia.Name, new Wikipedia() },
-        { Npm.Name, new Npm() },
-        { CanIUse.Name, new CanIUse() },
-        };
+            new Google(),
+            new Bing(),
+            new DuckDuckGo(),
+            new YouTube(),
+            new Wikipedia(),
+            new Npm(),
+            new CanIUse(),
+        }.ToDictionary(provider => provider.Name, StringComparer.OrdinalIgnoreCase);
 }
