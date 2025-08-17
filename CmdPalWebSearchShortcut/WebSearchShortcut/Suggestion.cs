@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WebSearchShortcut.SuggestionsProviders;
 
@@ -9,7 +10,7 @@ namespace WebSearchShortcut;
 internal interface ISuggestionsProvider
 {
     string Name { get; }
-    Task<IReadOnlyList<Suggestion>> GetSuggestionsAsync(string query);
+    Task<IReadOnlyList<Suggestion>> GetSuggestionsAsync(string query, CancellationToken cancellationToken = default);
 }
 
 internal sealed record Suggestion(string Title, string? Description = null);
