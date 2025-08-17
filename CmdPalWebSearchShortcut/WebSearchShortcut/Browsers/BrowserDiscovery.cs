@@ -1,44 +1,31 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Win32;
 
 namespace WebSearchShortcut.Browsers;
 
 public static class BrowserDiscovery
 {
-    private static readonly object _loadLock = new();
-    private static bool _isLoaded;
-    private static List<BrowserInfo> _cachedBrowsers = [];
+    private static Lazy<BrowserInfo[]> _installedBrowsersCache = CreateInstalledBrowsersCache();
+    private static Lazy<BrowserInfo[]> CreateInstalledBrowsersCache() =>
+        new(LoadInstalledBrowsers, LazyThreadSafetyMode.ExecutionAndPublication);
+    public static IReadOnlyCollection<BrowserInfo> GetAllInstalledBrowsers() => _installedBrowsersCache.Value;
 
-    public static List<BrowserInfo> GetAllInstalledBrowsers()
+    public static void Reload(bool warm = false)
     {
-        if (_isLoaded) return _cachedBrowsers;
+        var newCache = CreateInstalledBrowsersCache();
 
-        lock (_loadLock)
-        {
-            if (!_isLoaded)
-            {
-                _cachedBrowsers = LoadInstalledBrowsers();
-                _isLoaded = true;
-            }
-        }
+        Interlocked.Exchange(ref _installedBrowsersCache, newCache);
 
-        return _cachedBrowsers;
+        if (warm)
+            _ = newCache.Value;
     }
 
-    public static void Reload()
+    private static BrowserInfo[] LoadInstalledBrowsers()
     {
-        lock (_loadLock)
-        {
-            _cachedBrowsers = LoadInstalledBrowsers();
-            _isLoaded = true;
-        }
-    }
-
-    private static List<BrowserInfo> LoadInstalledBrowsers()
-    {
-        List<string> progIds = GetAssociatedProgIds();
+        string[] progIds = GetAssociatedProgIds();
         List<BrowserInfo> result = [];
 
         foreach (var progId in progIds)
@@ -56,9 +43,9 @@ public static class BrowserDiscovery
         return [.. result.OrderBy(b => b.Name, StringComparer.OrdinalIgnoreCase)];
     }
 
-    private static List<string> GetAssociatedProgIds()
+    private static string[] GetAssociatedProgIds()
     {
-        HashSet<string> progIdSet = new HashSet<string>();
+        HashSet<string> progIdSet = [];
 
         progIdSet.UnionWith(ScanProgIdsFromRegistry(
             Registry.LocalMachine,
