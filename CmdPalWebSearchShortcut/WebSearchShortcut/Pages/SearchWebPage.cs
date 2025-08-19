@@ -6,6 +6,7 @@ using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Commands;
 using WebSearchShortcut.Helpers;
+using WebSearchShortcut.History;
 using WebSearchShortcut.Properties;
 using WebSearchShortcut.Services;
 
@@ -13,6 +14,8 @@ namespace WebSearchShortcut;
 
 internal sealed partial class SearchWebPage : DynamicListPage
 {
+    private const int MaxDisplayCount = 100;
+
     private readonly WebSearchShortcutDataEntry _shortcut;
 
     private readonly IListItem _openHomepageListItem;
@@ -49,11 +52,20 @@ internal sealed partial class SearchWebPage : DynamicListPage
             Title = StringFormatter.Format(Resources.OpenHomepageItem_TitleTemplate, new() { ["shortcut"] = shortcut.Name }),
             Icon = Icons.Home
         };
-
-        _items = [_openHomepageListItem];
     }
 
-    public override IListItem[] GetItems() => Volatile.Read(ref _items);
+    public override IListItem[] GetItems()
+    {
+        if (_items.Length == 0)
+            Rebuild();
+
+        return Volatile.Read(ref _items);
+    }
+
+    public void Rebuild()
+    {
+        UpdateSearchText(SearchText, SearchText);
+    }
 
     public override async void UpdateSearchText(string oldSearch, string newSearch)
     {
@@ -89,7 +101,9 @@ internal sealed partial class SearchWebPage : DynamicListPage
         {
             UpdateSuggestionItems([], currentEpoch);
 
-            RenderItems([_openHomepageListItem], currentEpoch);
+            var historyItems = BuildHistoryItems();
+
+            RenderItems([_openHomepageListItem, .. historyItems], currentEpoch);
 
             return;
         }
@@ -178,6 +192,29 @@ internal sealed partial class SearchWebPage : DynamicListPage
                 Icon = Icons.Search,
                 MoreCommands = [_openHomepageContextItem]
             }
+        ];
+    }
+
+    private ListItem[] BuildHistoryItems()
+    {
+        var historyQueries = HistoryService
+            .Get(_shortcut.Name)
+            .Take(MaxDisplayCount - 1);
+
+        return [
+            .. historyQueries.Select(historyQuery => new ListItem(
+                new SearchWebCommand(_shortcut, historyQuery)
+                {
+                    Name = StringFormatter.Format(Resources.SearchQueryItem_NameTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] = historyQuery }),
+                }
+            )
+            {
+                Title = StringFormatter.Format(Resources.SearchQueryItem_TitleTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] = historyQuery }),
+                Subtitle = StringFormatter.Format(Resources.SearchQueryItem_SubtitleTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] = historyQuery }),
+                Icon = Icons.History,
+                TextToSuggest = historyQuery,
+                MoreCommands = [_openHomepageContextItem]
+            })
         ];
     }
 

@@ -50,4 +50,9 @@ internal static class Icons
     /// Search icon
     /// </summary>
     public static IconInfo Search { get; } = new("\uE721");
+
+    /// <summary> 
+    /// History icon 
+    /// </summary>
+    public static IconInfo History { get; } = new("\uE81C");
 }
