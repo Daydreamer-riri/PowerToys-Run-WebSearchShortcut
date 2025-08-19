@@ -14,6 +14,7 @@ namespace WebSearchShortcut;
 
 internal sealed partial class SearchWebPage : DynamicListPage
 {
+    private const int MaxHistoryDisplayCount = 3;
     private const int MaxDisplayCount = 100;
 
     private readonly WebSearchShortcutDataEntry _shortcut;
@@ -97,11 +98,11 @@ internal sealed partial class SearchWebPage : DynamicListPage
         {
         }
 
+        var historyItems = BuildHistoryItems(newSearch);
+
         if (shouldOpenHomePage)
         {
             UpdateSuggestionItems([], currentEpoch);
-
-            var historyItems = BuildHistoryItems();
 
             RenderItems([_openHomepageListItem, .. historyItems], currentEpoch);
 
@@ -111,7 +112,7 @@ internal sealed partial class SearchWebPage : DynamicListPage
         var primaryItems = BuildPrimaryItems(newSearch);
         var snapshotSuggestions = Volatile.Read(ref _suggestionItems);
 
-        RenderItems([.. primaryItems, .. snapshotSuggestions], currentEpoch);
+        RenderItems([.. primaryItems, .. historyItems, .. snapshotSuggestions], currentEpoch);
 
         if (!shouldFetchSuggestions)
             return;
@@ -143,7 +144,7 @@ internal sealed partial class SearchWebPage : DynamicListPage
 
         UpdateSuggestionItems(suggestionItems, currentEpoch);
 
-        RenderItems([.. primaryItems, .. suggestionItems], currentEpoch);
+        RenderItems([.. primaryItems, .. historyItems, .. suggestionItems], currentEpoch);
     }
 
     private void RenderItems(IListItem[] items, int currentUpdateSearchTextEpoch)
@@ -196,11 +197,11 @@ internal sealed partial class SearchWebPage : DynamicListPage
         ];
     }
 
-    private ListItem[] BuildHistoryItems()
+    private ListItem[] BuildHistoryItems(string searchText)
     {
         var historyQueries = HistoryService
-            .Get(_shortcut.Name)
-            .Take(MaxDisplayCount - 1);
+            .Search(_shortcut.Name, searchText)
+            .Take(string.IsNullOrEmpty(searchText) ? MaxDisplayCount : MaxHistoryDisplayCount);
 
         return [
             .. historyQueries.Select(historyQuery => new ListItem(
