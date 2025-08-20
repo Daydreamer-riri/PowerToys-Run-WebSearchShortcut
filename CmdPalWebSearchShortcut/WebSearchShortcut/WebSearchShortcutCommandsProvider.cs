@@ -10,6 +10,7 @@ using System.Linq;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Helpers;
+using WebSearchShortcut.History;
 using WebSearchShortcut.Properties;
 using WebSearchShortcut.Services;
 
@@ -131,6 +132,11 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private CommandItem CreateCommandItem(WebSearchShortcutDataEntry shortcut)
     {
+        var searchWebPage = new SearchWebPage(shortcut)
+        {
+            Name = StringFormatter.Format(Resources.ShortcutItem_NameTemplate, new() { ["shortcut"] = shortcut.Name })
+        };
+
         var editShortcutPage = new AddShortcutPage(shortcut)
         {
             Name = StringFormatter.Format(Resources.EditShortcutItem_NameTemplate, new() { ["shortcut"] = shortcut.Name }),
@@ -163,12 +169,22 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
             IsCritical = true
         };
 
-        var commandItem = new CommandItem(
-            new SearchWebPage(shortcut)
+        var clearHistoryCommand = new CommandContextItem(
+            title: StringFormatter.Format(Resources.ClearHistory_TitleTemplate, new() { ["shortcut"] = shortcut.Name }),
+            name: $"[UNREACHABLE] ClearHistory.Name - shortcut='{shortcut.Name}'",
+            action: () =>
             {
-                Name = StringFormatter.Format(Resources.ShortcutItem_NameTemplate, new() { ["shortcut"] = shortcut.Name })
-            }
+                HistoryService.RemoveAll(shortcut.Name);
+                searchWebPage.Rebuild();
+            },
+            result: CommandResult.KeepOpen()
         )
+        {
+            Icon = Icons.DeleteHistory,
+            IsCritical = true
+        };
+
+        var commandItem = new CommandItem(searchWebPage)
         {
             Title = StringFormatter.Format(Resources.ShortcutItem_TitleTemplate, new() { ["shortcut"] = shortcut.Name }),
             Subtitle = StringFormatter.Format(Resources.ShortcutItem_SubtitleTemplate, new() { ["shortcut"] = shortcut.Name }),

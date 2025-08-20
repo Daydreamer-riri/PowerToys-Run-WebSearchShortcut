@@ -192,6 +192,9 @@
   <data name="ShortcutItem_NameTemplate" xml:space="preserve">
     <value>{shortcut}</value>
   </data>
+  <data name="ClearHistory_TitleTemplate" xml:space="preserve">
+    <value />
+  </data>
   <data name="EditShortcutItem_TitleTemplate" xml:space="preserve">
     <value>编辑搜索捷径</value>
   </data>
@@ -218,5 +221,8 @@
   </data>
   <data name="SearchQueryItem_NameTemplate" xml:space="preserve">
     <value>搜索“{query}”</value>
+  </data>
+  <data name="DeleteHistory_TitleTemplate" xml:space="preserve">
+    <value />
   </data>
 </root>

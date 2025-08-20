@@ -58,6 +58,40 @@ internal static class HistoryService
         }
     }
 
+    public static void Remove(string shortcutName, string query)
+    {
+        lock (_lock)
+        {
+            if (!_cache.Data.TryGetValue(shortcutName, out var entries) || entries is null)
+            {
+                entries = [];
+                _cache.Data[shortcutName] = entries;
+            }
+
+            entries.RemoveAll(entry => string.Equals(entry.Query, query, StringComparison.Ordinal));
+
+            RebuildShortcutQueriesMap();
+
+            Save();
+
+            ExtensionHost.LogMessage($"[WebSearchShortcut] History: Delete Query shortcut=\"{shortcutName}\" query=\"{query}\"");
+        }
+    }
+
+    public static void RemoveAll(string shortcutName)
+    {
+        lock (_lock)
+        {
+            _cache.Data[shortcutName] = [];
+
+            RebuildShortcutQueriesMap();
+
+            Save();
+
+            ExtensionHost.LogMessage($"[WebSearchShortcut] History: Claer shortcut=\"{shortcutName}\"");
+        }
+    }
+
     public static void Reload()
     {
         lock (_lock)

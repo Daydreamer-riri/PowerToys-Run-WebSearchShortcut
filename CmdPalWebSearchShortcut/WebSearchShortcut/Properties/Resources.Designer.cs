@@ -250,6 +250,24 @@ namespace WebSearchShortcut.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear {shortcut}&apos;s History.
+        /// </summary>
+        internal static string ClearHistory_TitleTemplate {
+            get {
+                return ResourceManager.GetString("ClearHistory_TitleTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        internal static string DeleteHistory_TitleTemplate {
+            get {
+                return ResourceManager.GetString("DeleteHistory_TitleTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         internal static string DeleteShortcutItem_TitleTemplate {
