@@ -156,6 +156,12 @@
   <data name="AddShortcutForm_SuggestionProvider_None" xml:space="preserve">
     <value>None</value>
   </data>
+  <data name="AddShortcutForm_RecordHistory_Label" xml:space="preserve">
+    <value>Search History</value>
+  </data>
+  <data name="AddShortcutForm_RecordHistory_Title" xml:space="preserve">
+    <value>Record history for this shortcut</value>
+  </data>
   <data name="AddShortcutForm_ReplaceWhitespace_Label" xml:space="preserve">
     <value>Replace Whitespace (Optional)</value>
   </data>
@@ -224,5 +230,23 @@
   </data>
   <data name="DeleteHistory_TitleTemplate" xml:space="preserve">
     <value>Delete</value>
+  </data>
+  <data name="Settings_MaxDisplayCount_Label" xml:space="preserve">
+    <value>Max Search Results</value>
+  </data>
+  <data name="Settings_MaxDisplayCount_Description" xml:space="preserve">
+    <value>Maximum total items shown per search</value>
+  </data>
+  <data name="Settings_MaxDisplayCount_ErrorMessage" xml:space="preserve">
+    <value>Must be an integer greater than or equal to 1</value>
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_Label" xml:space="preserve">
+    <value>Max History Results</value>
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_Description" xml:space="preserve">
+    <value>Maximum number of history results shown during search; set to 0 to hide history. Any value exceeding “Max Search Results” is ignored.</value>
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_ErrorMessage" xml:space="preserve">
+    <value>Must be an integer greater than or equal to 0</value>
   </data>
 </root>

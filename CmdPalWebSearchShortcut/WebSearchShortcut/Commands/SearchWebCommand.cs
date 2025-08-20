@@ -18,7 +18,6 @@ internal sealed partial class SearchWebCommand : InvokableCommand
         _query = query;
         _shortcut = shortcut;
         _browserInfo = new BrowserExecutionInfo(shortcut);
-        // _settingsManager = settingsManager;
     }
 
     public override CommandResult Invoke()
@@ -29,12 +28,8 @@ internal sealed partial class SearchWebCommand : InvokableCommand
             return CommandResult.KeepOpen();
         }
 
-        HistoryService.Add(_shortcut.Name, _query);
-
-        // if (_settingsManager.ShowHistory != Resources.history_none)
-        // {
-        //   _settingsManager.SaveHistory(new HistoryItem(Arguments, DateTime.Now));
-        // }
+        if (_shortcut.RecordHistory ?? true)
+            HistoryService.Add(_shortcut.Name, _query);
 
         return CommandResult.Dismiss();
     }

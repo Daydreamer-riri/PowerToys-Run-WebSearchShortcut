@@ -156,6 +156,12 @@
   <data name="AddShortcutForm_SuggestionProvider_None" xml:space="preserve">
     <value>無</value>
   </data>
+  <data name="AddShortcutForm_RecordHistory_Label" xml:space="preserve">
+    <value>搜尋歷史</value>
+  </data>
+  <data name="AddShortcutForm_RecordHistory_Title" xml:space="preserve">
+    <value>記錄此捷徑的搜尋歷史</value>
+  </data>
   <data name="AddShortcutForm_ReplaceWhitespace_Label" xml:space="preserve">
     <value>替換空白字元（可選）</value>
   </data>
@@ -224,5 +230,23 @@
   </data>
   <data name="DeleteHistory_TitleTemplate" xml:space="preserve">
     <value>將「{query}」從歷史紀錄刪除</value>
+  </data>
+  <data name="Settings_MaxDisplayCount_Label" xml:space="preserve">
+    <value>搜尋結果顯示上限</value>
+  </data>
+  <data name="Settings_MaxDisplayCount_Description" xml:space="preserve">
+    <value>一次搜尋最多顯示的總項目數</value>
+  </data>
+  <data name="Settings_MaxDisplayCount_ErrorMessage" xml:space="preserve">
+    <value>必須是大於或等於 1 的整數</value>
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_Label" xml:space="preserve">
+    <value>搜尋歷史顯示上限</value>
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_Description" xml:space="preserve">
+    <value>搜尋時顯示的歷史結果上限；設為 0 不顯示歷史。超過「搜尋結果顯示上限」的部分會被忽略</value>
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_ErrorMessage" xml:space="preserve">
+    <value>必須是大於或等於 0 的整數</value>
   </data>
 </root>

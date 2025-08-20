@@ -20,12 +20,16 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 {
     private readonly ICommandItem _addShortcutItem;
     private ICommandItem[] _topLevelCommands = [];
+
     private Storage? _storage;
+
+    private static readonly SettingsManager _settingsManager = new();
 
     public WebSearchShortcutCommandsProvider()
     {
         DisplayName = Resources.WebSearchShortcut_DisplayName;
         Icon = Icons.Logo;
+        Settings = _settingsManager.Settings;
 
         var addShortcutPage = new AddShortcutPage(null)
         {
@@ -132,7 +136,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private CommandItem CreateCommandItem(WebSearchShortcutDataEntry shortcut)
     {
-        var searchWebPage = new SearchWebPage(shortcut)
+        var searchWebPage = new SearchWebPage(shortcut, _settingsManager)
         {
             Name = StringFormatter.Format(Resources.ShortcutItem_NameTemplate, new() { ["shortcut"] = shortcut.Name })
         };

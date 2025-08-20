@@ -156,6 +156,12 @@
   <data name="AddShortcutForm_SuggestionProvider_None" xml:space="preserve">
     <value>无</value>
   </data>
+  <data name="AddShortcutForm_RecordHistory_Label" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddShortcutForm_RecordHistory_Title" xml:space="preserve">
+    <value />
+  </data>
   <data name="AddShortcutForm_ReplaceWhitespace_Label" xml:space="preserve">
     <value>替换空格（可选）</value>
   </data>
@@ -223,6 +229,24 @@
     <value>搜索“{query}”</value>
   </data>
   <data name="DeleteHistory_TitleTemplate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Settings_MaxDisplayCount_Label" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Settings_MaxDisplayCount_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Settings_MaxDisplayCount_ErrorMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_Label" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Settings_MaxHistoryDisplayCount_ErrorMessage" xml:space="preserve">
     <value />
   </data>
 </root>
