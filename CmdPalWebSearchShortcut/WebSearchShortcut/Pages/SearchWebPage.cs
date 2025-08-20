@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,11 +20,11 @@ internal sealed partial class SearchWebPage : DynamicListPage
 
     private readonly WebSearchShortcutDataEntry _shortcut;
 
-    private readonly IListItem _openHomepageListItem;
-    private readonly IContextItem _openHomepageContextItem;
+    private readonly ListItem _openHomepageListItem;
+    private readonly CommandContextItem _openHomepageContextItem;
 
+    private ListItem[] _suggestionItems = [];
     private IListItem[] _items = [];
-    private IListItem[] _suggestionItems = [];
 
     private int _lastUpdateSearchTextEpoch;
     private readonly Lock _swapSuggestionsCancellationSourceLock = new();
@@ -112,12 +113,12 @@ internal sealed partial class SearchWebPage : DynamicListPage
         var primaryItems = BuildPrimaryItems(newSearch);
         var snapshotSuggestions = Volatile.Read(ref _suggestionItems);
 
-        RenderItems([.. primaryItems, .. historyItems, .. snapshotSuggestions], currentEpoch);
+        RenderItems(ItemIntegrate(primaryItems, historyItems, snapshotSuggestions), currentEpoch);
 
         if (!shouldFetchSuggestions)
             return;
 
-        IListItem[] suggestionItems;
+        ListItem[] suggestionItems;
         try
         {
             suggestionItems = await FetchSuggestionItemsAsync(newSearch, currentCancellationSource!.Token).ConfigureAwait(false);
@@ -144,7 +145,69 @@ internal sealed partial class SearchWebPage : DynamicListPage
 
         UpdateSuggestionItems(suggestionItems, currentEpoch);
 
-        RenderItems([.. primaryItems, .. historyItems, .. suggestionItems], currentEpoch);
+        RenderItems(ItemIntegrate(primaryItems, historyItems, suggestionItems), currentEpoch);
+    }
+
+    private static IListItem[] ItemIntegrate(ListItem[] primaryItems, ListItem[] historyItems, ListItem[] suggestionItems)
+    {
+        var primaryItemByTitle = primaryItems.ToDictionary(item => item.Title, item => item);
+        var historyItemByTitle = historyItems.ToDictionary(item => item.Title, item => item);
+        var suggestionItemByTitle = suggestionItems.ToDictionary(item => item.Title, item => item);
+
+        HashSet<string> removeFromHistory = [];
+        HashSet<string> removeFromSuggestions = [];
+
+        foreach (var (title, primaryItem) in primaryItemByTitle)
+        {
+            if (historyItemByTitle.TryGetValue(title, out var historyItem))
+            {
+                primaryItem.Icon = Icons.History;
+                primaryItem.MoreCommands = historyItem.MoreCommands;
+
+                if (suggestionItemByTitle.TryGetValue(title, out var suggestionItem))
+                {
+                    historyItem.Subtitle = suggestionItem.Subtitle;
+                    removeFromSuggestions.Add(title);
+                }
+                else
+                {
+                    removeFromHistory.Add(title);
+                }
+            }
+        }
+
+        foreach (var (title, historyItem) in historyItemByTitle)
+        {
+            if (removeFromHistory.Contains(title))
+                continue;
+
+            if (removeFromSuggestions.Contains(title))
+                continue;
+
+            if (suggestionItemByTitle.TryGetValue(title, out var suggestionItem))
+            {
+                historyItem.Subtitle = suggestionItem.Subtitle;
+                removeFromSuggestions.Add(title);
+            }
+        }
+
+        List<IListItem> items = new(primaryItems.Length + historyItems.Length + suggestionItems.Length);
+
+        items.AddRange(primaryItems);
+
+        foreach (var historyItem in historyItems)
+        {
+            if (!removeFromHistory.Contains(historyItem.Title))
+                items.Add(historyItem);
+        }
+
+        foreach (var suggestoinItem in suggestionItems)
+        {
+            if (!removeFromSuggestions.Contains(suggestoinItem.Title))
+                items.Add(suggestoinItem);
+        }
+
+        return [.. items.Take(MaxDisplayCount)];
     }
 
     private void RenderItems(IListItem[] items, int currentUpdateSearchTextEpoch)
@@ -163,7 +226,7 @@ internal sealed partial class SearchWebPage : DynamicListPage
         RaiseItemsChanged(items.Length);
     }
 
-    private void UpdateSuggestionItems(IListItem[] suggestionItems, int currentUpdateSearchTextEpoch)
+    private void UpdateSuggestionItems(ListItem[] suggestionItems, int currentUpdateSearchTextEpoch)
     {
         if (currentUpdateSearchTextEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch))
             return;
