@@ -5,14 +5,9 @@ using WebSearchShortcut.Helpers;
 
 namespace WebSearchShortcut;
 
-public sealed class Storage
+internal sealed class Storage
 {
-    public List<WebSearchShortcutItem> Data { get; set; } = [];
-
-    // private static readonly JsonSerializerOptions _jsonOptions = new()
-    // {
-    //   IncludeFields = true,
-    // };
+    public List<WebSearchShortcutDataEntry> Data { get; set; } = [];
 
     public static Storage ReadFromFile(string path)
     {
@@ -22,19 +17,19 @@ public sealed class Storage
         {
             var defaultStorage = new Storage();
             defaultStorage.Data.AddRange([
-                new WebSearchShortcutItem
+                new WebSearchShortcutDataEntry
                 {
                     Name = "Google",
                     Url = "https://www.google.com/search?q=%s",
                     SuggestionProvider = "Google",
                 },
-                new WebSearchShortcutItem
+                new WebSearchShortcutDataEntry
                 {
                     Name = "Bing",
                     Url = "https://www.bing.com/search?q=%s",
                     SuggestionProvider = "Bing",
                 },
-                new WebSearchShortcutItem
+                new WebSearchShortcutDataEntry
                 {
                     Name = "Youtube",
                     Url = "https://www.youtube.com/results?search_query=%s",
@@ -43,7 +38,8 @@ public sealed class Storage
             ]);
             WriteToFile(path, defaultStorage);
         }
-        // if the file exists, load it and append the new item
+
+        // if the file exists, load the saved shortcuts
         if (File.Exists(path))
         {
             var jsonStringReading = File.ReadAllText(path);
@@ -61,6 +57,6 @@ public sealed class Storage
     {
         var jsonString = JsonPrettyFormatter.ToPrettyJson(data, AppJsonSerializerContext.Default.Storage);
 
-        File.WriteAllText(WebSearchShortcutCommandsProvider.StateJsonPath(), jsonString);
+        File.WriteAllText(path, jsonString);
     }
 }

@@ -117,11 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="WebSearchShortcut_DisplayName" xml:space="preserve">
+    <value>網頁搜尋捷徑</value>
+  </data>
+  <data name="AddShortcut_AddName" xml:space="preserve">
+    <value>+新增搜尋捷徑</value>
+  </data>
+  <data name="AddShortcut_AddTitle" xml:space="preserve">
+    <value>新增搜尋捷徑</value>
+  </data>
   <data name="AddShortcutForm_NameLabel" xml:space="preserve">
     <value>名稱</value>
   </data>
+  <data name="AddShortcutForm_NameErrorMessage" xml:space="preserve">
+    <value>必須填寫名稱</value>
+  </data>
+  <data name="AddShortcutForm_UrlLabel" xml:space="preserve">
+    <value>網址</value>
+  </data>
+  <data name="AddShortcutForm_UrlPlaceholder" xml:space="preserve">
+    <value>搜尋引擎的網址，請用 %s 取代關鍵字的位置</value>
+  </data>
+  <data name="AddShortcutForm_UrlErrorMessage" xml:space="preserve">
+    <value>必須填寫網址</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderLabel" xml:space="preserve">
+    <value>關鍵字建議來源</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderPlaceholder" xml:space="preserve">
+    <value>無效的關鍵字建議來源</value>
+  </data>
+  <data name="AddShortcutForm_SuggestionProviderNone" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="AddShortcutForm_ReplaceWhitespaceLabel" xml:space="preserve">
+    <value>替換空白字元（可選）</value>
+  </data>
+  <data name="AddShortcutForm_ReplaceWhitespacePlaceholder" xml:space="preserve">
+    <value>搜尋關鍵字中的空白會被替換為這裡指定的字元</value>
+  </data>
   <data name="AddShortcutForm_HomepageLabel" xml:space="preserve">
     <value>自訂首頁（可選）</value>
+  </data>
+  <data name="AddShortcutForm_HomepagePlaceholder" xml:space="preserve">
+    <value>預設為網域</value>
   </data>
   <data name="AddShortcutForm_BrowserArgsLabel" xml:space="preserve">
     <value>瀏覽器參數（可選）</value>
@@ -135,76 +174,34 @@
   <data name="AddShortcutForm_BrowserPathDefault" xml:space="preserve">
     <value>使用者預設瀏覽器</value>
   </data>
-  <data name="AddShortcutForm_NameErrorMessage" xml:space="preserve">
-    <value>必須填寫名稱</value>
-  </data>
-  <data name="AddShortcutForm_UrlLabel" xml:space="preserve">
-    <value>網址</value>
-  </data>
-  <data name="AddShortcutForm_UrlErrorMessage" xml:space="preserve">
-    <value>必須填寫網址</value>
-  </data>
-  <data name="AddShortcutForm_UrlPlaceholder" xml:space="preserve">
-    <value>搜尋引擎的網址，請用 %s 取代關鍵字的位置</value>
-  </data>
-  <data name="AddShortcutPage_AddTitle" xml:space="preserve">
-    <value>新增搜尋捷徑</value>
-  </data>
-  <data name="AddShortcutPage_EditTitle" xml:space="preserve">
-    <value>編輯搜尋捷徑</value>
-  </data>
-  <data name="AddShortcutPage_AddName" xml:space="preserve">
-    <value>+新增搜尋捷徑</value>
-  </data>
-  <data name="AddShortcutPage_EditName" xml:space="preserve">
-    <value>編輯搜尋捷徑</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderLabel" xml:space="preserve">
-    <value>關鍵字建議來源</value>
-  </data>
-  <data name="AddShortcutForm_ReplaceWhitespaceLabel" xml:space="preserve">
-    <value>替換空白字元（可選）</value>
-  </data>
-  <data name="AddShortcutForm_ReplaceWhitespacePlaceholder" xml:space="preserve">
-    <value>搜尋關鍵字中的空白會被替換為這裡指定的字元</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderPlaceholder" xml:space="preserve">
-    <value>無效的關鍵字建議來源</value>
-  </data>
-  <data name="AddShortcutForm_SuggestionProviderNone" xml:space="preserve">
-    <value>無</value>
-  </data>
-  <data name="AddShortcutForm_HomepagePlaceholder" xml:space="preserve">
-    <value>預設為網域</value>
-  </data>
   <data name="AddShortcutForm_Save" xml:space="preserve">
     <value>儲存</value>
   </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemDeleteTitle" xml:space="preserve">
-    <value>刪除搜尋捷徑</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemDeleteName" xml:space="preserve">
-    <value>刪除搜尋捷徑</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_DisplayName" xml:space="preserve">
-    <value>網頁搜尋捷徑</value>
-  </data>
-  <data name="OpenHomePageCommand_Name" xml:space="preserve">
-    <value>開啟 {engine} 首頁</value>
-  </data>
-  <data name="SearchPage_MoreCommandsTitle" xml:space="preserve">
-    <value>開啟 {engine} 首頁</value>
-  </data>
-  <data name="SearchPage_MoreCommandsName" xml:space="preserve">
-    <value>開啟 {engine} 首頁</value>
-  </data>
-  <data name="SearchPage_Subtitle" xml:space="preserve">
-    <value>在 {engine} 上搜尋「{query}」</value>
-  </data>
-  <data name="WebSearchShortcutCommandsProvider_CommandItemSubtitle" xml:space="preserve">
+  <data name="SearchShortcut_SubtitleTemplate" xml:space="preserve">
     <value>在 {engine} 上搜尋</value>
   </data>
-  <data name="SearchWebCommand_Name" xml:space="preserve">
+  <data name="SearchShortcut_EditName" xml:space="preserve">
+    <value>編輯搜尋捷徑</value>
+  </data>
+  <data name="SearchShortcut_EditTitle" xml:space="preserve">
+    <value>編輯搜尋捷徑</value>
+  </data>
+  <data name="SearchShortcut_DeleteName" xml:space="preserve">
+    <value>刪除搜尋捷徑</value>
+  </data>
+  <data name="SearchShortcut_DeleteTitle" xml:space="preserve">
+    <value>刪除搜尋捷徑</value>
+  </data>
+  <data name="OpenHomePage_NameTemplate" xml:space="preserve">
+    <value>開啟 {engine} 首頁</value>
+  </data>
+  <data name="OpenHomePage_TitleTemplate" xml:space="preserve">
+    <value>開啟 {engine} 首頁</value>
+  </data>
+  <data name="SearchQuery_NameTemplate" xml:space="preserve">
     <value>搜尋「{query}」</value>
+  </data>
+  <data name="SearchQuery_SubtitleTemplate" xml:space="preserve">
+    <value>在 {engine} 上搜尋「{query}」</value>
   </data>
 </root>

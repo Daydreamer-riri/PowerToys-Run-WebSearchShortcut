@@ -7,26 +7,24 @@ namespace WebSearchShortcut.Commands;
 
 internal sealed partial class SearchWebCommand : InvokableCommand
 {
+    private readonly string _query;
+    private readonly WebSearchShortcutDataEntry _shortcut;
+    private readonly BrowserExecutionInfo _browserInfo;
     // private readonly SettingsManager _settingsManager;
-    public string Arguments { get; internal set; } = string.Empty;
-    public WebSearchShortcutItem Item;
-    private readonly BrowserExecutionInfo BrowserInfo;
 
-    internal SearchWebCommand(string arguments, WebSearchShortcutItem item)
+    public SearchWebCommand(WebSearchShortcutDataEntry shortcut, string query)
     {
-        Arguments = arguments;
-        BrowserInfo = new BrowserExecutionInfo(item);
-        Icon = new IconInfo("\uE721");
-        Name = StringFormatter.Format(Resources.SearchWebCommand_Name, new() { ["engine"] = item.Name, ["query"] = arguments });
-        Item = item;
-        // Icon = IconHelpers.FromRelativePath("Assets\\WebSearch.png");
-        // Name = Properties.Resources.open_in_default_browser;
+        Name = StringFormatter.Format(Resources.SearchQuery_NameTemplate, new() { ["engine"] = shortcut.Name, ["query"] = query });
+        Icon = Icons.Search;
+        _query = query;
+        _shortcut = shortcut;
+        _browserInfo = new BrowserExecutionInfo(shortcut);
         // _settingsManager = settingsManager;
     }
 
     public override CommandResult Invoke()
     {
-        if (!ShellHelpers.OpenCommandInShell(BrowserInfo.Path, BrowserInfo.ArgumentsPattern, $"{WebSearchShortcutItem.GetSearchUrl(Item, Arguments)}"))
+        if (!ShellHelpers.OpenCommandInShell(_browserInfo.Path, _browserInfo.ArgumentsPattern, WebSearchShortcutDataEntry.GetSearchUrl(_shortcut, _query)))
         {
             // TODO GH# 138 --> actually display feedback from the extension somewhere.
             return CommandResult.KeepOpen();
