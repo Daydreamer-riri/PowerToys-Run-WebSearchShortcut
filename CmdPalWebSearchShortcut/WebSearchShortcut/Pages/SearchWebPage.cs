@@ -27,6 +27,7 @@ internal sealed partial class SearchWebPage : DynamicListPage
     {
         _shortcut = shortcut;
 
+        Id = shortcut.Id;
         Name = shortcut.Name;
         Icon = IconService.GetIconInfo(shortcut);
         _openHomePageItem = new ListItem(new OpenHomePageCommand(shortcut))
