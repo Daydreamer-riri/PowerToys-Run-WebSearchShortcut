@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,11 @@ internal sealed partial class SearchWebPage : DynamicListPage
     private readonly IListItem _openHomePageItem;
     private IListItem[] _items = [];
     private IListItem[] _suggestionItems = [];
-    private int _updateEpoch;
+    private int _lastUpdateSearchTextEpoch;
+    private readonly Lock _swapSuggestionsCancellationSourceLock = new();
+    private readonly Lock _renderLock = new();
+    private readonly Lock _updateSuggestionLock = new();
+    private CancellationTokenSource? _previousSuggestionsCancellationSource;
 
     public SearchWebPage(WebSearchShortcutDataEntry shortcut)
     {
@@ -29,48 +34,114 @@ internal sealed partial class SearchWebPage : DynamicListPage
             Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name })
         };
 
-        _updateEpoch = 0;
-
         _items = [_openHomePageItem];
     }
 
-    public override IListItem[] GetItems() => _items;
+    public override IListItem[] GetItems() => Volatile.Read(ref _items);
 
     public override async void UpdateSearchText(string oldSearch, string newSearch)
     {
-        var capturedEpoch = Interlocked.Increment(ref _updateEpoch);
+        int currentEpoch = Interlocked.Increment(ref _lastUpdateSearchTextEpoch);
 
-        if (string.IsNullOrEmpty(newSearch))
+        bool shouldOpenHomePage = string.IsNullOrEmpty(newSearch);
+        bool shouldFetchSuggestions = !shouldOpenHomePage && !string.IsNullOrEmpty(_shortcut.SuggestionProvider);
+
+        CancellationTokenSource? currentCancellationSource = shouldFetchSuggestions ? new CancellationTokenSource() : null;
+        CancellationTokenSource? previousCancellationSource;
+
+        lock (_swapSuggestionsCancellationSourceLock)
         {
-            _suggestionItems = [];
+            if (currentEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch))
+            {
+                currentCancellationSource?.Dispose();
+                return;
+            }
 
-            RenderItems([_openHomePageItem]);
+            previousCancellationSource = Interlocked.Exchange(ref _previousSuggestionsCancellationSource, currentCancellationSource);
+        }
+
+        try
+        {
+            previousCancellationSource?.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+
+        if (shouldOpenHomePage)
+        {
+            UpdateSuggestionItems([], currentEpoch);
+
+            RenderItems([_openHomePageItem], currentEpoch);
 
             return;
         }
 
         var primaryItems = BuildPrimaryItems(newSearch);
+        var snapshotSuggestions = Volatile.Read(ref _suggestionItems);
 
-        RenderItems([.. primaryItems, .. _suggestionItems]);
+        RenderItems([.. primaryItems, .. snapshotSuggestions], currentEpoch);
 
-        if (string.IsNullOrEmpty(_shortcut.SuggestionProvider))
+        if (!shouldFetchSuggestions)
             return;
 
-        var suggestionItems = await GetSuggestionItemsAsync(newSearch);
-
-        if (capturedEpoch != _updateEpoch)
+        IListItem[] suggestionItems;
+        try
+        {
+            suggestionItems = await FetchSuggestionItemsAsync(newSearch, currentCancellationSource!.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
             return;
+        }
+        catch (Exception ex)
+        {
+            ExtensionHost.LogMessage("Suggestions fetch failed: " + ex.ToString());
 
-        _suggestionItems = suggestionItems;
+            return;
+        }
+        finally
+        {
+            Interlocked.CompareExchange(ref _previousSuggestionsCancellationSource, null, currentCancellationSource);
 
-        RenderItems([.. primaryItems, .. _suggestionItems]);
+            currentCancellationSource!.Dispose();
+        }
+
+        if (currentEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch)) return;
+
+        UpdateSuggestionItems(suggestionItems, currentEpoch);
+
+        RenderItems([.. primaryItems, .. suggestionItems], currentEpoch);
     }
 
-    private void RenderItems(IListItem[] items)
+    private void RenderItems(IListItem[] items, int currentUpdateSearchTextEpoch)
     {
-        _items = items;
+        if (currentUpdateSearchTextEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch))
+            return;
 
-        RaiseItemsChanged(_items.Length);
+        lock (_renderLock)
+        {
+            if (currentUpdateSearchTextEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch))
+                return;
+
+            Volatile.Write(ref _items, items);
+        }
+
+        RaiseItemsChanged(items.Length);
+    }
+
+    private void UpdateSuggestionItems(IListItem[] suggestionItems, int currentUpdateSearchTextEpoch)
+    {
+        if (currentUpdateSearchTextEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch))
+            return;
+
+        lock (_updateSuggestionLock)
+        {
+            if (currentUpdateSearchTextEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch))
+                return;
+
+            Volatile.Write(ref _suggestionItems, suggestionItems);
+        }
     }
 
     private ListItem[] BuildPrimaryItems(string searchText)
@@ -86,11 +157,11 @@ internal sealed partial class SearchWebPage : DynamicListPage
         ];
     }
 
-    private async Task<ListItem[]> GetSuggestionItemsAsync(string searchText)
+    private async Task<ListItem[]> FetchSuggestionItemsAsync(string searchText, CancellationToken cancellationToken)
     {
         var suggestions = await SuggestionsRegistry
             .Get(_shortcut.SuggestionProvider!)
-            .GetSuggestionsAsync(searchText)
+            .GetSuggestionsAsync(searchText, cancellationToken)
             .ConfigureAwait(false);
 
         return
