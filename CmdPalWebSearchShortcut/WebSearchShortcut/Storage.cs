@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using Windows.ApplicationModel;
 using WebSearchShortcut.Helpers;
 
 namespace WebSearchShortcut;
@@ -81,7 +80,7 @@ internal sealed class Storage
             {
                 modified = true;
 
-                shortcut.Id = GenerateNewId();
+                shortcut.Id = GenerateId();
             }
             existingIds.Add(shortcut.Id);
         }
@@ -89,14 +88,12 @@ internal sealed class Storage
         return modified;
     }
 
-    private static string GenerateNewId()
+    private static string GenerateId()
     {
-        string prefix = Package.Current.Id.FamilyName;
-
         byte[] buffer = new byte[8];
         Random.Shared.NextBytes(buffer);
         ulong randomNumber = BitConverter.ToUInt64(buffer, 0);
 
-        return $"{prefix}!App!ID{randomNumber}";
+        return $"WebSearchShortcut{randomNumber}";
     }
 }
