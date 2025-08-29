@@ -9,8 +9,13 @@ namespace WebSearchShortcut.Properties;
 /// <summary>
 /// Provides commonly used icons for the WebSearchShortcut application
 /// </summary>
-public static class Icons
+internal static class Icons
 {
+    /// <summary>
+    /// Default fallback icon for links
+    /// </summary>
+    public static IconInfo Link { get; } = new("🔗");
+
     /// <summary>
     /// Edit icon (pencil)
     /// </summary>
@@ -22,9 +27,9 @@ public static class Icons
     public static IconInfo Delete { get; } = new("\uE74D");
 
     /// <summary>
-    /// Default fallback icon for links
+    /// Homepage icon
     /// </summary>
-    public static IconInfo Link { get; } = new("🔗");
+    public static IconInfo Home { get; } = new("\uE80F");
 
     /// <summary>
     /// Search icon

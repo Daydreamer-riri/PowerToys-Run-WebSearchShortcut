@@ -1,7 +1,5 @@
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using WebSearchShortcut.Browsers;
-using WebSearchShortcut.Helpers;
-using WebSearchShortcut.Properties;
 
 namespace WebSearchShortcut.Commands;
 
@@ -14,8 +12,8 @@ internal sealed partial class SearchWebCommand : InvokableCommand
 
     public SearchWebCommand(WebSearchShortcutDataEntry shortcut, string query)
     {
-        Name = StringFormatter.Format(Resources.SearchQuery_NameTemplate, new() { ["engine"] = shortcut.Name, ["query"] = query });
-        Icon = Icons.Search;
+        Name = $"[UNBOUND] {nameof(SearchWebCommand)}.{nameof(Name)} required - shortcut='{shortcut.Name}', query='{query}'";
+
         _query = query;
         _shortcut = shortcut;
         _browserInfo = new BrowserExecutionInfo(shortcut);

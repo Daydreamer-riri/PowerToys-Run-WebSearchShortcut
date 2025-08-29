@@ -14,9 +14,13 @@ namespace WebSearchShortcut;
 internal sealed partial class SearchWebPage : DynamicListPage
 {
     private readonly WebSearchShortcutDataEntry _shortcut;
-    private readonly IListItem _openHomePageItem;
+
+    private readonly IListItem _openHomepageListItem;
+    private readonly IContextItem _openHomepageContextItem;
+
     private IListItem[] _items = [];
     private IListItem[] _suggestionItems = [];
+
     private int _lastUpdateSearchTextEpoch;
     private readonly Lock _swapSuggestionsCancellationSourceLock = new();
     private readonly Lock _renderLock = new();
@@ -25,16 +29,28 @@ internal sealed partial class SearchWebPage : DynamicListPage
 
     public SearchWebPage(WebSearchShortcutDataEntry shortcut)
     {
+        Title = StringFormatter.Format(Resources.SearchWebPage_TitleTemplate, new() { ["shortcut"] = shortcut.Name });
+        Name = $"[UNBOUND] {nameof(SearchWebPage)}.{nameof(Name)} required - shortcut='{shortcut.Name}'";
+        Icon = IconService.GetIconInfo(shortcut);
+
         _shortcut = shortcut;
 
-        Name = shortcut.Name;
-        Icon = IconService.GetIconInfo(shortcut);
-        _openHomePageItem = new ListItem(new OpenHomePageCommand(shortcut))
+        var openHomepagecommand = new OpenHomePageCommand(shortcut)
         {
-            Title = StringFormatter.Format(Resources.OpenHomePage_TitleTemplate, new() { ["engine"] = Name })
+            Name = StringFormatter.Format(Resources.OpenHomepageItem_NameTemplate, new() { ["shortcut"] = shortcut.Name })
+        };
+        _openHomepageListItem = new ListItem(openHomepagecommand)
+        {
+            Title = StringFormatter.Format(Resources.OpenHomepageItem_TitleTemplate, new() { ["shortcut"] = shortcut.Name }),
+            Icon = Icons.Home
+        };
+        _openHomepageContextItem = new CommandContextItem(openHomepagecommand)
+        {
+            Title = StringFormatter.Format(Resources.OpenHomepageItem_TitleTemplate, new() { ["shortcut"] = shortcut.Name }),
+            Icon = Icons.Home
         };
 
-        _items = [_openHomePageItem];
+        _items = [_openHomepageListItem];
     }
 
     public override IListItem[] GetItems() => Volatile.Read(ref _items);
@@ -54,6 +70,7 @@ internal sealed partial class SearchWebPage : DynamicListPage
             if (currentEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch))
             {
                 currentCancellationSource?.Dispose();
+
                 return;
             }
 
@@ -72,7 +89,7 @@ internal sealed partial class SearchWebPage : DynamicListPage
         {
             UpdateSuggestionItems([], currentEpoch);
 
-            RenderItems([_openHomePageItem], currentEpoch);
+            RenderItems([_openHomepageListItem], currentEpoch);
 
             return;
         }
@@ -107,7 +124,8 @@ internal sealed partial class SearchWebPage : DynamicListPage
             currentCancellationSource!.Dispose();
         }
 
-        if (currentEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch)) return;
+        if (currentEpoch != Volatile.Read(ref _lastUpdateSearchTextEpoch))
+            return;
 
         UpdateSuggestionItems(suggestionItems, currentEpoch);
 
@@ -148,11 +166,17 @@ internal sealed partial class SearchWebPage : DynamicListPage
     {
         return
         [
-            new ListItem(new SearchWebCommand(_shortcut, searchText))
+            new ListItem(
+                new SearchWebCommand(_shortcut, searchText)
+                {
+                    Name = StringFormatter.Format(Resources.SearchQueryItem_NameTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] = searchText }),
+                }
+            )
             {
-                Title = searchText,
-                Subtitle = StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = searchText }),
-                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(_shortcut))]
+                Title = StringFormatter.Format(Resources.SearchQueryItem_TitleTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] = searchText }),
+                Subtitle = StringFormatter.Format(Resources.SearchQueryItem_SubtitleTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] = searchText }),
+                Icon = Icons.Search,
+                MoreCommands = [_openHomepageContextItem]
             }
         ];
     }
@@ -166,12 +190,18 @@ internal sealed partial class SearchWebPage : DynamicListPage
 
         return
         [
-            .. suggestions.Select(suggestion => new ListItem(new SearchWebCommand(_shortcut, suggestion.Title))
+            .. suggestions.Select(suggestion => new ListItem(
+                new SearchWebCommand(_shortcut, suggestion.Title)
+                {
+                    Name = StringFormatter.Format(Resources.SearchQueryItem_NameTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] =  suggestion.Title })
+                }
+            )
             {
-                Title = suggestion.Title,
-                Subtitle = suggestion.Description ?? StringFormatter.Format(Resources.SearchQuery_SubtitleTemplate, new() { ["engine"] = Name, ["query"] = suggestion.Title }),
+                Title = StringFormatter.Format(Resources.SearchQueryItem_TitleTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] =  suggestion.Title }),
+                Subtitle = suggestion.Description ?? StringFormatter.Format(Resources.SearchQueryItem_SubtitleTemplate, new() { ["shortcut"] = _shortcut.Name, ["query"] = suggestion.Title }),
+                Icon = Icons.Search,
                 TextToSuggest = suggestion.Title,
-                MoreCommands = [new CommandContextItem(new OpenHomePageCommand(_shortcut))]
+                MoreCommands = [_openHomepageContextItem]
             })
         ];
     }
