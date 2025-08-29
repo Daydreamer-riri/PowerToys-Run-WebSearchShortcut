@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -47,6 +48,12 @@ internal sealed class Storage
             if (!string.IsNullOrEmpty(jsonStringReading))
             {
                 data = JsonSerializer.Deserialize(jsonStringReading, AppJsonSerializerContext.Default.Storage) ?? new Storage();
+
+                bool modified = EnsureIds(data.Data);
+                if (modified)
+                {
+                    WriteToFile(path, data);
+                }
             }
         }
 
@@ -55,8 +62,38 @@ internal sealed class Storage
 
     public static void WriteToFile(string path, Storage data)
     {
+        EnsureIds(data.Data);
+
         var jsonString = JsonPrettyFormatter.ToPrettyJson(data, AppJsonSerializerContext.Default.Storage);
 
         File.WriteAllText(path, jsonString);
+    }
+
+    private static bool EnsureIds(List<WebSearchShortcutDataEntry> shortcuts)
+    {
+        bool modified = false;
+        HashSet<string> existingIds = [];
+
+        foreach (var shortcut in shortcuts)
+        {
+            while (string.IsNullOrWhiteSpace(shortcut.Id) || existingIds.Contains(shortcut.Id))
+            {
+                modified = true;
+
+                shortcut.Id = GenerateId();
+            }
+            existingIds.Add(shortcut.Id);
+        }
+
+        return modified;
+    }
+
+    private static string GenerateId()
+    {
+        byte[] buffer = new byte[8];
+        Random.Shared.NextBytes(buffer);
+        ulong randomNumber = BitConverter.ToUInt64(buffer, 0);
+
+        return $"WebSearchShortcut{randomNumber}";
     }
 }
