@@ -17,16 +17,25 @@ namespace WebSearchShortcut;
 
 public partial class WebSearchShortcutCommandsProvider : CommandProvider
 {
-    private readonly AddShortcutPage _addShortcutPage = new(null);
+    private readonly ICommandItem _addShortcutItem;
     private ICommandItem[] _topLevelCommands = [];
     private Storage? _storage;
 
     public WebSearchShortcutCommandsProvider()
     {
         DisplayName = Resources.WebSearchShortcut_DisplayName;
-        Icon = IconHelpers.FromRelativePath("Assets\\Search.png");
+        Icon = Icons.Logo;
 
-        _addShortcutPage.AddedCommand += AddNewCommand_AddedCommand;
+        var addShortcutPage = new AddShortcutPage(null)
+        {
+            Name = Resources.AddShortcutItem_Name
+        };
+        addShortcutPage.AddedCommand += AddNewCommand_AddedCommand;
+        _addShortcutItem = new CommandItem(addShortcutPage)
+        {
+            Title = Resources.AddShortcutItem_Title,
+            Icon = Icons.AddShortcut
+        };
     }
 
     public override ICommandItem[] TopLevelCommands()
@@ -91,7 +100,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private void ReloadCommands()
     {
-        List<CommandItem> items = [new CommandItem(_addShortcutPage)];
+        List<ICommandItem> items = [_addShortcutItem];
 
         if (_storage is null)
         {
@@ -122,13 +131,20 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
 
     private CommandItem CreateCommandItem(WebSearchShortcutDataEntry shortcut)
     {
-        var editShortcutPage = new AddShortcutPage(shortcut);
+        var editShortcutPage = new AddShortcutPage(shortcut)
+        {
+            Name = StringFormatter.Format(Resources.EditShortcutItem_NameTemplate, new() { ["shortcut"] = shortcut.Name }),
+        };
         editShortcutPage.AddedCommand += Edit_AddedCommand;
-        var editCommand = new CommandContextItem(editShortcutPage) { Icon = Icons.Edit };
+        var editCommand = new CommandContextItem(editShortcutPage)
+        {
+            Title = StringFormatter.Format(Resources.EditShortcutItem_TitleTemplate, new() { ["shortcut"] = shortcut.Name }),
+            Icon = Icons.Edit
+        };
 
         var deleteCommand = new CommandContextItem(
-            title: Resources.SearchShortcut_DeleteTitle,
-            name: Resources.SearchShortcut_DeleteName,
+            title: StringFormatter.Format(Resources.DeleteShortcutItem_TitleTemplate, new() { ["shortcut"] = shortcut.Name }),
+            name: $"[UNREACHABLE] DeleteCommand.Name - shortcut='{shortcut.Name}'",
             action: () =>
             {
                 if (_storage != null)
@@ -140,15 +156,23 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
                     SaveAndRefresh();
                 }
             },
-            result: CommandResult.KeepOpen())
+            result: CommandResult.KeepOpen()
+        )
         {
             Icon = Icons.Delete,
             IsCritical = true
         };
 
-        var commandItem = new CommandItem(new SearchWebPage(shortcut))
+        var commandItem = new CommandItem(
+            new SearchWebPage(shortcut)
+            {
+                Name = StringFormatter.Format(Resources.ShortcutItem_NameTemplate, new() { ["shortcut"] = shortcut.Name })
+            }
+        )
         {
-            Subtitle = StringFormatter.Format(Resources.SearchShortcut_SubtitleTemplate, new() { ["engine"] = shortcut.Name }),
+            Title = StringFormatter.Format(Resources.ShortcutItem_TitleTemplate, new() { ["shortcut"] = shortcut.Name }),
+            Subtitle = StringFormatter.Format(Resources.ShortcutItem_SubtitleTemplate, new() { ["shortcut"] = shortcut.Name }),
+            Icon = IconService.GetIconInfo(shortcut),
             MoreCommands = [editCommand, deleteCommand]
         };
 
