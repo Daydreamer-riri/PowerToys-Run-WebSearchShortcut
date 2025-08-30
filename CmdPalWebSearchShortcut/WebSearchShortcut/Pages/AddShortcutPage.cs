@@ -11,14 +11,13 @@ internal sealed partial class AddShortcutPage : ContentPage
 
     public AddShortcutPage(WebSearchShortcutDataEntry? shortcut)
     {
-        var name = shortcut?.Name ?? string.Empty;
-        var url = shortcut?.Url ?? string.Empty;
-        var isAdd = string.IsNullOrEmpty(name) && string.IsNullOrEmpty(url);
+        bool isAdd = shortcut is null;
+
+        Title = isAdd ? Resources.AddShortcutPage_Title_Add : Resources.AddShortcutPage_Title_Edit;
+        Name = $"[UNBOUND] {nameof(AddShortcutPage)}.{nameof(Name)} required - shortcut={(shortcut is null ? "null" : $"'{shortcut.Name}'")}";
+        Icon = isAdd ? Icons.AddShortcut : Icons.EditShortcut;
 
         _addShortcutForm = new AddShortcutForm(shortcut);
-        Icon = IconHelpers.FromRelativePath("Assets\\SearchAdd.png");
-        Title = isAdd ? Resources.AddShortcut_AddTitle : Resources.SearchShortcut_EditTitle;
-        Name = isAdd ? Resources.AddShortcut_AddName : Resources.SearchShortcut_EditName;
     }
 
     internal event TypedEventHandler<object, WebSearchShortcutDataEntry>? AddedCommand
