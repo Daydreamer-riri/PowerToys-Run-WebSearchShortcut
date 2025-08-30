@@ -15,7 +15,7 @@ internal sealed partial class AddShortcutPage : ContentPage
 
         Title = isAdd ? Resources.AddShortcutPage_Title_Add : Resources.AddShortcutPage_Title_Edit;
         Name = $"[UNBOUND] {nameof(AddShortcutPage)}.{nameof(Name)} required - shortcut={(shortcut is null ? "null" : $"'{shortcut.Name}'")}";
-        Icon = isAdd ? IconHelpers.FromRelativePath("Assets\\SearchAdd.png") : Icons.Edit;
+        Icon = isAdd ? Icons.AddShortcut : Icons.EditShortcut;
 
         _addShortcutForm = new AddShortcutForm(shortcut);
     }

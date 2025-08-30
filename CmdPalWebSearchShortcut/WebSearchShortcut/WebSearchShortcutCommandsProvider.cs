@@ -24,7 +24,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
     public WebSearchShortcutCommandsProvider()
     {
         DisplayName = Resources.WebSearchShortcut_DisplayName;
-        Icon = IconHelpers.FromRelativePath("Assets\\Search.png");
+        Icon = Icons.Logo;
 
         var addShortcutPage = new AddShortcutPage(null)
         {
@@ -34,7 +34,7 @@ public partial class WebSearchShortcutCommandsProvider : CommandProvider
         _addShortcutItem = new CommandItem(addShortcutPage)
         {
             Title = Resources.AddShortcutItem_Title,
-            Icon = IconHelpers.FromRelativePath("Assets\\SearchAdd.png")
+            Icon = Icons.AddShortcut
         };
     }
 

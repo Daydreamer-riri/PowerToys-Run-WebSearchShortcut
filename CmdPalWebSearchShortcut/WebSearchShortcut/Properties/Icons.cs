@@ -12,6 +12,21 @@ namespace WebSearchShortcut.Properties;
 internal static class Icons
 {
     /// <summary>
+    /// Extension logo icon
+    /// </summary>
+    public static IconInfo Logo { get; } = IconHelpers.FromRelativePath("Assets\\Search.png");
+
+    /// <summary>
+    /// "Add Shortcut" icon
+    /// </summary>
+    public static IconInfo AddShortcut { get; } = IconHelpers.FromRelativePath("Assets\\SearchAdd.png");
+
+    /// <summary>
+    /// "Edit Shortcut" icon
+    /// </summary>
+    public static IconInfo EditShortcut { get; } = new("\uE70F");
+
+    /// <summary>
     /// Default fallback icon for links
     /// </summary>
     public static IconInfo Link { get; } = new("🔗");
